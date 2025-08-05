@@ -1,16 +1,24 @@
-id: "wpdews-icecast"
-name: "Icecast Radio Server"
+manifestVersion: 1
+id: wpdews-icecast
+name: Icecast
 version: "1.0.0"
-tagline: "Хостинг собственного радио-сервера Icecast"
-icon: "./icon.png"
-description: |
-  Icecast — сервер для потокового аудио. Запустите собственное интернет-радио прямо на вашем Umbrel.
-developer: "Umbrel Community"
-website: "https://icecast.org/"
+description: >-
+  Icecast is a streaming media server that supports a variety of formats. You can use it to host your own internet radio station or stream audio content to your users.
+
+repository: "https://github.com/wpdew/wpdews-umbrell"  # Укажи свой репозиторий
+icon: "./icon.png"  # Иконка приложения
+category: files
+
+releaseNotes:  >-
+  ver 1.0.0 add hostname and app name.
+developer: "WpDews"
+website: https://wpdew.com/  
+gallery:
+  - ./icon.png
+  - ./icon.png
+  - ./icon.png
+
+defaultUsername: "shiori"
+defaultPassword: "gopher"
 dependencies: []
-repo: "https://github.com/wpdew/wpdews-umbrell"
-support: "https://github.com/wpdew/wpdews-umbrell/issues"
-port: 8000
-path: "/"
-type: "service"
-permissions: []
+path: ""
