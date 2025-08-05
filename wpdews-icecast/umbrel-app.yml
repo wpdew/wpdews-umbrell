@@ -1,0 +1,16 @@
+id: "wpdews-icecast"
+name: "Icecast Radio Server"
+version: "1.0.0"
+tagline: "Хостинг собственного радио-сервера Icecast"
+icon: "./icon.png"
+description: |
+  Icecast — сервер для потокового аудио. Запустите собственное интернет-радио прямо на вашем Umbrel.
+developer: "Umbrel Community"
+website: "https://icecast.org/"
+dependencies: []
+repo: "https://github.com/wpdew/icecast-umbrel"
+support: "https://github.com/wpdew/icecast-umbrel/issues"
+port: 8000
+path: "/"
+type: "service"
+permissions: []

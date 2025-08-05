@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  icecast:
+    image: libretime/icecast:2.4.4
+    container_name: umbrel-app-icecast
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      ICECAST_ADMIN_USERNAME: admin
+      ICECAST_ADMIN_PASSWORD: admin123
+      ICECAST_SOURCE_PASSWORD: source123
+      ICECAST_RELAY_PASSWORD: relay123
+      ICECAST_HOSTNAME: your-domain.com
+      ICECAST_MAX_CLIENTS: 100
