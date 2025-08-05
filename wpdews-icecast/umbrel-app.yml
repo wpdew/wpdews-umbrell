@@ -8,8 +8,8 @@ description: |
 developer: "Umbrel Community"
 website: "https://icecast.org/"
 dependencies: []
-repo: "https://github.com/wpdew/icecast-umbrel"
-support: "https://github.com/wpdew/icecast-umbrel/issues"
+repo: "https://github.com/wpdew/wpdews-umbrell"
+support: "https://github.com/wpdew/wpdews-umbrell/issues"
 port: 8000
 path: "/"
 type: "service"

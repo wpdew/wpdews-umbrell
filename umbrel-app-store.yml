@@ -1,6 +1,2 @@
 id: "wpdews" # Choose the ID for your app store. This should contain only alphabets ("a to z") and dashes ("-").
 name: "Wpdews" # Choose the name of your app store. It will show up in the UI as "<name> App Store".
-apps:
-  - id: "wpdews-icecast"
-    name: "Icecast Radio Server"
-    repo: "https://github.com/wpdew/wpdews-umbrell/tree/main/wpdews-icecast"
