@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  motioneye:
+    image: ccrisan/motioneye:master-armhf
+    hostname: "motioneye"
+    init: true
+    ports:
+      - "8089:8081"
+      - "8769:8765"
+    environment:
+      - TZ=Europe/Kiev
+    restart: unless-stopped
+    container_name: motioneye
+    volumes:
+      - etc:/etc/motioneye
+      - var_lib:/var/lib/motioneye
+
+volumes:
+  var_lib:
+  etc:

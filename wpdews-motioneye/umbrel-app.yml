@@ -1,0 +1,26 @@
+manifestVersion: 1
+id: wpdews-motioneye
+name: MotionEye
+version: "1.0.6"
+description: >-
+  MotionEye is an online interface for the software motion, a video surveillance program with motion detection.
+  It is designed to support safe cities with thousands of cameras, subscriber services, and self-hosted home use.
+  
+repository: "https://github.com/wpdew/beaver-umbrel-app-store"  # Укажи свой репозиторий
+icon: "https://i.imgur.com/nbqoMnp.png"  # Иконка приложения
+category: automation
+
+releaseNotes:  >-
+  ver 1.0.6 add hostname and app name.
+developer: "WpDews"
+website: https://wpdew.com/  
+gallery:
+  - https://i.imgur.com/NRupET5.jpeg
+  - https://i.imgur.com/VvxTDbk.jpeg
+  - https://i.imgur.com/VKSO4TN.jpeg
+    
+defaultUsername: "admin"
+defaultPassword: ""
+dependencies: []
+path: ""
+port: 8769

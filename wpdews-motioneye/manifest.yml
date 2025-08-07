@@ -1,0 +1,13 @@
+name: MotionEye
+version: 1.0.6
+description: "MotionEye - система видеонаблюдения"
+services:
+  motioneye:
+    environment:
+      TZ: Europe/Kiev
+    ports:
+      - 8083:8081
+      - 8765:8765
+    volumes:
+      - etc:/etc/motioneye
+      - var_lib:/var/lib/motioneye
