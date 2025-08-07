@@ -1,24 +1,22 @@
 manifestVersion: 1
 id: wpdews-icecast
 name: Icecast
-version: "1.0.0"
+version: "1.0.4"
 description: >-
-  Icecast is a streaming media server that supports a variety of formats. You can use it to host your own internet radio station or stream audio content to your users.
+  Icecast 2 is a streaming media server that supports a variety of formats. You can use it to host your own internet radio station or stream audio content to your users.
 
 repository: "https://github.com/wpdew/wpdews-umbrell"  # Укажи свой репозиторий
-icon: "./icon.png"  # Иконка приложения
-category: files
+icon: "https://wpdew.com/demo/icon.png"  # Иконка приложения
+category: automation
 
 releaseNotes:  >-
   ver 1.0.0 add hostname and app name.
 developer: "WpDews"
 website: https://wpdew.com/  
 gallery:
-  - ./icon.png
-  - ./icon.png
-  - ./icon.png
-
-defaultUsername: "shiori"
-defaultPassword: "gopher"
+  - https://wpdew.com/demo/icecast_sk.png
+port: 8000
 dependencies: []
 path: ""
+defaultUsername: "admin"
+defaultPassword: "admin123"
