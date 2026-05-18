@@ -17,7 +17,7 @@ description: >-
   • 40+ AI Providers (OpenRouter, GLM, Kimi, MiniMax, OpenAI, Anthropic, Gemini, DeepSeek, Groq, xAI, Mistral, Perplexity, Together AI, Fireworks, Cerebras, Cohere, NVIDIA, SiliconFlow and more)
 
 repository: "https://github.com/decolua/9router"
-icon: "https://raw.githubusercontent.com/decolua/9router/master/public/logo.png"
+icon: "https://raw.githubusercontent.com/wpdew/wpdews-umbrell/refs/heads/main/wpdews-9router/icon.png"
 category: automation
 
 releaseNotes: >-
