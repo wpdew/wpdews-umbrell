@@ -1,8 +1,9 @@
-version: '3.8'
-
+version: "3.7"
 services:
-  app:
+  router:
     image: decolua/9router:latest
+    hostname: "router9"
+    container_name: wpdews-9router
     restart: unless-stopped
     ports:
       - "20128:20128"
