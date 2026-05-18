@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: wpdews-9router_web_1
+      APP_PORT: 20128
+
+  web:
+    image: decolua/9router:latest
+    container_name: wpdews-9router_web_1
+    restart: unless-stopped
+    ports:
+      - "20128:20128"
+    environment:
+      PORT: 20128
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_BASE_URL: http://umbrel.local:20128
+      NODE_ENV: production
+      INITIAL_PASSWORD: umbrel9router
+      ENABLE_REQUEST_LOGS: "false"
+      JWT_SECRET: ${APP_SEED}
+    volumes:
+      - ${APP_DATA_DIR}/data:/app/data
+      - ${APP_DATA_DIR}/logs:/app/logs
+    networks:
+      default:
+        ipv4_address: $APP_9ROUTER_IP

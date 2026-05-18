@@ -1,0 +1,39 @@
+manifestVersion: 1
+id: wpdews-9router
+name: 9Router
+version: "0.4.52"
+description: >-
+  9Router - FREE AI Router & Token Saver. Never stop coding. Save 20-40% tokens with RTK + auto-fallback to FREE & cheap AI models.
+  
+  Connect All AI Code Tools (Claude Code, Cursor, Antigravity, Copilot, Codex, Gemini, OpenCode, Cline, OpenClaw...) to 40+ AI Providers & 100+ Models.
+  
+  Features:
+  • RTK Token Saver - Save 20-40% tokens per request
+  • Smart 3-Tier Fallback - Subscription → Cheap → Free
+  • Real-Time Quota Tracking
+  • Format Translation (OpenAI ↔ Claude ↔ Gemini)
+  • Multi-Account Support
+  • Auto Token Refresh
+  • 40+ AI Providers (OpenRouter, GLM, Kimi, MiniMax, OpenAI, Anthropic, Gemini, DeepSeek, Groq, xAI, Mistral, Perplexity, Together AI, Fireworks, Cerebras, Cohere, NVIDIA, SiliconFlow and more)
+
+repository: "https://github.com/decolua/9router"
+icon: "https://raw.githubusercontent.com/decolua/9router/master/public/logo.png"
+category: automation
+
+releaseNotes: >-
+  v0.4.52 - feat: Vercel AI Gateway + Kiro rtk compression
+  
+developer: "Deco Lua"
+website: https://9router.com/
+gallery:
+  - https://raw.githubusercontent.com/decolua/9router/master/images/9router.png
+  - https://raw.githubusercontent.com/decolua/9router/master/images/dashboard.png
+
+port: 20128
+dependencies: []
+path: "/dashboard"
+defaultUsername: "admin"
+defaultPassword: "umbrel9router"
+
+submitter: WpDews
+submission: https://github.com/wpdew/wpdews-umbrell
