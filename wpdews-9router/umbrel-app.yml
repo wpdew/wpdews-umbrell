@@ -27,7 +27,7 @@ developer: "Deco Lua"
 website: https://9router.com/
 gallery:
   - https://raw.githubusercontent.com/decolua/9router/master/images/9router.png
-  - https://raw.githubusercontent.com/decolua/9router/master/images/dashboard.png
+  - https://9router.com/9router-hero.jpg
 
 port: 20128
 dependencies: []
