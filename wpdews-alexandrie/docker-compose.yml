@@ -107,7 +107,7 @@ services:
       NUXT_PUBLIC_CONFIG_DISABLE_LANDING_PAGE: "${CONFIG_DISABLE_LANDING:-false}" # Disable landing page
 
       # Runtime configuration - builds with these values at startup
-      NUXT_PUBLIC_BASE_API: ${API_URL:-/api}
+      NUXT_PUBLIC_BASE_API: ${API_URL:-}
       NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${RUSTFS_EXTERNAL_PORT:-9000}}
       NUXT_PUBLIC_CDN_ENDPOINT: ${CDN_ENDPOINT:-/alexandrie/}
       NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${FRONTEND_EXTERNAL_PORT:-38200}}
