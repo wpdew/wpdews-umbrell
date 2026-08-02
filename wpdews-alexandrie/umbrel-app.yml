@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-alexandrie
 name: Alexandrie
-version: "1.0.4"
+version: "1.0.5"
 category: automation
 description: >-
   Alexandrie is a self-hosted media and file platform with a modern web UI,
