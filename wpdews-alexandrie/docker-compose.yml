@@ -85,8 +85,6 @@ services:
       SMTP_MAIL_FROM: ${SMTP_MAIL_FROM:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
 
-    ports:
-      - "${BACKEND_EXTERNAL_PORT:-38201}:8201"
     extra_hosts:
       - "localhost:host-gateway"
     depends_on:
