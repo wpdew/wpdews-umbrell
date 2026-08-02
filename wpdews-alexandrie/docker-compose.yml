@@ -54,7 +54,7 @@ services:
       GIN_MODE: release
       JWT_SECRET: ${JWT_SECRET:-your-secure-jwt-secret-key-change-this-in-production}
       COOKIE_DOMAIN: ${COOKIE_DOMAIN:-localhost:8200}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8200}
+      FRONTEND_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:8200}
       ALLOW_UNSECURE: "${ALLOW_UNSECURE:-true}"
       CONFIG_DISABLE_SIGNUP: "${CONFIG_DISABLE_SIGNUP:-false}"
       CONFIG_DISABLE_NATIVE_LOGIN: "${CONFIG_DISABLE_NATIVE_LOGIN:-false}"
@@ -64,7 +64,7 @@ services:
       DATABASE_USER: ${MYSQL_USER:-alexandrie}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD:-password}
       MINIO_ENDPOINT: rustfs:9000
-      MINIO_PUBLIC_URL: ${CDN_URL:-http://localhost:9005}
+      MINIO_PUBLIC_URL: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9005}}
       MINIO_SECURE: "${MINIO_SECURE:-false}"
       MINIO_ACCESSKEY: ${RUSTFS_ACCESS_KEY:-alexandrie-key}
       MINIO_SECRETKEY: ${RUSTFS_SECRET_KEY:-alexandrie-secret}
@@ -92,10 +92,10 @@ services:
       PORT: 8200
       NUXT_PUBLIC_CONFIG_DISABLE_SIGNUP_PAGE: "${CONFIG_DISABLE_SIGNUP:-false}"
       NUXT_PUBLIC_CONFIG_DISABLE_LANDING_PAGE: "${CONFIG_DISABLE_LANDING:-false}"
-      NUXT_PUBLIC_BASE_API: ${API_URL:-http://localhost:8201}
-      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://localhost:9005}
+      NUXT_PUBLIC_BASE_API: ${API_URL:-http://${DEVICE_HOSTNAME:-localhost}:8201}
+      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9005}}
       NUXT_PUBLIC_CDN_ENDPOINT: ${CDN_ENDPOINT:-/alexandrie/}
-      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://localhost:8200}
+      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:8200}
     ports:
       - "${FRONTEND_EXTERNAL_PORT:-8200}:8200"
     depends_on:
