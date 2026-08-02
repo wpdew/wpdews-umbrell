@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-alexandrie
 name: Alexandrie
-version: "1.0.17"
+version: "1.0.19"
 category: automation
 description: >-
   Alexandrie is a self-hosted media and file platform with a modern web UI,
@@ -10,7 +10,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-alexandrie/icon.png
 releaseNotes: >-
-  Fix install crash near completion by removing unnecessary backend host port exposure and keeping same-origin API gateway.
+  Fix install and runtime stability: removed gateway bind-mount and escaped Nginx variables in inline gateway config.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:
