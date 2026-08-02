@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-motioneye
 name: MotionEye
-version: "1.0.6"
+version: "1.0.7"
 description: >-
   MotionEye is an online interface for the software motion, a video surveillance program with motion detection.
   It is designed to support safe cities with thousands of cameras, subscriber services, and self-hosted home use.
@@ -11,7 +11,7 @@ icon: "https://i.imgur.com/nbqoMnp.png"  # Иконка приложения
 category: automation
 
 releaseNotes:  >-
-  ver 1.0.6 add hostname and app name.
+  ver 1.0.7 update dependencies and improve stability.
 developer: "WpDews"
 website: https://wpdew.com/  
 gallery:
