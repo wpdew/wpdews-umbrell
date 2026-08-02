@@ -8,13 +8,13 @@ description: >-
   MySQL database, and S3-compatible object storage.
 
 repository: "https://github.com/wpdew/wpdews-umbrell"
-icon: "https://wpdew.com/demo/icon.png"
+icon: "https://github.com/wpdew/wpdews-umbrell/raw/main/wpdews-alexandrie/icon.png"
 releaseNotes: >-
   Initial release of Alexandrie for Wpdews Umbrel App Store.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:
-  - "https://wpdew.com/demo/icon.png"
+  - "https://github.com/wpdew/wpdews-umbrell/raw/main/wpdews-alexandrie/icon.png"
 port: 8200
 dependencies: []
 path: ""
