@@ -54,8 +54,8 @@ services:
 
       # Security and authentication
       JWT_SECRET: ${JWT_SECRET:-your-secure-jwt-secret-key-change-this-in-production}
-      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-localhost:38200} # Common domain for cookies (e.g., yourdomain.com if you have frontend.yourdomain.com and api.yourdomain.com)
-      FRONTEND_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:38200} # URL where the frontend is hosted (for CORS policy and url generation in emails)
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-umbrel.local} # Common domain for cookies (e.g., yourdomain.com if you have frontend.yourdomain.com and api.yourdomain.com)
+      FRONTEND_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${FRONTEND_EXTERNAL_PORT:-38200}} # URL where the frontend is hosted (for CORS policy and url generation in emails)
       ALLOW_UNSECURE: "${ALLOW_UNSECURE:-true}" # Set to 'true' if you run without HTTPS (e.g., local dev);
 
       # Flags
@@ -72,7 +72,7 @@ services:
       # Object storage configuration (S3 compatible like RustFS, MinIO, etc.)
       # OPTIONAL: If you don't want to use the CDN feature you can leave these variables empty
       MINIO_ENDPOINT: rustfs:9000
-      MINIO_PUBLIC_URL: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9000}}
+      MINIO_PUBLIC_URL: ${CDN_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${RUSTFS_EXTERNAL_PORT:-9000}}
       MINIO_SECURE: "${MINIO_SECURE:-false}" # Set to 'true' if your S3 endpoint uses HTTPS
       MINIO_ACCESSKEY: ${RUSTFS_ACCESS_KEY:-alexandrie-key}
       MINIO_SECRETKEY: ${RUSTFS_SECRET_KEY:-alexandrie-secret}
@@ -109,10 +109,10 @@ services:
       NUXT_PUBLIC_CONFIG_DISABLE_LANDING_PAGE: "${CONFIG_DISABLE_LANDING:-false}" # Disable landing page
 
       # Runtime configuration - builds with these values at startup
-      NUXT_PUBLIC_BASE_API: ${API_URL:-http://${DEVICE_HOSTNAME:-localhost}:${BACKEND_EXTERNAL_PORT:-38201}}
-      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9000}}
+      NUXT_PUBLIC_BASE_API: ${API_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${BACKEND_EXTERNAL_PORT:-38201}}
+      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${RUSTFS_EXTERNAL_PORT:-9000}}
       NUXT_PUBLIC_CDN_ENDPOINT: ${CDN_ENDPOINT:-/alexandrie/}
-      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:38200}
+      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${FRONTEND_EXTERNAL_PORT:-38200}}
 
     ports:
       - "${FRONTEND_EXTERNAL_PORT:-38200}:8200"

@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-alexandrie
 name: Alexandrie
-version: "1.0.14"
+version: "1.0.15"
 category: automation
 description: >-
   Alexandrie is a self-hosted media and file platform with a modern web UI,
@@ -10,7 +10,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-alexandrie/icon.png
 releaseNotes: >-
-  Fix installer issues: removed fixed container names and switched to less-conflicting default host ports.
+  Fix auth/network errors on Umbrel by using umbrel.local-based public URL defaults and safer cookie domain default.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:
