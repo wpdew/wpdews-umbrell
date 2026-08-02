@@ -1,6 +1,12 @@
 version: "3.7"
 
 services:
+  app_proxy:
+    environment:
+      APP_HOST: alexandrie-proxy
+      APP_PORT: 8080
+      PROXY_AUTH_ADD: "false"
+
   mysql:
     image: mysql:8.0
     restart: unless-stopped
@@ -32,8 +38,6 @@ services:
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-alexandrie-secret}
       RUSTFS_CONSOLE_ENABLE: "${RUSTFS_CONSOLE_ENABLE:-false}"
       RUSTFS_LOG_LEVEL: ${RUSTFS_LOG_LEVEL:-info}
-    ports:
-      - "${RUSTFS_EXTERNAL_PORT:-9005}:9000"
     volumes:
       - rustfs_data:/data
       - rustfs_logs:/logs
@@ -53,8 +57,8 @@ services:
       BACKEND_PORT: 8201
       GIN_MODE: release
       JWT_SECRET: ${JWT_SECRET:-your-secure-jwt-secret-key-change-this-in-production}
-      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-localhost:8200}
-      FRONTEND_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:8200}
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN:-${APP_DOMAIN:-localhost}}
+      FRONTEND_URL: ${FRONTEND_URL:-${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}}
       ALLOW_UNSECURE: "${ALLOW_UNSECURE:-true}"
       CONFIG_DISABLE_SIGNUP: "${CONFIG_DISABLE_SIGNUP:-false}"
       CONFIG_DISABLE_NATIVE_LOGIN: "${CONFIG_DISABLE_NATIVE_LOGIN:-false}"
@@ -64,7 +68,7 @@ services:
       DATABASE_USER: ${MYSQL_USER:-alexandrie}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD:-password}
       MINIO_ENDPOINT: rustfs:9000
-      MINIO_PUBLIC_URL: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9005}}
+      MINIO_PUBLIC_URL: ${CDN_URL:-${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}/cdn}
       MINIO_SECURE: "${MINIO_SECURE:-false}"
       MINIO_ACCESSKEY: ${RUSTFS_ACCESS_KEY:-alexandrie-key}
       MINIO_SECRETKEY: ${RUSTFS_SECRET_KEY:-alexandrie-secret}
@@ -73,8 +77,6 @@ services:
       SMTP_MAIL: ${SMTP_MAIL:-}
       SMTP_MAIL_FROM: ${SMTP_MAIL_FROM:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-    ports:
-      - "${BACKEND_EXTERNAL_PORT:-8201}:8201"
     extra_hosts:
       - "localhost:host-gateway"
     depends_on:
@@ -92,14 +94,25 @@ services:
       PORT: 8200
       NUXT_PUBLIC_CONFIG_DISABLE_SIGNUP_PAGE: "${CONFIG_DISABLE_SIGNUP:-false}"
       NUXT_PUBLIC_CONFIG_DISABLE_LANDING_PAGE: "${CONFIG_DISABLE_LANDING:-false}"
-      NUXT_PUBLIC_BASE_API: ${API_URL:-http://${DEVICE_HOSTNAME:-localhost}:8201}
-      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-localhost}:${RUSTFS_EXTERNAL_PORT:-9005}}
+      NUXT_PUBLIC_BASE_API: ${API_URL:-/api}
+      NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-/cdn}
       NUXT_PUBLIC_CDN_ENDPOINT: ${CDN_ENDPOINT:-/alexandrie/}
-      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-localhost}:8200}
-    ports:
-      - "${FRONTEND_EXTERNAL_PORT:-8200}:8200"
+      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}}
     depends_on:
       - backend
+    networks:
+      - alexandrie-network
+
+  proxy:
+    image: nginx:1.27-alpine
+    container_name: alexandrie-proxy
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - backend
+      - rustfs
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - alexandrie-network
 
