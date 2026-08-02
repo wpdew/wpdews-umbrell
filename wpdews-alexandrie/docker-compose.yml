@@ -55,7 +55,7 @@ services:
       # Security and authentication
       JWT_SECRET: ${JWT_SECRET:-your-secure-jwt-secret-key-change-this-in-production}
       COOKIE_DOMAIN: ${COOKIE_DOMAIN:-umbrel.local} # Common domain for cookies (e.g., yourdomain.com if you have frontend.yourdomain.com and api.yourdomain.com)
-      FRONTEND_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${FRONTEND_EXTERNAL_PORT:-38200}} # URL where the frontend is hosted (for CORS policy and url generation in emails)
+      FRONTEND_URL: ${FRONTEND_URL:-https://${DEVICE_HOSTNAME:-umbrel}.local} # URL where the frontend is hosted (for CORS policy and url generation in emails)
       ALLOW_UNSECURE: "${ALLOW_UNSECURE:-true}" # Set to 'true' if you run without HTTPS (e.g., local dev);
 
       # Flags
@@ -109,15 +109,26 @@ services:
       NUXT_PUBLIC_CONFIG_DISABLE_LANDING_PAGE: "${CONFIG_DISABLE_LANDING:-false}" # Disable landing page
 
       # Runtime configuration - builds with these values at startup
-      NUXT_PUBLIC_BASE_API: ${API_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${BACKEND_EXTERNAL_PORT:-38201}}
+      NUXT_PUBLIC_BASE_API: ${API_URL:-/api}
       NUXT_PUBLIC_BASE_CDN: ${CDN_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${RUSTFS_EXTERNAL_PORT:-9000}}
       NUXT_PUBLIC_CDN_ENDPOINT: ${CDN_ENDPOINT:-/alexandrie/}
-      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-http://${DEVICE_HOSTNAME:-umbrel}.local:${FRONTEND_EXTERNAL_PORT:-38200}}
-
-    ports:
-      - "${FRONTEND_EXTERNAL_PORT:-38200}:8200"
+      NUXT_PUBLIC_BASE_URL: ${FRONTEND_URL:-https://${DEVICE_HOSTNAME:-umbrel}.local}
     depends_on:
       - backend
+    networks:
+      - alexandrie-network
+
+  # Same-origin gateway for Umbrel UI to prevent browser CORS/mixed-content issues
+  gateway:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT:-38200}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - alexandrie-network
 
