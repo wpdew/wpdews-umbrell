@@ -1,0 +1,21 @@
+manifestVersion: 1
+id: wpdews-alexandrie
+name: Alexandrie
+version: "1.0.0"
+category: files
+description: >-
+  Alexandrie is a self-hosted media and file platform with a modern web UI,
+  MySQL database, and S3-compatible object storage.
+repository: "https://github.com/wpdew/wpdews-umbrell"
+icon: "https://wpdew.com/demo/icon.png"
+releaseNotes: >-
+  Initial release of Alexandrie for Wpdews Umbrel App Store.
+developer: "WpDews"
+website: "https://wpdew.com"
+gallery:
+  - "https://wpdew.com/demo/icon.png"
+port: 8200
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
