@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Sprite Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Специфічні стилі генератора -->
+    <style>
+/* Специфічні стилі генератора з підтримкою тем */
+
+        .upload-area {
+            border: 3px dashed var(--border-primary);
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-primary);
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--accent-secondary);
+            background: var(--bg-secondary);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .browse-btn:hover {
+            background: var(--accent-secondary);
+        }
+
+        .images-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .images-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .images-list::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 4px;
+        }
+
+        .images-list::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 4px;
+        }
+
+        .images-list::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+        .image-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .image-thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 4px;
+            background: var(--bg-primary);
+        }
+
+        .image-info {
+            flex: 1;
+        }
+
+        .image-name {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .image-size {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        .remove-image {
+            background: var(--accent-danger);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .remove-image:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 6px;
+        }
+
+        #opacitySlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        #opacitySlider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .layout-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .layout-btn {
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .layout-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .layout-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border-primary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn-secondary {
+            background: var(--border-primary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .btn-danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .preview-panel {
+            height: fit-content;
+        }
+
+        .preview-area {
+            background: var(--bg-primary);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: auto;
+        }
+
+        .preview-area.transparent-bg {
+            background-image: 
+                linear-gradient(45deg, var(--bg-secondary) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--bg-secondary) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--bg-secondary) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--bg-secondary) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: var(--bg-primary);
+        }
+
+        .preview-empty {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .preview-empty-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        #spriteCanvas {
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+
+        #spriteCanvas.active {
+            display: block;
+        }
+
+        .sprite-info {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .sprite-info.active {
+            display: block;
+        }
+
+        .sprite-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .sprite-info-label {
+            color: var(--text-tertiary);
+        }
+
+        .sprite-info-value {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .code-panel {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+
+        .code-output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .code-output::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 4px;
+        }
+
+        .code-output::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 4px;
+        }
+
+        .code-keyword {
+            color: #c678dd;
+        }
+
+        .code-value {
+            color: var(--accent-warning);
+        }
+
+        .code-comment {
+            color: #5c6370;
+        }
+
+        .info-section {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .info-section h2 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            color: var(--text-tertiary);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            color: var(--text-tertiary);
+            margin-left: 20px;
+            line-height: 2;
+        }
+
+        .empty-state {
+            display: block;
+        }
+
+        .empty-state.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>🖼️ CSS Sprite Generator</h1>
+        
+        <div class="main-grid">
+            <!-- Controls Panel -->
+            <div class="panel">
+                <h2>Налаштування</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Перетягніть зображення сюди</div>
+                    <div class="upload-hint">або</div>
+                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                        Вибрати файли
+                    </button>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+                    <div class="upload-hint" style="margin-top: 15px;">PNG, JPEG, GIF, WebP</div>
+                </div>
+
+                <div class="images-list" id="imagesList"></div>
+
+                <div class="control-section">
+                    <h3>Layout</h3>
+                    <div class="layout-options">
+                        <button class="layout-btn active" onclick="setLayout('horizontal', this)">Horizontal</button>
+                        <button class="layout-btn" onclick="setLayout('vertical', this)">Vertical</button>
+                        <button class="layout-btn" onclick="setLayout('packed', this)">Packed</button>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Параметри</h3>
+                    <div class="control-group">
+                        <label>Padding (px):</label>
+                        <input type="number" id="paddingInput" value="5" min="0" max="50" onchange="generateSprite()">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>CSS Class Prefix:</label>
+                        <input type="text" id="classPrefix" value="sprite" onchange="generateSprite()">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Background Color:</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="bgColorPicker" class="color-picker" value="#ffffff" onchange="updateBgColor()">
+                            <input type="text" id="bgColorInput" value="#ffffff" onchange="updateBgColorFromInput()">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="transparentBg" onchange="toggleTransparency()" style="width: 18px; height: 18px; cursor: pointer;">
+                            <span>Прозорий фон</span>
+                        </label>
+                    </div>
+
+                    <div class="control-group" id="opacityControl">
+                        <label>Прозорість фону: <span id="opacityValue">100</span>%</label>
+                        <input type="range" id="opacitySlider" min="0" max="100" value="100" 
+                               oninput="updateOpacity(this.value)" 
+                               style="width: 100%; height: 6px; border-radius: 3px; outline: none; -webkit-appearance: none;">
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="generateBtn" disabled onclick="generateSprite()">
+                        🎨 Генерувати Sprite
+                    </button>
+                    <button class="btn btn-secondary" id="downloadBtn" disabled onclick="downloadSprite()">
+                        💾 Завантажити PNG
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAll()">
+                        🗑️ Очистити все
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area" id="previewArea">
+                        <div class="preview-empty empty-state" id="previewEmpty">
+                            <div class="preview-empty-icon">🖼️</div>
+                            <p>Завантажте зображення для створення sprite</p>
+                        </div>
+                        <canvas id="spriteCanvas"></canvas>
+                    </div>
+                    
+                    <div class="sprite-info" id="spriteInfo">
+                        <div class="sprite-info-row">
+                            <span class="sprite-info-label">Розмір sprite:</span>
+                            <span class="sprite-info-value" id="spriteSize">-</span>
+                        </div>
+                        <div class="sprite-info-row">
+                            <span class="sprite-info-label">Кількість зображень:</span>
+                            <span class="sprite-info-value" id="imageCount">0</span>
+                        </div>
+                        <div class="sprite-info-row">
+                            <span class="sprite-info-label">Layout:</span>
+                            <span class="sprite-info-value" id="layoutType">Horizontal</span>
+                        </div>
+                        <div class="sprite-info-row">
+                            <span class="sprite-info-label">Фон:</span>
+                            <span class="sprite-info-value" id="backgroundType">Білий, 100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-panel">
+                    <h2>CSS Код</h2>
+                    <div class="code-output" id="codeOutput">
+                        <span class="code-comment">/* Завантажте зображення та згенерируйте sprite */</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="copyCode()">📋 Копіювати CSS</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Про CSS Sprites</h2>
+            <p>
+                CSS спрайти - це техніка оптимізації веб-сторінок, яка об'єднує кілька зображень в один файл. 
+                Замість завантаження багатьох окремих зображень, браузер завантажує один спрайт, що значно 
+                зменшує кількість HTTP запитів.
+            </p>
+            <p><strong>Переваги використання CSS спрайтів:</strong></p>
+            <ul>
+                <li>⚡ Швидше завантаження сторінки - менше HTTP запитів</li>
+                <li>📱 Краща продуктивність на мобільних пристроях</li>
+                <li>🎯 Зменшення навантаження на сервер</li>
+                <li>✨ Покращений користувацький досвід</li>
+                <li>📈 Позитивний вплив на SEO</li>
+            </ul>
+            <p style="margin-top: 15px;">
+                <strong>Як використовувати:</strong> Завантажте ваші іконки та зображення, виберіть layout, 
+                налаштуйте padding та prefix, згенерируйте sprite. Отримаєте PNG файл та готовий CSS код 
+                для інтеграції на ваш сайт.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let images = [];
+        let layout = 'horizontal';
+        let spriteData = [];
+        let isTransparent = false;
+        let bgOpacity = 1.0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+                if (files.length > 0) {
+                    loadImages(files);
+                }
+            });
+        });
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                loadImages(files);
+            }
+        }
+
+        function loadImages(files) {
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        images.push({
+                            file: file,
+                            src: e.target.result,
+                            img: img,
+                            width: img.width,
+                            height: img.height,
+                            name: file.name
+                        });
+                        updateImagesList();
+                        updateButtons();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateImagesList() {
+            const list = document.getElementById('imagesList');
+            list.innerHTML = '';
+            
+            images.forEach((image, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-item';
+                div.innerHTML = `
+                    <img src="${image.src}" class="image-thumb" alt="${image.name}">
+                    <div class="image-info">
+                        <div class="image-name">${image.name}</div>
+                        <div class="image-size">${image.width} × ${image.height}</div>
+                    </div>
+                    <button class="remove-image" onclick="removeImage(${index})">×</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function removeImage(index) {
+            images.splice(index, 1);
+            updateImagesList();
+            updateButtons();
+            
+            if (images.length === 0) {
+                clearPreview();
+            }
+        }
+
+        function updateButtons() {
+            const hasImages = images.length > 0;
+            document.getElementById('generateBtn').disabled = !hasImages;
+        }
+
+        function setLayout(type, btn) {
+            layout = type;
+            document.querySelectorAll('.layout-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (images.length > 0) {
+                generateSprite();
+            }
+        }
+
+        function updateBgColor() {
+            const color = document.getElementById('bgColorPicker').value;
+            document.getElementById('bgColorInput').value = color;
+            if (images.length > 0) {
+                generateSprite();
+            }
+        }
+
+        function updateBgColorFromInput() {
+            const color = document.getElementById('bgColorInput').value;
+            document.getElementById('bgColorPicker').value = color;
+            if (images.length > 0) {
+                generateSprite();
+            }
+        }
+
+        function toggleTransparency() {
+            isTransparent = document.getElementById('transparentBg').checked;
+            const opacityControl = document.getElementById('opacityControl');
+            const colorControls = document.querySelectorAll('#bgColorPicker, #bgColorInput');
+            const previewArea = document.querySelector('.preview-area');
+            
+            if (isTransparent) {
+                opacityControl.style.display = 'none';
+                colorControls.forEach(el => el.disabled = true);
+                colorControls.forEach(el => el.style.opacity = '0.5');
+                previewArea.classList.add('transparent-bg');
+            } else {
+                opacityControl.style.display = 'block';
+                colorControls.forEach(el => el.disabled = false);
+                colorControls.forEach(el => el.style.opacity = '1');
+                previewArea.classList.remove('transparent-bg');
+            }
+            
+            if (images.length > 0) {
+                generateSprite();
+            }
+        }
+
+        function updateOpacity(value) {
+            bgOpacity = value / 100;
+            document.getElementById('opacityValue').textContent = value;
+            if (images.length > 0) {
+                generateSprite();
+            }
+        }
+
+        function generateSprite() {
+            if (images.length === 0) return;
+
+            const padding = parseInt(document.getElementById('paddingInput').value) || 0;
+            const bgColor = document.getElementById('bgColorInput').value;
+            
+            spriteData = [];
+            let x = padding;
+            let y = padding;
+            let maxWidth = 0;
+            let maxHeight = 0;
+            let currentRowHeight = 0;
+
+            if (layout === 'horizontal') {
+                // Horizontal layout
+                images.forEach((image, index) => {
+                    spriteData.push({
+                        img: image.img,
+                        x: x,
+                        y: padding,
+                        width: image.width,
+                        height: image.height,
+                        name: image.name.replace(/\.[^/.]+$/, "")
+                    });
+                    x += image.width + padding;
+                    maxHeight = Math.max(maxHeight, image.height);
+                });
+                maxWidth = x;
+                maxHeight += padding * 2;
+            } else if (layout === 'vertical') {
+                // Vertical layout
+                images.forEach((image, index) => {
+                    spriteData.push({
+                        img: image.img,
+                        x: padding,
+                        y: y,
+                        width: image.width,
+                        height: image.height,
+                        name: image.name.replace(/\.[^/.]+$/, "")
+                    });
+                    y += image.height + padding;
+                    maxWidth = Math.max(maxWidth, image.width);
+                });
+                maxWidth += padding * 2;
+                maxHeight = y;
+            } else {
+                // Packed layout (simple grid)
+                const gridWidth = Math.ceil(Math.sqrt(images.length));
+                let currentX = padding;
+                let currentY = padding;
+                let rowMaxHeight = 0;
+                let colIndex = 0;
+
+                images.forEach((image, index) => {
+                    spriteData.push({
+                        img: image.img,
+                        x: currentX,
+                        y: currentY,
+                        width: image.width,
+                        height: image.height,
+                        name: image.name.replace(/\.[^/.]+$/, "")
+                    });
+
+                    currentX += image.width + padding;
+                    rowMaxHeight = Math.max(rowMaxHeight, image.height);
+                    colIndex++;
+
+                    if (colIndex >= gridWidth) {
+                        colIndex = 0;
+                        currentX = padding;
+                        currentY += rowMaxHeight + padding;
+                        rowMaxHeight = 0;
+                    }
+
+                    maxWidth = Math.max(maxWidth, currentX);
+                    maxHeight = Math.max(maxHeight, currentY + image.height + padding);
+                });
+            }
+
+            // Draw on canvas
+            const canvas = document.getElementById('spriteCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
+
+            // Fill background
+            if (!isTransparent) {
+                if (bgOpacity < 1) {
+                    // Convert hex to rgba with opacity
+                    const r = parseInt(bgColor.substr(1, 2), 16);
+                    const g = parseInt(bgColor.substr(3, 2), 16);
+                    const b = parseInt(bgColor.substr(5, 2), 16);
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+                } else {
+                    ctx.fillStyle = bgColor;
+                }
+                ctx.fillRect(0, 0, maxWidth, maxHeight);
+            } else {
+                // Clear to transparent
+                ctx.clearRect(0, 0, maxWidth, maxHeight);
+            }
+
+            // Draw images
+            spriteData.forEach(sprite => {
+                ctx.drawImage(sprite.img, sprite.x, sprite.y, sprite.width, sprite.height);
+            });
+
+            // Show preview
+            document.getElementById('previewEmpty').classList.add('hidden');
+            canvas.classList.add('active');
+            document.getElementById('spriteInfo').classList.add('active');
+            document.getElementById('spriteSize').textContent = `${maxWidth} × ${maxHeight} px`;
+            document.getElementById('imageCount').textContent = images.length;
+            document.getElementById('layoutType').textContent = layout.charAt(0).toUpperCase() + layout.slice(1);
+            
+            // Update background info
+            let bgInfo = '';
+            if (isTransparent) {
+                bgInfo = 'Прозорий';
+            } else {
+                const opacityPercent = Math.round(bgOpacity * 100);
+                bgInfo = `${bgColor}, ${opacityPercent}%`;
+            }
+            document.getElementById('backgroundType').textContent = bgInfo;
+            
+            document.getElementById('downloadBtn').disabled = false;
+
+            // Generate CSS
+            generateCSS();
+        }
+
+        function generateCSS() {
+            const prefix = document.getElementById('classPrefix').value || 'sprite';
+            const canvas = document.getElementById('spriteCanvas');
+            
+            let css = `/* CSS Sprite Generated */\n`;
+            css += `.${prefix} {\n`;
+            css += `  background-image: url('sprite.png');\n`;
+            css += `  background-repeat: no-repeat;\n`;
+            css += `  display: inline-block;\n`;
+            css += `}\n\n`;
+
+            spriteData.forEach(sprite => {
+                const className = sprite.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                css += `.${prefix}-${className} {\n`;
+                css += `  width: ${sprite.width}px;\n`;
+                css += `  height: ${sprite.height}px;\n`;
+                css += `  background-position: -${sprite.x}px -${sprite.y}px;\n`;
+                css += `}\n\n`;
+            });
+
+            const output = document.getElementById('codeOutput');
+            output.innerHTML = '';
+            
+            const lines = css.split('\n');
+            lines.forEach(line => {
+                const div = document.createElement('div');
+                
+                if (line.includes('/*')) {
+                    div.innerHTML = `<span class="code-comment">${escapeHtml(line)}</span>`;
+                } else if (line.includes(':')) {
+                    const parts = line.split(':');
+                    div.innerHTML = `<span class="code-keyword">${escapeHtml(parts[0])}</span>:<span class="code-value">${escapeHtml(parts.slice(1).join(':'))}</span>`;
+                } else {
+                    div.textContent = line;
+                }
+                
+                output.appendChild(div);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function downloadSprite() {
+            const canvas = document.getElementById('spriteCanvas');
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sprite.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        function copyCode() {
+            const output = document.getElementById('codeOutput');
+            const text = output.textContent;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopySuccess();
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    showCopyError();
+                }
+            } catch (err) {
+                showCopyError();
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            const accentSuccess = getComputedStyle(document.documentElement).getPropertyValue('--accent-success').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            btn.textContent = '✅ Скопійовано!';
+            btn.style.background = accentSuccess;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function showCopyError() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            const accentDanger = getComputedStyle(document.documentElement).getPropertyValue('--accent-danger').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            btn.textContent = '❌ Помилка';
+            btn.style.background = accentDanger;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function clearAll() {
+            images = [];
+            spriteData = [];
+            document.getElementById('fileInput').value = '';
+            updateImagesList();
+            updateButtons();
+            clearPreview();
+        }
+
+        function clearPreview() {
+            const canvas = document.getElementById('spriteCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.classList.remove('active');
+            
+            document.getElementById('previewEmpty').classList.remove('hidden');
+            document.getElementById('spriteInfo').classList.remove('active');
+            document.getElementById('downloadBtn').disabled = true;
+            
+            const output = document.getElementById('codeOutput');
+            output.innerHTML = '<span class="code-comment">/* Завантажте зображення та згенерируйте sprite */</span>';
+        }
+    </script>
+            </main>
+        </div>
+    </div>
+
+        <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

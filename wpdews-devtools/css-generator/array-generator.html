@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Generator - JSON & PHP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Специфічні стилі для Array Generator */
+        .table-container {
+            overflow-x: auto;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--border-primary);
+            font-size: 0.85rem;
+            min-width: 120px;
+            position: relative;
+        }
+
+        .data-table td {
+            padding: 8px;
+            border: 1px solid var(--border-primary);
+            min-width: 120px;
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .header-input {
+            width: 100%;
+            padding: 6px 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+        }
+
+        .header-input:focus {
+            outline: none;
+            border-color: var(--accent-secondary);
+            background: var(--bg-secondary);
+        }
+
+        .data-table input {
+            width: 100%;
+            padding: 6px 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        .data-table input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .delete-col-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--accent-danger);
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .delete-col-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .delete-row-btn {
+            background: var(--accent-danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .delete-row-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn-add {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #059669;
+        }
+
+        .btn-json {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-json:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-php {
+            background: #f59e0b;
+            color: var(--bg-primary);
+        }
+
+        .btn-php:hover {
+            background: #b77400;
+        }
+
+        .btn-clear {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #dc2626;
+        }
+
+        .output-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        .copy-output-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .copy-output-btn:hover {
+            background: var(--accent-secondary);
+        }
+
+        .output-code {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre;
+        }
+
+        .info-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-panel h3 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+
+        .info-panel p {
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-panel code {
+            background: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-warning);
+        }
+
+        .table-size {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .copy-output-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>Array Generator - JSON & PHP</h1>
+        <p class="subtitle">Створюйте JSON та PHP масиви з динамічної таблиці</p>
+
+        <!-- Інформаційна панель -->
+        <div class="info-panel">
+            <h3>📋 Як використовувати</h3>
+            <p><strong>1. Перший рядок:</strong> Назви ключів масиву (редагуються)</p>
+            <p><strong>2. Наступні рядки:</strong> Значення для кожного елемента масиву</p>
+            <p><strong>3. JSON підтримка:</strong> Якщо значення починається з <code>[</code> або <code>{</code> - автоматично розпарситься як JSON</p>
+            <p><strong>4. Генеруйте:</strong> Натисніть "Generate JSON" або "Generate PHP" для отримання коду</p>
+            
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-primary); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                <div style="font-weight: 600; color: var(--accent-success); margin-bottom: 5px;">Приклади JSON у полях (вводьте без екранування):</div>
+                <code style="font-size: 0.75rem;">["images/ggh.jpg","images/art3.jpg"]</code><br>
+                <code style="font-size: 0.75rem;">["Класичний","Бронзовий","Зелений шинель"]</code><br>
+                <code style="font-size: 0.75rem;">[{"size":"90 см","new_price":"2350","old_price":"2960"}]</code>
+                <div style="margin-top: 8px; color: var(--text-muted); font-size: 0.75rem;">💡 Слеші автоматично екрануються при генерації JSON</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn btn-add" onclick="addColumn()">➕ Add Column</button>
+            <button class="action-btn btn-add" onclick="addRow()">➕ Add Row</button>
+            <button class="action-btn btn-json" onclick="generateJSON()">📄 Generate JSON</button>
+            <button class="action-btn btn-php" onclick="generatePHP()">🐘 Generate PHP</button>
+            <button class="action-btn btn-clear" onclick="clearTable()">🗑️ Clear Table</button>
+        </div>
+
+        <div class="table-size" id="tableSize">Columns: 3 | Rows: 2</div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="data-table" id="dataTable">
+                <thead id="tableHead">
+                    <!-- Header will be generated here -->
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- JSON Output -->
+        <div class="output-section" id="jsonOutput" style="display: none;">
+            <div class="output-header">
+                <h2 class="output-title">📄 JSON Output</h2>
+                <button class="copy-output-btn" onclick="copyOutput('json')">📋 Copy JSON</button>
+            </div>
+            <pre class="output-code" id="jsonCode"></pre>
+        </div>
+
+        <!-- PHP Output -->
+        <div class="output-section" id="phpOutput" style="display: none;">
+            <div class="output-header">
+                <h2 class="output-title">🐘 PHP Output</h2>
+                <button class="copy-output-btn" onclick="copyOutput('php')">📋 Copy PHP</button>
+            </div>
+            <pre class="output-code" id="phpCode"></pre>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h2>💡 Підказки</h2>
+            <p><strong>Редагування заголовків:</strong> Натисніть на назву колонки щоб змінити ключ масиву</p>
+            <p><strong>JSON у полях:</strong> Можна вводити масиви <code>["a","b"]</code> або об'єкти <code>{"key":"value"}</code></p>
+            <p><strong>JSON Format:</strong> Автоматично генерує правильний JSON з екранованими слешами <code>\/</code></p>
+            <p><strong>PHP Format:</strong> Генерує PHP масив з правильним синтаксисом та екрануванням</p>
+            <p><strong>Кнопка ×:</strong> У заголовку видаляє всю колонку, у рядку - видаляє рядок</p>
+        </div>
+    </div>
+
+    <script>
+        let columnCount = 3;
+        let rowCount = 0;
+
+        // Initialize table on load
+        window.onload = function() {
+            initTable();
+        };
+
+        function initTable() {
+            // Create default headers
+            const defaultHeaders = ['art', 'name', 'price'];
+            createHeader(defaultHeaders);
+            
+            // Create 2 initial rows
+            addRow();
+            addRow();
+        }
+
+        function createHeader(headers = null) {
+            const thead = document.getElementById('tableHead');
+            const headerRow = document.createElement('tr');
+            
+            if (!headers) {
+                headers = [];
+                for (let i = 0; i < columnCount; i++) {
+                    headers.push(`column_${i + 1}`);
+                }
+            }
+            
+            headers.forEach((headerText, index) => {
+                const th = document.createElement('th');
+                th.innerHTML = `
+                    <input type="text" class="header-input" data-col="${index}" value="${headerText}" placeholder="Назва ключа">
+                    <button class="delete-col-btn" onclick="deleteColumn(${index})" title="Видалити колонку">×</button>
+                `;
+                headerRow.appendChild(th);
+            });
+            
+            // Actions column
+            const actionsTh = document.createElement('th');
+            actionsTh.textContent = 'Actions';
+            actionsTh.style.minWidth = '80px';
+            headerRow.appendChild(actionsTh);
+            
+            thead.innerHTML = '';
+            thead.appendChild(headerRow);
+            
+            columnCount = headers.length;
+            updateTableSize();
+        }
+
+        function addColumn() {
+            const thead = document.getElementById('tableHead');
+            const headerRow = thead.querySelector('tr');
+            const actionsHeader = headerRow.lastChild;
+            
+            const newTh = document.createElement('th');
+            newTh.innerHTML = `
+                <input type="text" class="header-input" data-col="${columnCount}" value="column_${columnCount + 1}" placeholder="Назва ключа">
+                <button class="delete-col-btn" onclick="deleteColumn(${columnCount})" title="Видалити колонку">×</button>
+            `;
+            
+            headerRow.insertBefore(newTh, actionsHeader);
+            
+            // Add cells to existing rows
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const newCell = document.createElement('td');
+                newCell.innerHTML = `<input type="text" data-col="${columnCount}">`;
+                
+                const actionsCell = row.lastChild;
+                row.insertBefore(newCell, actionsCell);
+            }
+            
+            columnCount++;
+            updateTableSize();
+        }
+
+        function deleteColumn(colIndex) {
+            if (columnCount <= 1) {
+                alert('Неможливо видалити останню колонку!');
+                return;
+            }
+            
+            if (!confirm('Видалити цю колонку?')) {
+                return;
+            }
+            
+            // Delete header
+            const thead = document.getElementById('tableHead');
+            const headerRow = thead.querySelector('tr');
+            const headers = headerRow.querySelectorAll('th');
+            headers[colIndex].remove();
+            
+            // Delete cells from all rows
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const cells = row.querySelectorAll('td');
+                cells[colIndex].remove();
+            }
+            
+            columnCount--;
+            updateTableSize();
+            
+            // Reindex columns
+            reindexColumns();
+        }
+
+        function reindexColumns() {
+            const thead = document.getElementById('tableHead');
+            const headerRow = thead.querySelector('tr');
+            const headers = headerRow.querySelectorAll('.header-input');
+            
+            headers.forEach((input, index) => {
+                input.dataset.col = index;
+                const deleteBtn = input.parentElement.querySelector('.delete-col-btn');
+                deleteBtn.setAttribute('onclick', `deleteColumn(${index})`);
+            });
+            
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const inputs = row.querySelectorAll('input[data-col]');
+                inputs.forEach((input, index) => {
+                    input.dataset.col = index;
+                });
+            }
+        }
+
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+            row.dataset.row = rowCount;
+            
+            for (let i = 0; i < columnCount; i++) {
+                const cell = document.createElement('td');
+                cell.innerHTML = `<input type="text" data-col="${i}">`;
+                row.appendChild(cell);
+            }
+            
+            // Actions cell
+            const actionsCell = document.createElement('td');
+            actionsCell.innerHTML = `<button class="delete-row-btn" onclick="deleteRow(${rowCount})">🗑️</button>`;
+            row.appendChild(actionsCell);
+            
+            tbody.appendChild(row);
+            rowCount++;
+            updateTableSize();
+        }
+
+        function deleteRow(rowIndex) {
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rows.length <= 1) {
+                alert('Неможливо видалити останній рядок!');
+                return;
+            }
+            
+            rows.forEach(row => {
+                if (parseInt(row.dataset.row) === rowIndex) {
+                    row.remove();
+                }
+            });
+            
+            updateTableSize();
+        }
+
+        function clearTable() {
+            if (!confirm('Очистити всю таблицю? Всі дані будуть втрачені.')) {
+                return;
+            }
+            
+            columnCount = 3;
+            rowCount = 0;
+            
+            document.getElementById('tableBody').innerHTML = '';
+            initTable();
+            
+            document.getElementById('jsonOutput').style.display = 'none';
+            document.getElementById('phpOutput').style.display = 'none';
+        }
+
+        function updateTableSize() {
+            const tbody = document.getElementById('tableBody');
+            const actualRows = tbody.getElementsByTagName('tr').length;
+            document.getElementById('tableSize').textContent = `Columns: ${columnCount} | Rows: ${actualRows}`;
+        }
+
+        function getHeaders() {
+            const thead = document.getElementById('tableHead');
+            const headerInputs = thead.querySelectorAll('.header-input');
+            const headers = [];
+            
+            headerInputs.forEach(input => {
+                headers.push(input.value.trim() || `column_${input.dataset.col}`);
+            });
+            
+            return headers;
+        }
+
+        function getTableData() {
+            const headers = getHeaders();
+            const data = [];
+            
+            const tbody = document.getElementById('tableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const inputs = row.querySelectorAll('input[data-col]');
+                const rowData = {};
+                let hasData = false;
+                
+                inputs.forEach((input, index) => {
+                    let value = input.value.trim();
+                    
+                    // Try to parse as JSON if it looks like JSON
+                    if (value && (value.startsWith('[') || value.startsWith('{'))) {
+                        try {
+                            value = JSON.parse(value);
+                        } catch (e) {
+                            // Keep as string if parsing fails
+                            console.warn('Failed to parse JSON:', value, e);
+                        }
+                    }
+                    
+                    rowData[headers[index]] = value;
+                    if (value) hasData = true;
+                });
+                
+                // Skip completely empty rows
+                if (hasData) {
+                    data.push(rowData);
+                }
+            }
+            
+            return data;
+        }
+
+        function generateJSON() {
+            const data = getTableData();
+            
+            if (data.length === 0) {
+                alert('Таблиця порожня! Додайте дані у рядки.');
+                return;
+            }
+            
+            // Generate JSON and escape forward slashes
+            let json = JSON.stringify(data, null, '\t');
+            json = json.replace(/\//g, '\\/');
+            
+            document.getElementById('jsonCode').textContent = json;
+            document.getElementById('jsonOutput').style.display = 'block';
+            
+            // Scroll to output
+            document.getElementById('jsonOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function generatePHP() {
+            const data = getTableData();
+            
+            if (data.length === 0) {
+                alert('Таблиця порожня! Додайте дані у рядки.');
+                return;
+            }
+            
+            let php = '<?php\n\n$data = [\n';
+            
+            data.forEach((item, index) => {
+                php += '\t[\n';
+                
+                const keys = Object.keys(item);
+                keys.forEach((key, i) => {
+                    const value = item[key];
+                    php += `\t\t'${key}' => `;
+                    php += convertValueToPhp(value, 2);
+                    php += i < keys.length - 1 ? ',\n' : '\n';
+                });
+                
+                php += '\t]';
+                php += index < data.length - 1 ? ',\n' : '\n';
+            });
+            
+            php += '];\n\n?>';
+            
+            document.getElementById('phpCode').textContent = php;
+            document.getElementById('phpOutput').style.display = 'block';
+            
+            // Scroll to output
+            document.getElementById('phpOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function convertValueToPhp(value, indent = 0) {
+            const tabs = '\t'.repeat(indent);
+            
+            if (Array.isArray(value)) {
+                if (value.length === 0) {
+                    return '[]';
+                }
+                
+                // Check if it's array of objects
+                if (typeof value[0] === 'object' && value[0] !== null && !Array.isArray(value[0])) {
+                    let result = '[\n';
+                    value.forEach((obj, i) => {
+                        result += tabs + '\t[\n';
+                        const keys = Object.keys(obj);
+                        keys.forEach((k, j) => {
+                            result += tabs + `\t\t'${k}' => '${escapePhp(obj[k])}'`;
+                            result += j < keys.length - 1 ? ',\n' : '\n';
+                        });
+                        result += tabs + '\t]';
+                        result += i < value.length - 1 ? ',\n' : '\n';
+                    });
+                    result += tabs + ']';
+                    return result;
+                } else {
+                    // Simple array
+                    let result = '[\n';
+                    value.forEach((v, i) => {
+                        result += tabs + `\t'${escapePhp(v)}'`;
+                        result += i < value.length - 1 ? ',\n' : '\n';
+                    });
+                    result += tabs + ']';
+                    return result;
+                }
+            } else if (typeof value === 'object' && value !== null) {
+                // Object
+                let result = '[\n';
+                const keys = Object.keys(value);
+                keys.forEach((k, i) => {
+                    result += tabs + `\t'${k}' => '${escapePhp(value[k])}'`;
+                    result += i < keys.length - 1 ? ',\n' : '\n';
+                });
+                result += tabs + ']';
+                return result;
+            } else {
+                // String or other primitive
+                return `'${escapePhp(value)}'`;
+            }
+        }
+
+        function escapePhp(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+        }
+
+        function copyOutput(type) {
+            const code = type === 'json' 
+                ? document.getElementById('jsonCode').textContent
+                : document.getElementById('phpCode').textContent;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(type);
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback(type) {
+            const btn = type === 'json'
+                ? document.querySelector('#jsonOutput .copy-output-btn')
+                : document.querySelector('#phpOutput .copy-output-btn');
+            
+            const originalText = btn.textContent;
+            const accentSuccess = getComputedStyle(document.documentElement).getPropertyValue('--accent-success').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            
+            btn.textContent = '✅ Скопійовано!';
+            btn.style.background = accentSuccess;
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+    </script>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>

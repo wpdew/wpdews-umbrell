@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animation Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Специфічні стилі генератора -->
+    <style>
+/* Специфічні стилі генератора з підтримкою тем */
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-primary);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .preset-btn:hover {
+            background: var(--border-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .preset-btn.active {
+            background: var(--gradient-primary);
+            border-color: var(--accent-primary);
+        }
+
+
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .unit {
+            background: var(--bg-tertiary);
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            font-size: 0.9em;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .preview-area {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 60px;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .preview-box {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+
+
+
+
+
+
+
+        .syntax-comment { color: #6a9955; }
+        .syntax-selector { color: #d7ba7d; }
+        .syntax-property { color: #9cdcfe; }
+        .syntax-value { color: #ce9178; }
+        .syntax-keyword { color: #c586c0; }
+
+        .info-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .info-section h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            color: var(--text-tertiary);
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            color: var(--text-tertiary);
+            margin-left: 20px;
+        }
+
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+
+
+        @media (max-width: 480px) {
+
+
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-area {
+                padding: 30px;
+                min-height: 300px;
+            }
+
+            .controls-bar {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes flip {
+            from { transform: perspective(400px) rotateY(0); }
+            to { transform: perspective(400px) rotateY(360deg); }
+        }
+
+        @keyframes swing {
+            20% { transform: rotate(15deg); }
+            40% { transform: rotate(-10deg); }
+            60% { transform: rotate(5deg); }
+            80% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes zoomOut {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(0); opacity: 0; }
+        }
+
+        @keyframes rubberBand {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scaleX(1.25) scaleY(0.75); }
+            40% { transform: scaleX(0.75) scaleY(1.25); }
+            50% { transform: scaleX(1.15) scaleY(0.85); }
+            65% { transform: scaleX(0.95) scaleY(1.05); }
+            75% { transform: scaleX(1.05) scaleY(0.95); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>CSS Animation Generator</h1>
+        <p class="subtitle">Створюйте CSS анімації з live preview та готовим кодом</p>
+
+        <div class="main-grid">
+            <div class="controls-panel">
+                <div class="panel">
+                    <h2>Параметри анімації</h2>
+
+                    <div class="control-section">
+                        <h3>Пресети анімацій</h3>
+                        <div class="preset-grid">
+                            <button class="preset-btn active" onclick="selectPreset('fadeIn', this)">Fade In</button>
+                            <button class="preset-btn" onclick="selectPreset('fadeOut', this)">Fade Out</button>
+                            <button class="preset-btn" onclick="selectPreset('slideInLeft', this)">Slide Left</button>
+                            <button class="preset-btn" onclick="selectPreset('slideInRight', this)">Slide Right</button>
+                            <button class="preset-btn" onclick="selectPreset('slideInDown', this)">Slide Down</button>
+                            <button class="preset-btn" onclick="selectPreset('slideInUp', this)">Slide Up</button>
+                            <button class="preset-btn" onclick="selectPreset('bounce', this)">Bounce</button>
+                            <button class="preset-btn" onclick="selectPreset('shake', this)">Shake</button>
+                            <button class="preset-btn" onclick="selectPreset('pulse', this)">Pulse</button>
+                            <button class="preset-btn" onclick="selectPreset('rotate', this)">Rotate</button>
+                            <button class="preset-btn" onclick="selectPreset('flip', this)">Flip</button>
+                            <button class="preset-btn" onclick="selectPreset('swing', this)">Swing</button>
+                            <button class="preset-btn" onclick="selectPreset('zoomIn', this)">Zoom In</button>
+                            <button class="preset-btn" onclick="selectPreset('zoomOut', this)">Zoom Out</button>
+                            <button class="preset-btn" onclick="selectPreset('rubberBand', this)">Rubber Band</button>
+                            <button class="preset-btn" onclick="selectPreset('heartbeat', this)">Heartbeat</button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Налаштування</h3>
+
+                        <div class="control-group">
+                            <label>Duration (Тривалість)</label>
+                            <div class="control-row">
+                                <input type="number" id="duration" value="1" min="0.1" step="0.1" oninput="updateAnimation()">
+                                <span class="unit">s</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Delay (Затримка)</label>
+                            <div class="control-row">
+                                <input type="number" id="delay" value="0" min="0" step="0.1" oninput="updateAnimation()">
+                                <span class="unit">s</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Iteration Count (Повторення)</label>
+                            <select id="iteration" onchange="updateAnimation()">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="5">5</option>
+                                <option value="infinite">Infinite</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Timing Function</label>
+                            <select id="timing" onchange="updateAnimation()">
+                                <option value="ease">Ease</option>
+                                <option value="linear">Linear</option>
+                                <option value="ease-in">Ease In</option>
+                                <option value="ease-out">Ease Out</option>
+                                <option value="ease-in-out">Ease In Out</option>
+                                <option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">Bounce</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Direction</label>
+                            <select id="direction" onchange="updateAnimation()">
+                                <option value="normal">Normal</option>
+                                <option value="reverse">Reverse</option>
+                                <option value="alternate">Alternate</option>
+                                <option value="alternate-reverse">Alternate Reverse</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Fill Mode</label>
+                            <select id="fillMode" onchange="updateAnimation()">
+                                <option value="none">None</option>
+                                <option value="forwards">Forwards</option>
+                                <option value="backwards">Backwards</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area">
+                        <div class="preview-box" id="previewBox">🎨</div>
+                    </div>
+                    <div class="controls-bar">
+                        <button class="control-btn" onclick="playAnimation()">▶️ Запустити</button>
+                        <button class="control-btn" onclick="resetAnimation()">🔄 Скинути</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Згенерований CSS код</h2>
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCode()">📋 Копіювати</button>
+                <pre id="cssCode"></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Про CSS Animation Generator</h3>
+            <p><strong>CSS Animation Generator</strong> - інструмент для створення CSS анімацій з візуальним попереднім переглядом.</p>
+            
+            <h3 style="margin-top: 20px;">🎯 Основні можливості:</h3>
+            <ul>
+                <li><strong>16 пресетів анімацій</strong> - готові ефекти (fade, slide, bounce, rotate тощо)</li>
+                <li><strong>Налаштування параметрів</strong> - duration, delay, iteration, timing, direction, fill-mode</li>
+                <li><strong>Live Preview</strong> - миттєвий перегляд анімації</li>
+                <li><strong>Готовий CSS код</strong> - з @keyframes та animation властивостями</li>
+                <li><strong>Копіювання в один клік</strong> - швидке використання в проекті</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">💡 Timing Functions:</h3>
+            <ul>
+                <li><strong>ease</strong> - плавний старт та фініш (за замовчуванням)</li>
+                <li><strong>linear</strong> - рівномірна швидкість</li>
+                <li><strong>ease-in</strong> - повільний старт</li>
+                <li><strong>ease-out</strong> - повільний фініш</li>
+                <li><strong>ease-in-out</strong> - повільний старт та фініш</li>
+            </ul>
+        </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let currentAnimation = 'fadeIn';
+        let isPlaying = false;
+
+        const animations = {
+            fadeIn: {
+                keyframes: `@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}`
+            },
+            fadeOut: {
+                keyframes: `@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}`
+            },
+            slideInLeft: {
+                keyframes: `@keyframes slideInLeft {
+    from { 
+        transform: translateX(-100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+}`
+            },
+            slideInRight: {
+                keyframes: `@keyframes slideInRight {
+    from { 
+        transform: translateX(100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+}`
+            },
+            slideInDown: {
+                keyframes: `@keyframes slideInDown {
+    from { 
+        transform: translateY(-100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}`
+            },
+            slideInUp: {
+                keyframes: `@keyframes slideInUp {
+    from { 
+        transform: translateY(100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0); 
+        opacity: 1; 
+    }
+}`
+            },
+            bounce: {
+                keyframes: `@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { 
+        transform: translateY(0); 
+    }
+    40% { 
+        transform: translateY(-30px); 
+    }
+    60% { 
+        transform: translateY(-15px); 
+    }
+}`
+            },
+            shake: {
+                keyframes: `@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { 
+        transform: translateX(-10px); 
+    }
+    20%, 40%, 60%, 80% { 
+        transform: translateX(10px); 
+    }
+}`
+            },
+            pulse: {
+                keyframes: `@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}`
+            },
+            rotate: {
+                keyframes: `@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}`
+            },
+            flip: {
+                keyframes: `@keyframes flip {
+    from { 
+        transform: perspective(400px) rotateY(0); 
+    }
+    to { 
+        transform: perspective(400px) rotateY(360deg); 
+    }
+}`
+            },
+            swing: {
+                keyframes: `@keyframes swing {
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(5deg); }
+    80% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}`
+            },
+            zoomIn: {
+                keyframes: `@keyframes zoomIn {
+    from { 
+        transform: scale(0); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}`
+            },
+            zoomOut: {
+                keyframes: `@keyframes zoomOut {
+    from { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+    to { 
+        transform: scale(0); 
+        opacity: 0; 
+    }
+}`
+            },
+            rubberBand: {
+                keyframes: `@keyframes rubberBand {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scaleX(1.25) scaleY(0.75); }
+    40% { transform: scaleX(0.75) scaleY(1.25); }
+    50% { transform: scaleX(1.15) scaleY(0.85); }
+    65% { transform: scaleX(0.95) scaleY(1.05); }
+    75% { transform: scaleX(1.05) scaleY(0.95); }
+}`
+            },
+            heartbeat: {
+                keyframes: `@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+}`
+            }
+        };
+
+        function selectPreset(name, btn) {
+            // Update active button
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentAnimation = name;
+            updateAnimation();
+            playAnimation();
+        }
+
+        function updateAnimation() {
+            const duration = document.getElementById('duration').value;
+            const delay = document.getElementById('delay').value;
+            const iteration = document.getElementById('iteration').value;
+            const timing = document.getElementById('timing').value;
+            const direction = document.getElementById('direction').value;
+            const fillMode = document.getElementById('fillMode').value;
+
+            generateCode();
+        }
+
+        function generateCode() {
+            const duration = document.getElementById('duration').value;
+            const delay = document.getElementById('delay').value;
+            const iteration = document.getElementById('iteration').value;
+            const timing = document.getElementById('timing').value;
+            const direction = document.getElementById('direction').value;
+            const fillMode = document.getElementById('fillMode').value;
+
+            const animationRule = `animation: ${currentAnimation} ${duration}s ${timing} ${delay}s ${iteration} ${direction} ${fillMode};`;
+            
+            const code = `/* Keyframes */
+${animations[currentAnimation].keyframes}
+
+/* Використання */
+<span class="syntax-selector">.element</span> {
+    <span class="syntax-property">animation-name</span>: <span class="syntax-value">${currentAnimation}</span>;
+    <span class="syntax-property">animation-duration</span>: <span class="syntax-value">${duration}s</span>;
+    <span class="syntax-property">animation-timing-function</span>: <span class="syntax-value">${timing}</span>;
+    <span class="syntax-property">animation-delay</span>: <span class="syntax-value">${delay}s</span>;
+    <span class="syntax-property">animation-iteration-count</span>: <span class="syntax-value">${iteration}</span>;
+    <span class="syntax-property">animation-direction</span>: <span class="syntax-value">${direction}</span>;
+    <span class="syntax-property">animation-fill-mode</span>: <span class="syntax-value">${fillMode}</span>;
+
+    <span class="syntax-comment">/* Або скорочений запис: */</span>
+    <span class="syntax-property">animation</span>: <span class="syntax-value">${currentAnimation} ${duration}s ${timing} ${delay}s ${iteration} ${direction} ${fillMode}</span>;
+}`;
+
+            document.getElementById('cssCode').innerHTML = code;
+        }
+
+        function playAnimation() {
+            const box = document.getElementById('previewBox');
+            const duration = document.getElementById('duration').value;
+            const delay = document.getElementById('delay').value;
+            const iteration = document.getElementById('iteration').value;
+            const timing = document.getElementById('timing').value;
+            const direction = document.getElementById('direction').value;
+            const fillMode = document.getElementById('fillMode').value;
+
+            // Remove animation
+            box.style.animation = 'none';
+            
+            // Trigger reflow
+            box.offsetHeight;
+            
+            // Add animation
+            box.style.animation = `${currentAnimation} ${duration}s ${timing} ${delay}s ${iteration} ${direction} ${fillMode}`;
+        }
+
+        function resetAnimation() {
+            const box = document.getElementById('previewBox');
+            box.style.animation = 'none';
+            box.offsetHeight; // Trigger reflow
+        }
+
+        function copyCode() {
+            const duration = document.getElementById('duration').value;
+            const delay = document.getElementById('delay').value;
+            const iteration = document.getElementById('iteration').value;
+            const timing = document.getElementById('timing').value;
+            const direction = document.getElementById('direction').value;
+            const fillMode = document.getElementById('fillMode').value;
+
+            const plainCode = `/* Keyframes */
+${animations[currentAnimation].keyframes}
+
+/* Використання */
+.element {
+    animation-name: ${currentAnimation};
+    animation-duration: ${duration}s;
+    animation-timing-function: ${timing};
+    animation-delay: ${delay}s;
+    animation-iteration-count: ${iteration};
+    animation-direction: ${direction};
+    animation-fill-mode: ${fillMode};
+
+    /* Або скорочений запис: */
+    animation: ${currentAnimation} ${duration}s ${timing} ${delay}s ${iteration} ${direction} ${fillMode};
+}`;
+
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(plainCode).then(() => {
+                    showCopyFeedback();
+                }).catch(err => {
+                    fallbackCopy(plainCode);
+                });
+            } else {
+                fallbackCopy(plainCode);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопійовано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Initialize
+        generateCode();
+        playAnimation();
+    </script>
+        </main>
+    </div>
+</div>
+
+    <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

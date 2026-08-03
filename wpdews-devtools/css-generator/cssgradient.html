@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Специфічні стилі генератора -->
+    <style>
+/* Специфічні стилі генератора з підтримкою тем */
+
+        .controls-panel {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            height: fit-content;
+        }
+
+        .controls-panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+        }
+
+        .gradient-type {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .type-btn:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .type-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--border-primary);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .value-display span {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .color-stops {
+            margin-bottom: 15px;
+        }
+
+        .color-stop {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .color-stop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .color-stop-title {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+        }
+
+        .delete-stop {
+            background: var(--accent-danger);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .delete-stop:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .color-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            width: 50px;
+            height: 40px;
+        }
+
+        .color-picker-wrapper input[type="color"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker-wrapper input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 6px;
+        }
+
+        .color-picker-wrapper input[type="color"]:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .color-input {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Monaco', monospace;
+        }
+
+        .color-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .add-stop-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--border-primary);
+            border: 2px dashed var(--text-muted);
+            border-radius: 8px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .add-stop-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-area {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-box {
+            flex: 1;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px var(--shadow-primary);
+            position: relative;
+            overflow: hidden;
+            min-height: 350px;
+        }
+
+        .code-panel {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .code-panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .code-tab {
+            padding: 8px 16px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .code-tab:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .code-tab.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .code-output code {
+            color: var(--accent-success);
+        }
+
+        .code-keyword {
+            color: #c678dd;
+        }
+
+        .code-value {
+            color: var(--accent-warning);
+        }
+
+
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .presets-section {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .presets-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+        }
+
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .preset-item {
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preset-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px var(--shadow-primary);
+        }
+
+        .preset-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            font-size: 11px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .preset-item:hover .preset-name {
+            opacity: 1;
+        }
+
+        .info-section {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .info-section h2 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            color: var(--text-tertiary);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .direction-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .direction-btn {
+            padding: 8px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-primary);
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .direction-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .direction-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .radial-options {
+            display: none;
+        }
+
+        .radial-options.active {
+            display: block;
+        }
+
+        .linear-options {
+            display: block;
+        }
+
+        .linear-options.hidden {
+            display: none;
+        }
+
+        .shape-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .shape-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-primary);
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .shape-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .shape-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>🎨 CSS Gradient Generator</h1>
+        
+        <div class="main-grid">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h2>Налаштування</h2>
+                
+                <div class="gradient-type">
+                    <button class="type-btn active" onclick="setGradientType('linear')">Linear</button>
+                    <button class="type-btn" onclick="setGradientType('radial')">Radial</button>
+                </div>
+
+                <!-- Linear Options -->
+                <div class="control-section linear-options" id="linearOptions">
+                    <h3>Напрямок</h3>
+                    <div class="control-group">
+                        <label>Кут: <span id="angleValue">90</span>°</label>
+                        <input type="range" id="angleSlider" min="0" max="360" value="90" 
+                               oninput="updateAngle(this.value)">
+                    </div>
+                    <div class="direction-presets">
+                        <button class="direction-btn" onclick="setAngle(0, this)">↓ 0°</button>
+                        <button class="direction-btn active" onclick="setAngle(90, this)">→ 90°</button>
+                        <button class="direction-btn" onclick="setAngle(180, this)">↑ 180°</button>
+                        <button class="direction-btn" onclick="setAngle(270, this)">← 270°</button>
+                    </div>
+                </div>
+
+                <!-- Radial Options -->
+                <div class="control-section radial-options" id="radialOptions">
+                    <h3>Форма</h3>
+                    <div class="shape-options">
+                        <button class="shape-btn active" onclick="setRadialShape('circle', this)">Circle</button>
+                        <button class="shape-btn" onclick="setRadialShape('ellipse', this)">Ellipse</button>
+                    </div>
+                    
+                    <div class="control-group" style="margin-top: 15px;">
+                        <label>Позиція X: <span id="radialXValue">50</span>%</label>
+                        <input type="range" id="radialXSlider" min="0" max="100" value="50" 
+                               oninput="updateRadialPosition()">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Позиція Y: <span id="radialYValue">50</span>%</label>
+                        <input type="range" id="radialYSlider" min="0" max="100" value="50" 
+                               oninput="updateRadialPosition()">
+                    </div>
+                </div>
+
+                <!-- Color Stops -->
+                <div class="control-section">
+                    <h3>Кольори</h3>
+                    <div class="color-stops" id="colorStops">
+                        <!-- Color stops will be inserted here -->
+                    </div>
+                    <button class="add-stop-btn" onclick="addColorStop()">+ Додати колір</button>
+                </div>
+            </div>
+
+            <!-- Preview and Code Panel -->
+            <div class="preview-panel">
+                <div class="preview-area">
+                    <div class="preview-box" id="previewBox"></div>
+                </div>
+
+                <div class="code-panel">
+                    <h2>CSS Код</h2>
+                    <div class="code-tabs">
+                        <button class="code-tab active" onclick="switchCodeTab('standard', this)">Standard</button>
+                        <button class="code-tab" onclick="switchCodeTab('fallback', this)">With Fallback</button>
+                    </div>
+                    <div class="code-output" id="codeOutput"></div>
+                    <button class="copy-btn" onclick="copyCode()">📋 Копіювати код</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Presets -->
+        <div class="presets-section">
+            <h2>Готові градієнти</h2>
+            <div class="presets-grid" id="presetsGrid"></div>
+        </div>
+
+        <div class="info-section">
+            <h2>Про CSS Градієнти</h2>
+            <p>
+                CSS градієнти - це плавні переходи між двома або більше кольорами. Вони є частиною типу даних 
+                <code>image</code> і можуть використовуватись скрізь, де можна використати зображення, найчастіше 
+                як фон елемента.
+            </p>
+            <p>
+                <strong>Linear градієнти</strong> створюють перехід кольорів уздовж прямої лінії, визначеної кутом 
+                або напрямком. Вони найпопулярніші в сучасному веб-дизайні.
+            </p>
+            <p>
+                <strong>Radial градієнти</strong> створюють перехід, що виходить з центральної точки. Можуть бути 
+                круглими (circle) або еліптичними (ellipse).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let gradientType = 'linear';
+        let angle = 90;
+        let radialShape = 'circle';
+        let radialX = 50;
+        let radialY = 50;
+        let colorStops = [
+            { color: '#667eea', position: 0 },
+            { color: '#764ba2', position: 100 }
+        ];
+        let currentCodeTab = 'standard';
+
+        // Presets
+        const presets = [
+            { name: 'Sunrise', type: 'linear', angle: 90, stops: [{color: '#ff6b6b', pos: 0}, {color: '#ffd93d', pos: 100}] },
+            { name: 'Ocean', type: 'linear', angle: 90, stops: [{color: '#2E3192', pos: 0}, {color: '#1BFFFF', pos: 100}] },
+            { name: 'Sunset', type: 'linear', angle: 45, stops: [{color: '#ee0979', pos: 0}, {color: '#ff6a00', pos: 100}] },
+            { name: 'Purple Love', type: 'linear', angle: 90, stops: [{color: '#667eea', pos: 0}, {color: '#764ba2', pos: 100}] },
+            { name: 'Green Beach', type: 'linear', angle: 120, stops: [{color: '#02aab0', pos: 0}, {color: '#00cdac', pos: 100}] },
+            { name: 'Pink Blur', type: 'linear', angle: 135, stops: [{color: '#f093fb', pos: 0}, {color: '#f5576c', pos: 100}] },
+            { name: 'Sky Blue', type: 'linear', angle: 90, stops: [{color: '#56CCF2', pos: 0}, {color: '#2F80ED', pos: 100}] },
+            { name: 'Fire', type: 'linear', angle: 0, stops: [{color: '#f12711', pos: 0}, {color: '#f5af19', pos: 100}] },
+            { name: 'Instagram', type: 'linear', angle: 45, stops: [{color: '#833ab4', pos: 0}, {color: '#fd1d1d', pos: 50}, {color: '#fcb045', pos: 100}] },
+            { name: 'Netflix', type: 'linear', angle: 90, stops: [{color: '#8E0E00', pos: 0}, {color: '#1F1C18', pos: 100}] },
+            { name: 'Spotify', type: 'linear', angle: 135, stops: [{color: '#1DB954', pos: 0}, {color: '#191414', pos: 100}] },
+            { name: 'Moonlit', type: 'linear', angle: 180, stops: [{color: '#0F2027', pos: 0}, {color: '#203A43', pos: 50}, {color: '#2C5364', pos: 100}] },
+            { name: 'Cool Sky', type: 'radial', shape: 'circle', x: 50, y: 50, stops: [{color: '#2E3192', pos: 0}, {color: '#1BFFFF', pos: 100}] },
+            { name: 'Purple Dream', type: 'radial', shape: 'ellipse', x: 50, y: 50, stops: [{color: '#c471f5', pos: 0}, {color: '#fa71cd', pos: 100}] },
+            { name: 'Cherry', type: 'linear', angle: 90, stops: [{color: '#eb3349', pos: 0}, {color: '#f45c43', pos: 100}] },
+            { name: 'Timber', type: 'linear', angle: 135, stops: [{color: '#fc00ff', pos: 0}, {color: '#00dbde', pos: 100}] }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initColorStops();
+            initPresets();
+            updateGradient();
+        });
+
+        function initColorStops() {
+            const container = document.getElementById('colorStops');
+            container.innerHTML = '';
+            
+            colorStops.forEach((stop, index) => {
+                addColorStopElement(stop, index);
+            });
+        }
+
+        function addColorStopElement(stop, index) {
+            const container = document.getElementById('colorStops');
+            const div = document.createElement('div');
+            div.className = 'color-stop';
+            div.innerHTML = `
+                <div class="color-stop-header">
+                    <span class="color-stop-title">Колір ${index + 1}</span>
+                    ${colorStops.length > 2 ? `<button class="delete-stop" onclick="deleteColorStop(${index})">×</button>` : ''}
+                </div>
+                <div class="color-input-group">
+                    <div class="color-picker-wrapper">
+                        <input type="color" value="${stop.color}" onchange="updateStopColor(${index}, this.value)">
+                    </div>
+                    <input type="text" class="color-input" value="${stop.color}" 
+                           onchange="updateStopColor(${index}, this.value)"
+                           placeholder="#667eea">
+                </div>
+                <div class="control-group">
+                    <label>Позиція: <span id="stopPos${index}">${stop.position}</span>%</label>
+                    <input type="range" min="0" max="100" value="${stop.position}"
+                           oninput="updateStopPosition(${index}, this.value)">
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function addColorStop() {
+            const newPosition = colorStops.length > 0 ? 
+                Math.min(100, colorStops[colorStops.length - 1].position + 20) : 50;
+            
+            colorStops.push({
+                color: '#' + Math.floor(Math.random()*16777215).toString(16),
+                position: newPosition
+            });
+            
+            initColorStops();
+            updateGradient();
+        }
+
+        function deleteColorStop(index) {
+            if (colorStops.length <= 2) return;
+            colorStops.splice(index, 1);
+            initColorStops();
+            updateGradient();
+        }
+
+        function updateStopColor(index, color) {
+            if (!color.startsWith('#')) color = '#' + color;
+            colorStops[index].color = color;
+            initColorStops();
+            updateGradient();
+        }
+
+        function updateStopPosition(index, position) {
+            colorStops[index].position = parseInt(position);
+            document.getElementById(`stopPos${index}`).textContent = position;
+            updateGradient();
+        }
+
+        function setGradientType(type) {
+            gradientType = type;
+            
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (type === 'linear') {
+                document.getElementById('linearOptions').classList.remove('hidden');
+                document.getElementById('radialOptions').classList.remove('active');
+            } else {
+                document.getElementById('linearOptions').classList.add('hidden');
+                document.getElementById('radialOptions').classList.add('active');
+            }
+            
+            updateGradient();
+        }
+
+        function updateAngle(value) {
+            angle = parseInt(value);
+            document.getElementById('angleValue').textContent = value;
+            updateDirectionButtons();
+            updateGradient();
+        }
+
+        function setAngle(value, btn) {
+            angle = value;
+            document.getElementById('angleSlider').value = value;
+            document.getElementById('angleValue').textContent = value;
+            
+            document.querySelectorAll('.direction-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            updateGradient();
+        }
+
+        function updateDirectionButtons() {
+            const buttons = document.querySelectorAll('.direction-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const angles = [0, 90, 180, 270];
+            const index = angles.indexOf(angle);
+            if (index !== -1) {
+                buttons[index].classList.add('active');
+            }
+        }
+
+        function setRadialShape(shape, btn) {
+            radialShape = shape;
+            document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateGradient();
+        }
+
+        function updateRadialPosition() {
+            radialX = parseInt(document.getElementById('radialXSlider').value);
+            radialY = parseInt(document.getElementById('radialYSlider').value);
+            document.getElementById('radialXValue').textContent = radialX;
+            document.getElementById('radialYValue').textContent = radialY;
+            updateGradient();
+        }
+
+        function updateGradient() {
+            const preview = document.getElementById('previewBox');
+            const gradient = buildGradientCSS();
+            preview.style.background = gradient;
+            updateCodeOutput();
+        }
+
+        function buildGradientCSS() {
+            const sortedStops = [...colorStops].sort((a, b) => a.position - b.position);
+            const stopsCSS = sortedStops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+            
+            if (gradientType === 'linear') {
+                return `linear-gradient(${angle}deg, ${stopsCSS})`;
+            } else {
+                return `radial-gradient(${radialShape} at ${radialX}% ${radialY}%, ${stopsCSS})`;
+            }
+        }
+
+        function updateCodeOutput() {
+            const output = document.getElementById('codeOutput');
+            const gradient = buildGradientCSS();
+            
+            if (currentCodeTab === 'standard') {
+                output.innerHTML = `<span class="code-keyword">background</span>: <span class="code-value">${gradient}</span>;`;
+            } else {
+                const fallbackColor = colorStops[0].color;
+                output.innerHTML = `<span class="code-keyword">background</span>: <span class="code-value">${fallbackColor}</span>;<br><span class="code-keyword">background</span>: <span class="code-value">${gradient}</span>;`;
+            }
+        }
+
+        function switchCodeTab(tab, btn) {
+            currentCodeTab = tab;
+            document.querySelectorAll('.code-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateCodeOutput();
+        }
+
+        function copyCode() {
+            const gradient = buildGradientCSS();
+            let codeText = '';
+            
+            if (currentCodeTab === 'standard') {
+                codeText = `background: ${gradient};`;
+            } else {
+                codeText = `background: ${colorStops[0].color};\nbackground: ${gradient};`;
+            }
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(codeText).then(() => {
+                    showCopySuccess();
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(codeText);
+                });
+            } else {
+                fallbackCopyTextToClipboard(codeText);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    showCopyError();
+                }
+            } catch (err) {
+                showCopyError();
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            const accentSuccess = getComputedStyle(document.documentElement).getPropertyValue('--accent-success').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            
+            btn.textContent = '✅ Скопійовано!';
+            btn.style.background = accentSuccess;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function showCopyError() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            const accentDanger = getComputedStyle(document.documentElement).getPropertyValue('--accent-danger').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            
+            btn.textContent = '❌ Помилка';
+            btn.style.background = accentDanger;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function initPresets() {
+            const grid = document.getElementById('presetsGrid');
+            
+            presets.forEach((preset, index) => {
+                const div = document.createElement('div');
+                div.className = 'preset-item';
+                
+                let gradient;
+                if (preset.type === 'linear') {
+                    const stopsCSS = preset.stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+                    gradient = `linear-gradient(${preset.angle}deg, ${stopsCSS})`;
+                } else {
+                    const stopsCSS = preset.stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+                    gradient = `radial-gradient(${preset.shape} at ${preset.x}% ${preset.y}%, ${stopsCSS})`;
+                }
+                
+                div.style.background = gradient;
+                div.innerHTML = `<div class="preset-name">${preset.name}</div>`;
+                div.onclick = () => applyPreset(preset);
+                
+                grid.appendChild(div);
+            });
+        }
+
+        function applyPreset(preset) {
+            gradientType = preset.type;
+            
+            // Update type buttons
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.type-btn')[preset.type === 'linear' ? 0 : 1].classList.add('active');
+            
+            if (preset.type === 'linear') {
+                angle = preset.angle;
+                document.getElementById('angleSlider').value = angle;
+                document.getElementById('angleValue').textContent = angle;
+                updateDirectionButtons();
+                
+                document.getElementById('linearOptions').classList.remove('hidden');
+                document.getElementById('radialOptions').classList.remove('active');
+            } else {
+                radialShape = preset.shape;
+                radialX = preset.x;
+                radialY = preset.y;
+                
+                document.getElementById('radialXSlider').value = radialX;
+                document.getElementById('radialYSlider').value = radialY;
+                document.getElementById('radialXValue').textContent = radialX;
+                document.getElementById('radialYValue').textContent = radialY;
+                
+                document.querySelectorAll('.shape-btn').forEach((btn, i) => {
+                    btn.classList.toggle('active', (i === 0 && preset.shape === 'circle') || (i === 1 && preset.shape === 'ellipse'));
+                });
+                
+                document.getElementById('linearOptions').classList.add('hidden');
+                document.getElementById('radialOptions').classList.add('active');
+            }
+            
+            colorStops = preset.stops.map(s => ({
+                color: s.color,
+                position: s.pos
+            }));
+            
+            initColorStops();
+            updateGradient();
+        }
+    </script>
+            </main>
+        </div>
+    </div>
+
+        <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

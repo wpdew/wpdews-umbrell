@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Data URI Converter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Специфічні стилі генератора -->
+    <style>
+/* Специфічні стилі генератора з підтримкою тем */
+
+        .upload-area {
+            border: 3px dashed var(--border-primary);
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--accent-secondary);
+            background: var(--bg-secondary);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .browse-btn:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .browse-btn:active {
+            transform: translateY(0);
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+
+        .file-info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .file-info-label {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .file-info-value {
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .preview-container h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px var(--shadow-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-convert {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-convert:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-convert:disabled {
+            background: var(--border-primary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn-clear {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #dc2626; /* Darker red for hover */
+        }
+
+        .output-area {
+            min-height: 400px;
+        }
+
+        .output-empty {
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--text-muted);
+        }
+
+        .output-empty-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .output-empty-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .output-content {
+            display: none;
+        }
+
+        .output-content.active {
+            display: block;
+        }
+
+        .output-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: var(--accent-primary);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .code-box {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+            word-break: break-all;
+            color: var(--accent-success);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .code-box::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .code-box::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 4px;
+        }
+
+        .code-box::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 4px;
+        }
+
+        .code-box::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .format-tab {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .format-tab:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .format-tab.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .info-section {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .info-section h2 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-section p {
+            color: var(--text-tertiary);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            color: var(--text-tertiary);
+            margin-left: 20px;
+            line-height: 2;
+        }
+
+        .info-section li {
+            margin-bottom: 5px;
+        }
+
+        .note-box {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .note-box strong {
+            color: var(--accent-primary);
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .warning-box strong {
+            color: var(--accent-danger);
+        }
+
+        .size-warning {
+            background: rgba(251, 191, 36, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent-warning);
+            color: var(--accent-warning);
+            display: none;
+        }
+
+        .size-warning.active {
+            display: block;
+        }
+
+        .format-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .format-option {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .format-option:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .format-option.active {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .format-option input[type="radio"] {
+            display: none;
+        }
+
+        .format-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .radio-custom::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.2s;
+        }
+
+        input[type="radio"]:checked + .format-label .radio-custom::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>🖼️ Image to Data URI Converter</h1>
+        
+        <div class="main-grid">
+            <!-- Upload Panel -->
+            <div class="panel">
+                <h2>Завантажити зображення</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Перетягніть зображення сюди</div>
+                    <div class="upload-hint">або</div>
+                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                        Вибрати файл
+                    </button>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*">
+                </div>
+
+                <div class="file-info" id="fileInfo">
+                    <div class="file-info-row">
+                        <span class="file-info-label">Назва файлу:</span>
+                        <span class="file-info-value" id="fileName">-</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">Тип:</span>
+                        <span class="file-info-value" id="fileType">-</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">Розмір:</span>
+                        <span class="file-info-value" id="fileSize">-</span>
+                    </div>
+                    <div class="file-info-row">
+                        <span class="file-info-label">Розміри:</span>
+                        <span class="file-info-value" id="fileDimensions">-</span>
+                    </div>
+                </div>
+
+                <div class="size-warning" id="sizeWarning">
+                    ⚠️ Зображення більше 1MB. Рекомендуємо використовувати файли до 1MB для кращої продуктивності.
+                </div>
+
+                <div class="preview-container" id="previewContainer">
+                    <h3>Попередній перегляд</h3>
+                    <img id="previewImage" class="preview-image" alt="Preview">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-convert" id="convertBtn" disabled onclick="convertToDataURI()">
+                        🔄 Конвертувати
+                    </button>
+                    <button class="btn btn-clear" onclick="clearAll()">
+                        🗑️ Очистити
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="panel output-area">
+                <h2>Data URI</h2>
+                
+                <div class="output-empty" id="outputEmpty">
+                    <div class="output-empty-icon">📋</div>
+                    <p>Завантажте зображення та натисніть "Конвертувати"</p>
+                    <p class="output-empty-hint">
+                        Результат з'явиться тут
+                    </p>
+                </div>
+
+                <div class="output-content" id="outputContent">
+                    <div class="output-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Оригінал</div>
+                            <div class="stat-value" id="statOriginal">0 KB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Data URI</div>
+                            <div class="stat-value" id="statDataURI">0 KB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Збільшення</div>
+                            <div class="stat-value" id="statIncrease">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="format-tabs">
+                        <div class="format-tab active" data-format="full" onclick="switchFormat('full')">
+                            Повний Data URI
+                        </div>
+                        <div class="format-tab" data-format="css" onclick="switchFormat('css')">
+                            CSS Background
+                        </div>
+                        <div class="format-tab" data-format="html" onclick="switchFormat('html')">
+                            HTML Img
+                        </div>
+                    </div>
+
+                    <div class="code-box" id="codeOutput"></div>
+                    
+                    <button class="copy-btn" onclick="copyOutput()">
+                        📋 Копіювати
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Про Data URI</h2>
+            <p>
+                Data URI (Data URL) - це схема, яка дозволяє вбудовувати файли безпосередньо в HTML або CSS 
+                за допомогою Base64 кодування. Це усуває необхідність в окремому HTTP запиті для зображення.
+            </p>
+            
+            <div class="note-box">
+                <p><strong>Переваги:</strong></p>
+                <ul>
+                    <li>Зменшення кількості HTTP запитів</li>
+                    <li>Швидше завантаження невеликих зображень</li>
+                    <li>Зображення завжди доступне з HTML/CSS</li>
+                    <li>Не потрібен окремий файл</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Недоліки:</strong></p>
+                <ul>
+                    <li>Збільшення розміру файлу на ~33% через Base64</li>
+                    <li>Неефективно для великих зображень (>10KB)</li>
+                    <li>Погана кешуємість</li>
+                    <li>Складність читання та редагування коду</li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 15px;">
+                <strong>Рекомендації:</strong> Використовуйте Data URI для маленьких іконок, логотипів та 
+                декоративних елементів розміром до 1-2 KB. Для великих зображень краще використовувати 
+                звичайні файли з оптимізацією та кешуванням.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let currentDataURI = '';
+        let currentFormat = 'full';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            uploadArea.addEventListener('click', (e) => {
+                if (e.target === uploadArea || e.target.closest('.upload-icon, .upload-text, .upload-hint')) {
+                    fileInput.click();
+                }
+            });
+        });
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // Check if it's an image
+            if (!file.type.startsWith('image/')) {
+                alert('❌ Будь ласка, виберіть файл зображення (PNG, JPEG, GIF, WebP, SVG)');
+                return;
+            }
+
+            // Check file size (max 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('❌ Розмір файлу не повинен перевищувати 5MB');
+                return;
+            }
+
+            currentFile = file;
+
+            // Show file info
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileType').textContent = file.type;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileInfo').classList.add('active');
+
+            // Show size warning if > 1MB
+            if (file.size > 1024 * 1024) {
+                document.getElementById('sizeWarning').classList.add('active');
+            } else {
+                document.getElementById('sizeWarning').classList.remove('active');
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('previewImage');
+                img.src = e.target.result;
+                
+                img.onload = () => {
+                    document.getElementById('fileDimensions').textContent = 
+                        `${img.naturalWidth} × ${img.naturalHeight} px`;
+                    document.getElementById('previewContainer').classList.add('active');
+                };
+            };
+            reader.readAsDataURL(file);
+
+            // Enable convert button
+            document.getElementById('convertBtn').disabled = false;
+        }
+
+        function convertToDataURI() {
+            if (!currentFile) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentDataURI = e.target.result;
+                displayOutput();
+            };
+            reader.readAsDataURL(currentFile);
+        }
+
+        function displayOutput() {
+            // Hide empty state, show output
+            document.getElementById('outputEmpty').style.display = 'none';
+            document.getElementById('outputContent').classList.add('active');
+
+            // Calculate stats
+            const originalSize = currentFile.size;
+            const dataURISize = currentDataURI.length;
+            const increase = ((dataURISize - originalSize) / originalSize * 100).toFixed(1);
+
+            document.getElementById('statOriginal').textContent = formatFileSize(originalSize);
+            document.getElementById('statDataURI').textContent = formatFileSize(dataURISize);
+            document.getElementById('statIncrease').textContent = `+${increase}%`;
+
+            // Show output
+            updateCodeOutput();
+        }
+
+        function switchFormat(format) {
+            currentFormat = format;
+            
+            // Update active tab
+            document.querySelectorAll('.format-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-format="${format}"]`).classList.add('active');
+
+            updateCodeOutput();
+        }
+
+        function updateCodeOutput() {
+            const codeOutput = document.getElementById('codeOutput');
+            let code = '';
+
+            switch (currentFormat) {
+                case 'full':
+                    code = currentDataURI;
+                    break;
+                case 'css':
+                    code = `background-image: url('${currentDataURI}');`;
+                    break;
+                case 'html':
+                    code = `<img src="${currentDataURI}" alt="Image">`;
+                    break;
+            }
+
+            codeOutput.textContent = code;
+        }
+
+        function copyOutput() {
+            const codeText = document.getElementById('codeOutput').textContent;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(codeText).then(() => {
+                    showCopySuccess();
+                }).catch(err => {
+                    fallbackCopyTextToClipboard(codeText);
+                });
+            } else {
+                fallbackCopyTextToClipboard(codeText);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    showCopyError();
+                }
+            } catch (err) {
+                showCopyError();
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            const accentSuccess = getComputedStyle(document.documentElement).getPropertyValue('--accent-success').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            
+            btn.textContent = '✅ Скопійовано!';
+            btn.style.background = accentSuccess;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function showCopyError() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            const accentDanger = getComputedStyle(document.documentElement).getPropertyValue('--accent-danger').trim();
+            const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+            
+            btn.textContent = '❌ Помилка копіювання';
+            btn.style.background = accentDanger;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = accentPrimary;
+            }, 2000);
+        }
+
+        function clearAll() {
+            // Reset file input
+            document.getElementById('fileInput').value = '';
+            currentFile = null;
+            currentDataURI = '';
+
+            // Hide all sections
+            document.getElementById('fileInfo').classList.remove('active');
+            document.getElementById('previewContainer').classList.remove('active');
+            document.getElementById('sizeWarning').classList.remove('active');
+            document.getElementById('outputContent').classList.remove('active');
+            document.getElementById('outputEmpty').style.display = 'block';
+
+            // Disable convert button
+            document.getElementById('convertBtn').disabled = true;
+
+            // Clear preview
+            document.getElementById('previewImage').src = '';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        }
+    </script>
+            </main>
+        </div>
+    </div>
+
+        <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

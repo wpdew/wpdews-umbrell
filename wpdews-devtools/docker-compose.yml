@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "38300:80"
+    volumes:
+      - ./css-generator:/usr/share/nginx/html:ro

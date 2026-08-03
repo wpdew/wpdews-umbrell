@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Ribbon Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Специфічні стилі генератора -->
+    <style>
+/* Специфічні стилі генератора з підтримкою тем */
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-primary);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .preset-btn:hover {
+            background: var(--border-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .preset-btn.active {
+            background: var(--gradient-primary);
+            border-color: var(--accent-primary);
+        }
+
+
+
+
+
+        .color-row {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 45px;
+            border: 2px solid var(--border-primary);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            cursor: pointer;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 4px;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+
+        .preview-area {
+            background: var(--bg-hover);
+            border-radius: 12px;
+            padding: 60px;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .preview-box {
+            width: 400px;
+            height: 300px;
+            background: var(--text-primary);
+            border: 2px solid var(--border-secondary);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ribbon Styles */
+        .ribbon {
+            position: absolute;
+            font-weight: 600;
+            text-align: center;
+            color: white;
+            background: linear-gradient(#2989D8 0%, #1E5799 100%);
+            line-height: 30px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Corner Ribbon */
+        .ribbon.corner-top-left {
+            top: 0;
+            left: 0;
+            width: 250px;
+            transform: rotate(-45deg) translate(-30%, -50%);
+            transform-origin: top left;
+        }
+
+        .ribbon.corner-top-right {
+            top: 0;
+            right: 0;
+            width: 250px;
+            transform: rotate(45deg) translate(30%, -50%);
+            transform-origin: top right;
+        }
+
+        .ribbon.corner-bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            transform: rotate(45deg) translate(-30%, 50%);
+            transform-origin: bottom left;
+        }
+
+        .ribbon.corner-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 250px;
+            transform: rotate(-45deg) translate(30%, 50%);
+            transform-origin: bottom right;
+        }
+
+        /* Side Ribbon */
+        .ribbon.side-left {
+            top: 50%;
+            left: -20px;
+            transform: translateY(-50%);
+            padding: 12px 30px 12px 50px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .ribbon.side-right {
+            top: 50%;
+            right: -20px;
+            transform: translateY(-50%);
+            padding: 12px 50px 12px 30px;
+            border-radius: 8px 0 0 8px;
+        }
+
+        /* Top/Bottom Ribbon */
+        .ribbon.top-center {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 40px;
+            border-radius: 4px;
+        }
+
+        .ribbon.bottom-center {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 40px;
+            border-radius: 4px;
+        }
+
+        /* Bookmark Ribbon */
+        .ribbon.bookmark-top {
+            top: 0;
+            right: 30px;
+            padding: 15px 20px;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .ribbon.bookmark-top::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid currentColor;
+        }
+
+
+
+
+
+        .syntax-comment { color: #6a9955; }
+        .syntax-tag { color: #569cd6; }
+        .syntax-attr { color: #9cdcfe; }
+        .syntax-value { color: #ce9178; }
+        .syntax-selector { color: #d7ba7d; }
+        .syntax-property { color: #9cdcfe; }
+
+        .info-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .info-section h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            color: var(--text-tertiary);
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            color: var(--text-tertiary);
+            margin-left: 20px;
+        }
+
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+
+
+        @media (max-width: 480px) {
+
+
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-area {
+                padding: 30px 20px;
+                min-height: 300px;
+            }
+
+            .preview-box {
+                width: 100%;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <h1>CSS Ribbon Generator</h1>
+        <p class="subtitle">Створюйте CSS стрічки та відзнаки для вашого сайту</p>
+
+        <div class="main-grid">
+            <div class="controls-panel">
+                <div class="panel">
+                    <h2>Налаштування стрічки</h2>
+
+                    <div class="control-section">
+                        <h3>Тип стрічки</h3>
+                        <div class="preset-grid">
+                            <button class="preset-btn active" onclick="selectType('corner-top-left', this)">↖️ Top Left</button>
+                            <button class="preset-btn" onclick="selectType('corner-top-right', this)">↗️ Top Right</button>
+                            <button class="preset-btn" onclick="selectType('corner-bottom-left', this)">↙️ Bottom Left</button>
+                            <button class="preset-btn" onclick="selectType('corner-bottom-right', this)">↘️ Bottom Right</button>
+                            <button class="preset-btn" onclick="selectType('side-left', this)">← Side Left</button>
+                            <button class="preset-btn" onclick="selectType('side-right', this)">→ Side Right</button>
+                            <button class="preset-btn" onclick="selectType('top-center', this)">⬆️ Top Center</button>
+                            <button class="preset-btn" onclick="selectType('bottom-center', this)">⬇️ Bottom</button>
+                            <button class="preset-btn" onclick="selectType('bookmark-top', this)">🔖 Bookmark</button>
+                        </div>
+                    </div>
+
+					<div class="control-section">
+                        <h3>Позиціонування</h3>
+
+                        <div class="control-group">
+                            <label>Горизонтальне зміщення (px): <span id="horizontalValue">0</span></label>
+                            <input type="range" id="horizontalOffset" value="0" min="-500" max="500" step="5" oninput="updateHorizontalValue(this.value); updateRibbon()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Вертикальне зміщення (px): <span id="verticalValue">0</span></label>
+                            <input type="range" id="verticalOffset" value="0" min="-500" max="500" step="5" oninput="updateVerticalValue(this.value); updateRibbon()">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Вміст</h3>
+
+                        <div class="control-group">
+                            <label>Текст стрічки</label>
+                            <input type="text" id="ribbonText" value="POPULAR" oninput="updateRibbon()">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Кольори та розміри</h3>
+
+                        <div class="control-group">
+                            <label>Primary Color (початок градієнта)</label>
+                            <div class="color-row">
+                                <input type="color" id="primaryColorPicker" value="#2989D8" 
+                                       oninput="updatePrimaryColorInput(this.value)">
+                                <input type="text" id="primaryColorInput" value="#2989D8" 
+                                       oninput="updatePrimaryColorPicker(this.value)">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Secondary Color (кінець градієнта)</label>
+                            <div class="color-row">
+                                <input type="color" id="secondaryColorPicker" value="#1E5799" 
+                                       oninput="updateSecondaryColorInput(this.value)">
+                                <input type="text" id="secondaryColorInput" value="#1E5799" 
+                                       oninput="updateSecondaryColorPicker(this.value)">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Колір тексту</label>
+                            <div class="color-row">
+                                <input type="color" id="textColorPicker" value="#ffffff" 
+                                       oninput="updateTextColorInput(this.value)">
+                                <input type="text" id="textColorInput" value="#ffffff" 
+                                       oninput="updateTextColorPicker(this.value)">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Розмір стрічки (px)</label>
+                            <input type="number" id="ribbonSize" value="30" min="20" max="50" oninput="updateRibbon()">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Параметри стрічки</h3>
+
+                        <div class="control-group">
+                            <label>Ширина стрічки (px)</label>
+                            <input type="number" id="ribbonWidth" value="250" min="150" max="400" oninput="updateRibbon()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Розмір шрифту (px)</label>
+                            <input type="number" id="fontSize" value="13" min="10" max="30" oninput="updateRibbon()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Товщина шрифту</label>
+                            <select id="fontWeight" onchange="updateRibbon()">
+                                <option value="400">Normal (400)</option>
+                                <option value="500">Medium (500)</option>
+                                <option value="600" selected>Semi-Bold (600)</option>
+                                <option value="700">Bold (700)</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Letter Spacing (px)</label>
+                            <input type="number" id="letterSpacing" value="1" min="0" max="5" step="0.5" oninput="updateRibbon()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Box Shadow</label>
+                            <select id="boxShadow" onchange="updateRibbon()">
+                                <option value="none">Без тіні</option>
+                                <option value="0 3px 5px rgba(0,0,0,0.1)">Легка тінь</option>
+                                <option value="0 5px 10px rgba(0,0,0,0.15)" selected>Середня тінь</option>
+                                <option value="0 8px 15px rgba(0,0,0,0.2)">Сильна тінь</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area">
+                        <div class="preview-box">
+                            <div class="ribbon corner-top-left" id="ribbon">POPULAR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Згенерований код</h2>
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCode()">📋 Копіювати</button>
+                <pre id="htmlCode"></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Про CSS Ribbon Generator</h3>
+            <p><strong>CSS Ribbon Generator</strong> - інструмент для створення стильних CSS стрічок, відзнак та тегів для сайту.</p>
+            
+            <h3 style="margin-top: 20px;">🎨 Типи стрічок:</h3>
+            <ul>
+                <li><strong>Corner Ribbons</strong> - кутові стрічки (top-left, top-right, bottom-left, bottom-right)</li>
+                <li><strong>Side Ribbons</strong> - бокові стрічки (left, right)</li>
+                <li><strong>Center Ribbons</strong> - центральні стрічки (top, bottom)</li>
+                <li><strong>Bookmark</strong> - стрічка-закладка з загнутим краєм</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">💡 Використання:</h3>
+            <ul>
+                <li><strong>"NEW"</strong> - позначка нових товарів або функцій</li>
+                <li><strong>"SALE"</strong> - акційні пропозиції та знижки</li>
+                <li><strong>"TOP"</strong> - популярні товари</li>
+                <li><strong>"FREE"</strong> - безкоштовні послуги</li>
+                <li><strong>Будь-який текст</strong> - відзнаки, рейтинги, статуси</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">🔧 Налаштування:</h3>
+            <ul>
+                <li>9 готових типів розташування стрічки</li>
+                <li>Довільний текст та розмір шрифту</li>
+                <li>Налаштування кольорів фону та тексту</li>
+                <li>Padding та border-radius для кастомізації</li>
+                <li>Box-shadow для об'ємного ефекту</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">⚡ Технічні деталі:</h3>
+            <ul>
+                <li>Використовує <strong>position: absolute</strong> для позиціонування</li>
+                <li>CSS <strong>transform</strong> для кутових стрічок</li>
+                <li>Псевдоелемент <strong>::after</strong> для bookmark ефекту</li>
+                <li>Батьківський елемент повинен мати <strong>position: relative</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentType = 'corner-top-left';
+
+        function selectType(type, btn) {
+            currentType = type;
+            
+            // Update active button
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            updateRibbon();
+        }
+
+        function updateHorizontalValue(value) {
+            document.getElementById('horizontalValue').textContent = value;
+        }
+
+        function updateVerticalValue(value) {
+            document.getElementById('verticalValue').textContent = value;
+        }
+
+        function updateRibbon() {
+            const ribbon = document.getElementById('ribbon');
+            const text = document.getElementById('ribbonText').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const primaryColor = document.getElementById('primaryColorInput').value;
+            const secondaryColor = document.getElementById('secondaryColorInput').value;
+            const textColor = document.getElementById('textColorInput').value;
+            const ribbonWidth = document.getElementById('ribbonWidth').value;
+            const ribbonSize = document.getElementById('ribbonSize').value;
+            const fontWeight = document.getElementById('fontWeight').value;
+            const letterSpacing = document.getElementById('letterSpacing').value;
+            const boxShadow = document.getElementById('boxShadow').value;
+            const horizontalOffset = parseInt(document.getElementById('horizontalOffset').value);
+            const verticalOffset = parseInt(document.getElementById('verticalOffset').value);
+
+            // Update ribbon
+            ribbon.textContent = text;
+            ribbon.className = `ribbon ${currentType}`;
+            
+            // Clear all position-related inline styles to avoid conflicts
+            ribbon.style.top = '';
+            ribbon.style.left = '';
+            ribbon.style.right = '';
+            ribbon.style.bottom = '';
+            ribbon.style.width = '';
+            ribbon.style.padding = '';
+            ribbon.style.borderRadius = '';
+            ribbon.style.transform = '';
+            ribbon.style.transformOrigin = '';
+            
+            // Set common styles
+            ribbon.style.fontSize = fontSize + 'px';
+            ribbon.style.background = `linear-gradient(${primaryColor} 0%, ${secondaryColor} 100%)`;
+            ribbon.style.color = textColor;
+            ribbon.style.fontWeight = fontWeight;
+            ribbon.style.letterSpacing = letterSpacing + 'px';
+            ribbon.style.boxShadow = boxShadow;
+            ribbon.style.lineHeight = ribbonSize + 'px';
+            
+            // Width for corner ribbons
+            if (currentType.includes('corner')) {
+                ribbon.style.width = ribbonWidth + 'px';
+            }
+
+            // Apply custom positioning offsets and type-specific styles
+            if (currentType.includes('corner-top')) {
+                ribbon.style.top = `${verticalOffset}px`;
+                if (currentType.includes('left')) {
+                    ribbon.style.left = `${horizontalOffset}px`;
+                    ribbon.style.transform = 'rotate(-45deg) translate(-30%, -50%)';
+                    ribbon.style.transformOrigin = 'top left';
+                } else {
+                    ribbon.style.right = `${horizontalOffset}px`;
+                    ribbon.style.transform = 'rotate(45deg) translate(30%, -50%)';
+                    ribbon.style.transformOrigin = 'top right';
+                }
+            } else if (currentType.includes('corner-bottom')) {
+                ribbon.style.bottom = `${verticalOffset}px`;
+                if (currentType.includes('left')) {
+                    ribbon.style.left = `${horizontalOffset}px`;
+                    ribbon.style.transform = 'rotate(45deg) translate(-30%, 50%)';
+                    ribbon.style.transformOrigin = 'bottom left';
+                } else {
+                    ribbon.style.right = `${horizontalOffset}px`;
+                    ribbon.style.transform = 'rotate(-45deg) translate(30%, 50%)';
+                    ribbon.style.transformOrigin = 'bottom right';
+                }
+            } else if (currentType.includes('side')) {
+                if (currentType === 'side-left') {
+                    ribbon.style.left = `${-20 + horizontalOffset}px`;
+                    ribbon.style.padding = '12px 30px 12px 50px';
+                    ribbon.style.borderRadius = '0 8px 8px 0';
+                } else {
+                    ribbon.style.right = `${-20 + horizontalOffset}px`;
+                    ribbon.style.padding = '12px 50px 12px 30px';
+                    ribbon.style.borderRadius = '8px 0 0 8px';
+                }
+                ribbon.style.top = `calc(50% + ${verticalOffset}px)`;
+                ribbon.style.transform = 'translateY(-50%)';
+            } else if (currentType === 'top-center') {
+                ribbon.style.top = `${30 + verticalOffset}px`;
+                ribbon.style.left = `calc(50% + ${horizontalOffset}px)`;
+                ribbon.style.transform = 'translateX(-50%)';
+                ribbon.style.padding = '12px 40px';
+                ribbon.style.borderRadius = '4px';
+            } else if (currentType === 'bottom-center') {
+                ribbon.style.bottom = `${30 + verticalOffset}px`;
+                ribbon.style.left = `calc(50% + ${horizontalOffset}px)`;
+                ribbon.style.transform = 'translateX(-50%)';
+                ribbon.style.padding = '12px 40px';
+                ribbon.style.borderRadius = '4px';
+            } else if (currentType === 'bookmark-top') {
+                ribbon.style.top = `${verticalOffset}px`;
+                ribbon.style.right = `${30 + horizontalOffset}px`;
+                ribbon.style.padding = '15px 20px';
+                ribbon.style.borderRadius = '0 0 4px 4px';
+            }
+
+            generateCode();
+        }
+
+        function updatePrimaryColorInput(color) {
+            document.getElementById('primaryColorInput').value = color;
+            updateRibbon();
+        }
+
+        function updatePrimaryColorPicker(color) {
+            document.getElementById('primaryColorPicker').value = color;
+            updateRibbon();
+        }
+
+        function updateSecondaryColorInput(color) {
+            document.getElementById('secondaryColorInput').value = color;
+            updateRibbon();
+        }
+
+        function updateSecondaryColorPicker(color) {
+            document.getElementById('secondaryColorPicker').value = color;
+            updateRibbon();
+        }
+
+        function updateTextColorInput(color) {
+            document.getElementById('textColorInput').value = color;
+            updateRibbon();
+        }
+
+        function updateTextColorPicker(color) {
+            document.getElementById('textColorPicker').value = color;
+            updateRibbon();
+        }
+
+        function generateCode() {
+            const text = document.getElementById('ribbonText').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const primaryColor = document.getElementById('primaryColorInput').value;
+            const secondaryColor = document.getElementById('secondaryColorInput').value;
+            const textColor = document.getElementById('textColorInput').value;
+            const ribbonWidth = document.getElementById('ribbonWidth').value;
+            const ribbonSize = document.getElementById('ribbonSize').value;
+            const fontWeight = document.getElementById('fontWeight').value;
+            const letterSpacing = document.getElementById('letterSpacing').value;
+            const boxShadow = document.getElementById('boxShadow').value;
+            const horizontalOffset = parseInt(document.getElementById('horizontalOffset').value);
+            const verticalOffset = parseInt(document.getElementById('verticalOffset').value);
+            
+            // Constants for ribbon styling
+            const borderRadius = 8;
+            const bgColor = secondaryColor; // Use secondary color for ::after pseudo-element
+
+            // HTML
+            let htmlCode = `<span class="syntax-comment">&lt;!-- HTML --&gt;</span>\n`;
+            htmlCode += `<span class="syntax-tag">&lt;div</span> <span class="syntax-attr">class</span>=<span class="syntax-value">"ribbon-container"</span><span class="syntax-tag">&gt;</span>\n`;
+            htmlCode += `    <span class="syntax-tag">&lt;div</span> <span class="syntax-attr">class</span>=<span class="syntax-value">"ribbon ${currentType}"</span><span class="syntax-tag">&gt;</span>${text}<span class="syntax-tag">&lt;/div&gt;</span>\n`;
+            htmlCode += `<span class="syntax-tag">&lt;/div&gt;</span>\n\n`;
+
+            // CSS
+            htmlCode += `<span class="syntax-comment">/* CSS */</span>\n`;
+            htmlCode += `<span class="syntax-selector">.ribbon-container</span> {\n`;
+            htmlCode += `    <span class="syntax-property">position</span>: <span class="syntax-value">relative</span>;\n`;
+            htmlCode += `    <span class="syntax-property">width</span>: <span class="syntax-value">400px</span>;\n`;
+            htmlCode += `    <span class="syntax-property">height</span>: <span class="syntax-value">300px</span>;\n`;
+            htmlCode += `    <span class="syntax-property">background</span>: <span class="syntax-value">#fff</span>;\n`;
+            htmlCode += `    <span class="syntax-property">overflow</span>: <span class="syntax-value">hidden</span>;\n`;
+            htmlCode += `}\n\n`;
+
+            htmlCode += `<span class="syntax-selector">.ribbon</span> {\n`;
+            htmlCode += `    <span class="syntax-property">position</span>: <span class="syntax-value">absolute</span>;\n`;
+            htmlCode += `    <span class="syntax-property">text-align</span>: <span class="syntax-value">center</span>;\n`;
+            htmlCode += `    <span class="syntax-property">font-size</span>: <span class="syntax-value">${fontSize}px</span>;\n`;
+            htmlCode += `    <span class="syntax-property">font-weight</span>: <span class="syntax-value">${fontWeight}</span>;\n`;
+            htmlCode += `    <span class="syntax-property">color</span>: <span class="syntax-value">${textColor}</span>;\n`;
+            htmlCode += `    <span class="syntax-property">background</span>: <span class="syntax-value">linear-gradient(${primaryColor} 0%, ${secondaryColor} 100%)</span>;\n`;
+            htmlCode += `    <span class="syntax-property">line-height</span>: <span class="syntax-value">${ribbonSize}px</span>;\n`;
+            htmlCode += `    <span class="syntax-property">letter-spacing</span>: <span class="syntax-value">${letterSpacing}px</span>;\n`;
+            htmlCode += `    <span class="syntax-property">box-shadow</span>: <span class="syntax-value">${boxShadow}</span>;\n`;
+            if (currentType.includes('corner')) {
+                htmlCode += `    <span class="syntax-property">width</span>: <span class="syntax-value">${ribbonWidth}px</span>;\n`;
+            }
+            htmlCode += `}\n\n`;
+
+            // Position-specific styles
+            if (currentType.includes('corner-top-left')) {
+                htmlCode += `<span class="syntax-selector">.ribbon.corner-top-left</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">${verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">${horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">rotate(-45deg) translate(-30%, -50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform-origin</span>: <span class="syntax-value">top left</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType.includes('corner-top-right')) {
+                htmlCode += `<span class="syntax-selector">.ribbon.corner-top-right</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">${verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">right</span>: <span class="syntax-value">${horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">rotate(45deg) translate(30%, -50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform-origin</span>: <span class="syntax-value">top right</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType.includes('corner-bottom-left')) {
+                htmlCode += `<span class="syntax-selector">.ribbon.corner-bottom-left</span> {\n`;
+                htmlCode += `    <span class="syntax-property">bottom</span>: <span class="syntax-value">${verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">${horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">rotate(45deg) translate(-30%, 50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform-origin</span>: <span class="syntax-value">bottom left</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType.includes('corner-bottom-right')) {
+                htmlCode += `<span class="syntax-selector">.ribbon.corner-bottom-right</span> {\n`;
+                htmlCode += `    <span class="syntax-property">bottom</span>: <span class="syntax-value">${verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">right</span>: <span class="syntax-value">${horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">rotate(-45deg) translate(30%, 50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform-origin</span>: <span class="syntax-value">bottom right</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType === 'side-left') {
+                htmlCode += `<span class="syntax-selector">.ribbon.side-left</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">calc(50% + ${verticalOffset}px)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">${-20 + horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">translateY(-50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-radius</span>: <span class="syntax-value">0 ${borderRadius}px ${borderRadius}px 0</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType === 'side-right') {
+                htmlCode += `<span class="syntax-selector">.ribbon.side-right</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">calc(50% + ${verticalOffset}px)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">right</span>: <span class="syntax-value">${-20 + horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">translateY(-50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-radius</span>: <span class="syntax-value">${borderRadius}px 0 0 ${borderRadius}px</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType === 'top-center') {
+                htmlCode += `<span class="syntax-selector">.ribbon.top-center</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">${30 + verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">calc(50% + ${horizontalOffset}px)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">translateX(-50%)</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType === 'bottom-center') {
+                htmlCode += `<span class="syntax-selector">.ribbon.bottom-center</span> {\n`;
+                htmlCode += `    <span class="syntax-property">bottom</span>: <span class="syntax-value">${30 + verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">calc(50% + ${horizontalOffset}px)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">translateX(-50%)</span>;\n`;
+                htmlCode += `}\n`;
+            } else if (currentType === 'bookmark-top') {
+                htmlCode += `<span class="syntax-selector">.ribbon.bookmark-top</span> {\n`;
+                htmlCode += `    <span class="syntax-property">top</span>: <span class="syntax-value">${verticalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">right</span>: <span class="syntax-value">${30 + horizontalOffset}px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-radius</span>: <span class="syntax-value">0 0 ${borderRadius}px ${borderRadius}px</span>;\n`;
+                htmlCode += `}\n\n`;
+                htmlCode += `<span class="syntax-selector">.ribbon.bookmark-top::after</span> {\n`;
+                htmlCode += `    <span class="syntax-property">content</span>: <span class="syntax-value">''</span>;\n`;
+                htmlCode += `    <span class="syntax-property">position</span>: <span class="syntax-value">absolute</span>;\n`;
+                htmlCode += `    <span class="syntax-property">bottom</span>: <span class="syntax-value">-10px</span>;\n`;
+                htmlCode += `    <span class="syntax-property">left</span>: <span class="syntax-value">50%</span>;\n`;
+                htmlCode += `    <span class="syntax-property">transform</span>: <span class="syntax-value">translateX(-50%)</span>;\n`;
+                htmlCode += `    <span class="syntax-property">width</span>: <span class="syntax-value">0</span>;\n`;
+                htmlCode += `    <span class="syntax-property">height</span>: <span class="syntax-value">0</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-left</span>: <span class="syntax-value">10px solid transparent</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-right</span>: <span class="syntax-value">10px solid transparent</span>;\n`;
+                htmlCode += `    <span class="syntax-property">border-top</span>: <span class="syntax-value">10px solid ${bgColor}</span>;\n`;
+                htmlCode += `}\n`;
+            }
+
+            document.getElementById('htmlCode').innerHTML = htmlCode;
+        }
+
+        function copyCode() {
+            const text = document.getElementById('ribbonText').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const primaryColor = document.getElementById('primaryColorInput').value;
+            const secondaryColor = document.getElementById('secondaryColorInput').value;
+            const textColor = document.getElementById('textColorInput').value;
+            const ribbonWidth = document.getElementById('ribbonWidth').value;
+            const ribbonSize = document.getElementById('ribbonSize').value;
+            const fontWeight = document.getElementById('fontWeight').value;
+            const letterSpacing = document.getElementById('letterSpacing').value;
+            const boxShadow = document.getElementById('boxShadow').value;
+            const horizontalOffset = parseInt(document.getElementById('horizontalOffset').value);
+            const verticalOffset = parseInt(document.getElementById('verticalOffset').value);
+
+            let plainCode = `<!-- HTML -->\n`;
+            plainCode += `<div class="ribbon-container">\n`;
+            plainCode += `    <div class="ribbon ${currentType}">${text}</div>\n`;
+            plainCode += `</div>\n\n`;
+
+            plainCode += `/* CSS */\n`;
+            plainCode += `.ribbon-container {\n`;
+            plainCode += `    position: relative;\n`;
+            plainCode += `    width: 400px;\n`;
+            plainCode += `    height: 300px;\n`;
+            plainCode += `    background: #fff;\n`;
+            plainCode += `    overflow: hidden;\n`;
+            plainCode += `}\n\n`;
+
+            plainCode += `.ribbon {\n`;
+            plainCode += `    position: absolute;\n`;
+            plainCode += `    text-align: center;\n`;
+            plainCode += `    font-size: ${fontSize}px;\n`;
+            plainCode += `    font-weight: ${fontWeight};\n`;
+            plainCode += `    color: ${textColor};\n`;
+            plainCode += `    background: linear-gradient(${primaryColor} 0%, ${secondaryColor} 100%);\n`;
+            plainCode += `    line-height: ${ribbonSize}px;\n`;
+            plainCode += `    letter-spacing: ${letterSpacing}px;\n`;
+            plainCode += `    box-shadow: ${boxShadow};\n`;
+            if (currentType.includes('corner')) {
+                plainCode += `    width: ${ribbonWidth}px;\n`;
+            }
+            plainCode += `}\n\n`;
+
+            // Position-specific styles
+            if (currentType.includes('corner-top-left')) {
+                plainCode += `.ribbon.corner-top-left {\n`;
+                plainCode += `    top: ${verticalOffset}px;\n`;
+                plainCode += `    left: ${horizontalOffset}px;\n`;
+                plainCode += `    transform: rotate(-45deg) translate(-30%, -50%);\n`;
+                plainCode += `    transform-origin: top left;\n`;
+                plainCode += `}\n`;
+            } else if (currentType.includes('corner-top-right')) {
+                plainCode += `.ribbon.corner-top-right {\n`;
+                plainCode += `    top: ${verticalOffset}px;\n`;
+                plainCode += `    right: ${horizontalOffset}px;\n`;
+                plainCode += `    transform: rotate(45deg) translate(30%, -50%);\n`;
+                plainCode += `    transform-origin: top right;\n`;
+                plainCode += `}\n`;
+            } else if (currentType.includes('corner-bottom-left')) {
+                plainCode += `.ribbon.corner-bottom-left {\n`;
+                plainCode += `    bottom: ${verticalOffset}px;\n`;
+                plainCode += `    left: ${horizontalOffset}px;\n`;
+                plainCode += `    transform: rotate(45deg) translate(-30%, 50%);\n`;
+                plainCode += `    transform-origin: bottom left;\n`;
+                plainCode += `}\n`;
+            } else if (currentType.includes('corner-bottom-right')) {
+                plainCode += `.ribbon.corner-bottom-right {\n`;
+                plainCode += `    bottom: ${verticalOffset}px;\n`;
+                plainCode += `    right: ${horizontalOffset}px;\n`;
+                plainCode += `    transform: rotate(-45deg) translate(30%, 50%);\n`;
+                plainCode += `    transform-origin: bottom right;\n`;
+                plainCode += `}\n`;
+            } else if (currentType === 'side-left') {
+                plainCode += `.ribbon.side-left {\n`;
+                plainCode += `    top: calc(50% + ${verticalOffset}px);\n`;
+                plainCode += `    left: ${-20 + horizontalOffset}px;\n`;
+                plainCode += `    transform: translateY(-50%);\n`;
+                plainCode += `    border-radius: 0 ${borderRadius}px ${borderRadius}px 0;\n`;
+                plainCode += `}\n`;
+            } else if (currentType === 'side-right') {
+                plainCode += `.ribbon.side-right {\n`;
+                plainCode += `    top: calc(50% + ${verticalOffset}px);\n`;
+                plainCode += `    right: ${-20 + horizontalOffset}px;\n`;
+                plainCode += `    transform: translateY(-50%);\n`;
+                plainCode += `    border-radius: ${borderRadius}px 0 0 ${borderRadius}px;\n`;
+                plainCode += `}\n`;
+            } else if (currentType === 'top-center') {
+                plainCode += `.ribbon.top-center {\n`;
+                plainCode += `    top: ${30 + verticalOffset}px;\n`;
+                plainCode += `    left: calc(50% + ${horizontalOffset}px);\n`;
+                plainCode += `    transform: translateX(-50%);\n`;
+                plainCode += `}\n`;
+            } else if (currentType === 'bottom-center') {
+                plainCode += `.ribbon.bottom-center {\n`;
+                plainCode += `    bottom: ${30 + verticalOffset}px;\n`;
+                plainCode += `    left: calc(50% + ${horizontalOffset}px);\n`;
+                plainCode += `    transform: translateX(-50%);\n`;
+                plainCode += `}\n`;
+            } else if (currentType === 'bookmark-top') {
+                plainCode += `.ribbon.bookmark-top {\n`;
+                plainCode += `    top: ${verticalOffset}px;\n`;
+                plainCode += `    right: ${30 + horizontalOffset}px;\n`;
+                plainCode += `    border-radius: 0 0 ${borderRadius}px ${borderRadius}px;\n`;
+                plainCode += `}\n\n`;
+                plainCode += `.ribbon.bookmark-top::after {\n`;
+                plainCode += `    content: '';\n`;
+                plainCode += `    position: absolute;\n`;
+                plainCode += `    bottom: -10px;\n`;
+                plainCode += `    left: 50%;\n`;
+                plainCode += `    transform: translateX(-50%);\n`;
+                plainCode += `    width: 0;\n`;
+                plainCode += `    height: 0;\n`;
+                plainCode += `    border-left: 10px solid transparent;\n`;
+                plainCode += `    border-right: 10px solid transparent;\n`;
+                plainCode += `    border-top: 10px solid ${bgColor};\n`;
+                plainCode += `}\n`;
+            }
+
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(plainCode).then(() => {
+                    showCopyFeedback();
+                }).catch(err => {
+                    fallbackCopy(plainCode);
+                });
+            } else {
+                fallbackCopy(plainCode);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопійовано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Initialize
+        updateRibbon();
+    </script>
+            </main>
+        </div>
+    </div>
+
+        <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демо - Система тем CSS Generators</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .demo-section {
+            margin: 40px 0;
+        }
+        
+        .demo-components {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .component-demo {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid var(--border-primary);
+        }
+        
+        .component-demo h3 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            text-transform: none;
+            font-size: 1.2em;
+        }
+        
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .bg-primary-box {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-primary);
+        }
+        
+        .bg-secondary-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-primary);
+        }
+        
+        .bg-tertiary-box {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-primary);
+        }
+        
+        .accent-box {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        .gradient-box {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .theme-info {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .theme-info h2 {
+            border: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+        
+        .feature-list li:last-child {
+            border: none;
+        }
+        
+        .shortcut {
+            display: inline-block;
+            background: var(--bg-secondary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px solid var(--border-primary);
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <header>
+            <h1>🎨 Демонстрація системи тем</h1>
+            <p class="subtitle">CSS Generators - Універсальна система стилів</p>
+            <p class="description">
+                Спробуйте перемкнути тему за допомогою кнопки в правому верхньому куті 
+                або натисніть <strong>Ctrl+Shift+T</strong>
+            </p>
+        </header>
+
+        <div class="theme-info">
+            <h2>ℹ️ Про систему тем</h2>
+            <ul class="feature-list">
+                <li>✅ <strong>2 готові теми:</strong> Темна (за замовчуванням) та Світла</li>
+                <li>✅ <strong>Збереження вибору:</strong> Тема зберігається в localStorage</li>
+                <li>✅ <strong>Клавіатурне скорочення:</strong> <span class="shortcut">Ctrl+Shift+T</span></li>
+                <li>✅ <strong>Плавні переходи:</strong> Анімовані зміни кольорів</li>
+                <li>✅ <strong>CSS змінні:</strong> Легка кастомізація всіх кольорів</li>
+                <li>✅ <strong>JavaScript API:</strong> Програмне управління темою</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎨 Кольорова палітра</h2>
+            <div class="color-boxes">
+                <div class="color-box bg-primary-box">
+                    <div>BG Primary</div>
+                    <small id="bg-primary-value"></small>
+                </div>
+                <div class="color-box bg-secondary-box">
+                    <div>BG Secondary</div>
+                    <small id="bg-secondary-value"></small>
+                </div>
+                <div class="color-box bg-tertiary-box">
+                    <div>BG Tertiary</div>
+                    <small id="bg-tertiary-value"></small>
+                </div>
+                <div class="color-box accent-box">
+                    <div>Accent</div>
+                    <small id="accent-value"></small>
+                </div>
+                <div class="color-box gradient-box">
+                    <div>Gradient</div>
+                    <small>linear-gradient</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🧩 UI Компоненти</h2>
+            <div class="demo-components">
+                
+                <!-- Buttons -->
+                <div class="component-demo">
+                    <h3>Кнопки</h3>
+                    <div class="buttons-row">
+                        <button class="control-btn">Primary Button</button>
+                        <button class="control-btn secondary">Secondary Button</button>
+                        <button class="preset-btn">Preset Button</button>
+                        <button class="preset-btn active">Active Preset</button>
+                    </div>
+                </div>
+
+                <!-- Form Controls -->
+                <div class="component-demo">
+                    <h3>Форми</h3>
+                    <div class="control-group">
+                        <label>Text Input</label>
+                        <input type="text" placeholder="Введіть текст...">
+                    </div>
+                    <div class="control-group">
+                        <label>Number Input</label>
+                        <input type="number" value="42" min="0" max="100">
+                    </div>
+                    <div class="control-group">
+                        <label>Select</label>
+                        <select>
+                            <option>Опція 1</option>
+                            <option>Опція 2</option>
+                            <option>Опція 3</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Range Slider</label>
+                        <input type="range" min="0" max="100" value="50">
+                    </div>
+                    <div class="control-group">
+                        <label>Color Picker</label>
+                        <div class="color-row">
+                            <input type="color" value="#667eea">
+                            <input type="text" value="#667eea">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Area -->
+                <div class="component-demo">
+                    <h3>Preview Area</h3>
+                    <div class="preview-area center" style="min-height: 200px;">
+                        <div class="preview-box">✨</div>
+                    </div>
+                </div>
+
+                <!-- Code Output -->
+                <div class="component-demo">
+                    <h3>Code Output</h3>
+                    <div class="code-output" style="max-height: 200px;">
+                        <button class="copy-btn">Copy</button>
+                        <pre><span class="syntax-comment">/* CSS Generated Code */</span>
+<span class="syntax-selector">.my-element</span> {
+    <span class="syntax-property">background</span>: <span class="syntax-value">var(--gradient-primary)</span>;
+    <span class="syntax-property">color</span>: <span class="syntax-value">var(--text-primary)</span>;
+    <span class="syntax-property">padding</span>: <span class="syntax-value">20px</span>;
+    <span class="syntax-property">border-radius</span>: <span class="syntax-value">12px</span>;
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Cards -->
+                <div class="component-demo">
+                    <h3>Generator Card</h3>
+                    <a href="#" class="generator-card" style="max-width: 400px;">
+                        <div class="generator-icon">🌈</div>
+                        <div class="generator-title">CSS Generator</div>
+                        <div class="generator-description">
+                            Це приклад картки генератора з описом функціональності та тегами.
+                        </div>
+                        <div class="generator-tags">
+                            <span class="tag">CSS</span>
+                            <span class="tag">Design</span>
+                            <span class="tag">Tools</span>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>💻 JavaScript API</h2>
+            <div class="component-demo">
+                <h3>Програмне управління темою</h3>
+                <div class="buttons-row" style="margin-bottom: 20px;">
+                    <button class="control-btn" onclick="setThemeDark()">Встановити темну</button>
+                    <button class="control-btn" onclick="setThemeLight()">Встановити світлу</button>
+                    <button class="control-btn secondary" onclick="toggleTheme()">Перемкнути</button>
+                    <button class="control-btn secondary" onclick="getCurrentTheme()">Поточна тема</button>
+                </div>
+                <div class="code-output" style="max-height: 300px;">
+<pre><span class="syntax-comment">// Отримати поточну тему</span>
+const theme = window.themeToggle.get();
+console.log(theme); <span class="syntax-comment">// 'dark' або 'light'</span>
+
+<span class="syntax-comment">// Встановити тему</span>
+window.themeToggle.set('light');
+window.themeToggle.set('dark');
+
+<span class="syntax-comment">// Перемкнути тему</span>
+window.themeToggle.toggle();
+
+<span class="syntax-comment">// Використання в CSS</span>
+.my-element {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.1em; color: var(--text-muted); margin-bottom: 10px;">
+                Made with 💜 by CSS Generators Team
+            </p>
+            <p style="font-size: 0.9em; color: var(--text-disabled);">
+                <a href="index.html">← Повернутися на головну</a>
+            </p>
+        </footer>
+    </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="css/theme-toggle.js"></script>
+    <script>
+        // Оновлення значень кольорів
+        function updateColorValues() {
+            const root = getComputedStyle(document.documentElement);
+            document.getElementById('bg-primary-value').textContent = 
+                root.getPropertyValue('--bg-primary').trim();
+            document.getElementById('bg-secondary-value').textContent = 
+                root.getPropertyValue('--bg-secondary').trim();
+            document.getElementById('bg-tertiary-value').textContent = 
+                root.getPropertyValue('--bg-tertiary').trim();
+            document.getElementById('accent-value').textContent = 
+                root.getPropertyValue('--accent-primary').trim();
+        }
+
+        // Функції для демонстрації API
+        function setThemeDark() {
+            window.themeToggle.set('dark');
+            setTimeout(updateColorValues, 100);
+        }
+
+        function setThemeLight() {
+            window.themeToggle.set('light');
+            setTimeout(updateColorValues, 100);
+        }
+
+        function toggleTheme() {
+            window.themeToggle.toggle();
+            setTimeout(updateColorValues, 100);
+        }
+
+        function getCurrentTheme() {
+            const theme = window.themeToggle.get();
+            alert(`Поточна тема: ${theme === 'dark' ? 'Темна' : 'Світла'} (${theme})`);
+        }
+
+        // Оновити при завантаженні
+        window.addEventListener('load', updateColorValues);
+
+        // Оновлювати при зміні теми
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                    updateColorValues();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+    </script>
+</body>
+</html>

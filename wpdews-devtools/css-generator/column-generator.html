@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Column Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+<div class="container">
+    <div class="main-grid">
+        <aside class="controls-panel sidebar-nav">
+            <div class="sidebar-brand">
+                <h2>Navigation</h2>
+                <p>Швидкий доступ до всіх генераторів</p>
+            </div>
+
+            <nav aria-label="Навігація по генераторам">
+                <div>
+                    <div class="sidebar-group-title">Crypto</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                        <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                        <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                        <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <div class="sidebar-group-title">Converters</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                        <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                        <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                        <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                        <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                        <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                        <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-column">
+        <h1>CSS Column Generator</h1>
+        <p class="subtitle">Створюйте багатоколонкові макети з CSS columns</p>
+
+        <div class="main-grid">
+            <div class="controls-panel">
+                <div class="panel">
+                    <h2>Параметри колонок</h2>
+
+                    <div class="control-section">
+                        <h3>Основні налаштування</h3>
+
+                        <div class="control-group">
+                            <label>Column Count (Кількість): <span id="countValue">3</span></label>
+                            <input type="range" id="columnCount" min="1" max="6" value="3" 
+                                   oninput="updateColumns()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Column Width (Ширина)</label>
+                            <div class="control-row">
+                                <input type="number" id="columnWidth" value="200" min="50" step="10" 
+                                       oninput="updateColumns()">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Column Gap (Проміжок): <span id="gapValue">30</span>px</label>
+                            <input type="range" id="columnGap" min="0" max="100" value="30" 
+                                   oninput="updateColumns()">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="autoWidth" onchange="toggleAutoWidth()">
+                            <label for="autoWidth">Auto Width (авто ширина)</label>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Column Rule (Роздільник)</h3>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="enableRule" onchange="toggleRule()">
+                            <label for="enableRule">Увімкнути роздільник</label>
+                        </div>
+
+                        <div id="ruleControls" style="display: none;">
+                            <div class="control-group">
+                                <label>Rule Width (Товщина): <span id="ruleWidthValue">1</span>px</label>
+                                <input type="range" id="ruleWidth" min="1" max="10" value="1" 
+                                       oninput="updateColumns()">
+                            </div>
+
+                            <div class="control-group">
+                                <label>Rule Style</label>
+                                <select id="ruleStyle" onchange="updateColumns()">
+                                    <option value="solid">Solid</option>
+                                    <option value="dotted">Dotted</option>
+                                    <option value="dashed">Dashed</option>
+                                    <option value="double">Double</option>
+                                    <option value="groove">Groove</option>
+                                    <option value="ridge">Ridge</option>
+                                </select>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Rule Color</label>
+                                <div class="color-row">
+                                    <input type="color" id="ruleColorPicker" value="#667eea" 
+                                           oninput="updateColorInput(this.value)">
+                                    <input type="text" id="ruleColorInput" value="#667eea" 
+                                           oninput="updateColorPicker(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Додатково</h3>
+
+                        <div class="control-group">
+                            <label>Column Fill</label>
+                            <select id="columnFill" onchange="updateColumns()">
+                                <option value="balance">Balance (рівномірно)</option>
+                                <option value="auto">Auto</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Column Span</label>
+                            <select id="columnSpan" onchange="updateColumns()">
+                                <option value="none">None</option>
+                                <option value="all">All (заголовок)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area">
+                        <div class="preview-content" id="previewContent">
+                            <h2 style="margin-bottom: 20px;">Заголовок тексту</h2>
+                            <p style="margin-bottom: 15px;">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
+                                totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores 
+                                eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
+                            </p>
+                            <p>
+                                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque 
+                                corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Згенерований CSS код</h2>
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCode()">📋 Копіювати</button>
+                <pre id="cssCode"></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Про CSS Column Generator</h3>
+            <p><strong>CSS Column Generator</strong> - інструмент для створення багатоколонкових текстових макетів з використанням CSS Multi-column Layout.</p>
+            
+            <h3 style="margin-top: 20px;">🎯 Основні властивості:</h3>
+            <ul>
+                <li><strong>column-count</strong> - кількість колонок (1-6)</li>
+                <li><strong>column-width</strong> - мінімальна ширина колонки</li>
+                <li><strong>column-gap</strong> - проміжок між колонками</li>
+                <li><strong>column-rule</strong> - вертикальний роздільник між колонками (width, style, color)</li>
+                <li><strong>column-fill</strong> - розподіл контенту (balance/auto)</li>
+                <li><strong>column-span</strong> - елемент на всю ширину (наприклад заголовок)</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">💡 Корисно знати:</h3>
+            <ul>
+                <li><strong>Auto Width</strong> - браузер автоматично визначає ширину колонок</li>
+                <li><strong>Balance</strong> - намагається зробити колонки однакової висоти</li>
+                <li><strong>Column Span: All</strong> - для заголовків, які займають всю ширину</li>
+                <li><strong>Підтримка браузерів</strong> - всі сучасні браузери (з префіксами для старих версій)</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">🎨 Приклади використання:</h3>
+            <ul>
+                <li>Газетні макети з багатьма колонками тексту</li>
+                <li>Блоги та статті з покращеною читабельністю</li>
+                <li>Pinterest-подібні сітки (masonry layout)</li>
+                <li>Списки елементів у декілька колонок</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let autoWidth = false;
+        let ruleEnabled = false;
+
+        function updateColumns() {
+            const preview = document.getElementById('previewContent');
+            const columnCount = document.getElementById('columnCount').value;
+            const columnWidth = document.getElementById('columnWidth').value;
+            const columnGap = document.getElementById('columnGap').value;
+            const columnFill = document.getElementById('columnFill').value;
+            const columnSpan = document.getElementById('columnSpan').value;
+
+            // Update value displays
+            document.getElementById('countValue').textContent = columnCount;
+            document.getElementById('gapValue').textContent = columnGap;
+
+            // Apply column styles
+            if (autoWidth) {
+                // Auto width mode: браузер визначає кількість колонок на основі column-width
+                preview.style.columnCount = 'auto';
+                preview.style.columnWidth = columnWidth + 'px';
+            } else {
+                // Fixed count mode: фіксована кількість колонок
+                preview.style.columnCount = columnCount;
+                preview.style.columnWidth = 'auto';
+            }
+
+            preview.style.columnGap = columnGap + 'px';
+            preview.style.columnFill = columnFill;
+
+            // Column rule
+            if (ruleEnabled) {
+                const ruleWidth = document.getElementById('ruleWidth').value;
+                const ruleStyle = document.getElementById('ruleStyle').value;
+                const ruleColor = document.getElementById('ruleColorInput').value;
+                
+                document.getElementById('ruleWidthValue').textContent = ruleWidth;
+                
+                preview.style.columnRuleWidth = ruleWidth + 'px';
+                preview.style.columnRuleStyle = ruleStyle;
+                preview.style.columnRuleColor = ruleColor;
+            } else {
+                preview.style.columnRuleWidth = '0';
+            }
+
+            // Column span for heading
+            const heading = preview.querySelector('h2');
+            if (heading) {
+                heading.style.columnSpan = columnSpan;
+            }
+
+            generateCode();
+        }
+
+        function toggleAutoWidth() {
+            autoWidth = document.getElementById('autoWidth').checked;
+            const widthControl = document.getElementById('columnWidth').parentElement.parentElement;
+            const countControl = document.getElementById('columnCount').parentElement;
+            
+            if (autoWidth) {
+                // Auto width: ширина активна, кількість вимкнена
+                widthControl.style.opacity = '1';
+                document.getElementById('columnWidth').disabled = false;
+                countControl.style.opacity = '0.5';
+                document.getElementById('columnCount').disabled = true;
+            } else {
+                // Fixed count: кількість активна, ширина вимкнена
+                widthControl.style.opacity = '0.5';
+                document.getElementById('columnWidth').disabled = true;
+                countControl.style.opacity = '1';
+                document.getElementById('columnCount').disabled = false;
+            }
+            
+            updateColumns();
+        }
+
+        function toggleRule() {
+            ruleEnabled = document.getElementById('enableRule').checked;
+            const ruleControls = document.getElementById('ruleControls');
+            
+            ruleControls.style.display = ruleEnabled ? 'block' : 'none';
+            updateColumns();
+        }
+
+        function updateColorInput(color) {
+            document.getElementById('ruleColorInput').value = color;
+            updateColumns();
+        }
+
+        function updateColorPicker(color) {
+            document.getElementById('ruleColorPicker').value = color;
+            updateColumns();
+        }
+
+        function generateCode() {
+            const columnCount = document.getElementById('columnCount').value;
+            const columnWidth = document.getElementById('columnWidth').value;
+            const columnGap = document.getElementById('columnGap').value;
+            const columnFill = document.getElementById('columnFill').value;
+            const columnSpan = document.getElementById('columnSpan').value;
+
+            let code = `<span class="syntax-selector">.columns</span> {\n`;
+            
+            if (autoWidth) {
+                code += `    <span class="syntax-property">column-count</span>: <span class="syntax-value">auto</span>;\n`;
+                code += `    <span class="syntax-property">column-width</span>: <span class="syntax-value">${columnWidth}px</span>;\n`;
+            } else {
+                code += `    <span class="syntax-property">column-count</span>: <span class="syntax-value">${columnCount}</span>;\n`;
+                code += `    <span class="syntax-property">column-width</span>: <span class="syntax-value">auto</span>;\n`;
+            }
+            
+            code += `    <span class="syntax-property">column-gap</span>: <span class="syntax-value">${columnGap}px</span>;\n`;
+
+            if (ruleEnabled) {
+                const ruleWidth = document.getElementById('ruleWidth').value;
+                const ruleStyle = document.getElementById('ruleStyle').value;
+                const ruleColor = document.getElementById('ruleColorInput').value;
+                
+                code += `    <span class="syntax-property">column-rule-width</span>: <span class="syntax-value">${ruleWidth}px</span>;\n`;
+                code += `    <span class="syntax-property">column-rule-style</span>: <span class="syntax-value">${ruleStyle}</span>;\n`;
+                code += `    <span class="syntax-property">column-rule-color</span>: <span class="syntax-value">${ruleColor}</span>;\n`;
+                code += `    <span class="syntax-comment">/* або скорочено: */</span>\n`;
+                code += `    <span class="syntax-property">column-rule</span>: <span class="syntax-value">${ruleWidth}px ${ruleStyle} ${ruleColor}</span>;\n`;
+            }
+
+            code += `    <span class="syntax-property">column-fill</span>: <span class="syntax-value">${columnFill}</span>;\n`;
+            code += `}\n\n`;
+
+            if (columnSpan === 'all') {
+                code += `<span class="syntax-comment">/* Заголовок на всю ширину */</span>\n`;
+                code += `<span class="syntax-selector">.columns h2</span> {\n`;
+                code += `    <span class="syntax-property">column-span</span>: <span class="syntax-value">all</span>;\n`;
+                code += `}\n\n`;
+            }
+
+            code += `<span class="syntax-comment">/* Shorthand (скорочений запис) */</span>\n`;
+            code += `<span class="syntax-selector">.columns</span> {\n`;
+            if (autoWidth) {
+                code += `    <span class="syntax-property">columns</span>: <span class="syntax-value">auto ${columnWidth}px</span>;\n`;
+            } else {
+                code += `    <span class="syntax-property">columns</span>: <span class="syntax-value">${columnCount} auto</span>;\n`;
+            }
+            code += `}`;
+
+            document.getElementById('cssCode').innerHTML = code;
+        }
+
+        function copyCode() {
+            const columnCount = document.getElementById('columnCount').value;
+            const columnWidth = document.getElementById('columnWidth').value;
+            const columnGap = document.getElementById('columnGap').value;
+            const columnFill = document.getElementById('columnFill').value;
+            const columnSpan = document.getElementById('columnSpan').value;
+
+            let plainCode = `.columns {\n`;
+            
+            if (autoWidth) {
+                plainCode += `    column-count: auto;\n`;
+                plainCode += `    column-width: ${columnWidth}px;\n`;
+            } else {
+                plainCode += `    column-count: ${columnCount};\n`;
+                plainCode += `    column-width: auto;\n`;
+            }
+            
+            plainCode += `    column-gap: ${columnGap}px;\n`;
+
+            if (ruleEnabled) {
+                const ruleWidth = document.getElementById('ruleWidth').value;
+                const ruleStyle = document.getElementById('ruleStyle').value;
+                const ruleColor = document.getElementById('ruleColorInput').value;
+                
+                plainCode += `    column-rule-width: ${ruleWidth}px;\n`;
+                plainCode += `    column-rule-style: ${ruleStyle};\n`;
+                plainCode += `    column-rule-color: ${ruleColor};\n`;
+                plainCode += `    /* або скорочено: */\n`;
+                plainCode += `    column-rule: ${ruleWidth}px ${ruleStyle} ${ruleColor};\n`;
+            }
+
+            plainCode += `    column-fill: ${columnFill};\n`;
+            plainCode += `}\n\n`;
+
+            if (columnSpan === 'all') {
+                plainCode += `/* Заголовок на всю ширину */\n`;
+                plainCode += `.columns h2 {\n`;
+                plainCode += `    column-span: all;\n`;
+                plainCode += `}\n\n`;
+            }
+
+            plainCode += `/* Shorthand (скорочений запис) */\n`;
+            plainCode += `.columns {\n`;
+            if (autoWidth) {
+                plainCode += `    columns: auto ${columnWidth}px;\n`;
+            } else {
+                plainCode += `    columns: ${columnCount} auto;\n`;
+            }
+            plainCode += `}`;
+
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(plainCode).then(() => {
+                    showCopyFeedback();
+                }).catch(err => {
+                    fallbackCopy(plainCode);
+                });
+            } else {
+                fallbackCopy(plainCode);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопійовано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Initialize
+        updateColumns();
+    </script>
+        </main>
+    </div>
+</div>
+
+    <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

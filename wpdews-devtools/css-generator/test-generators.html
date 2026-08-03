@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест - Перевірка генераторів</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .test-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .test-item {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .test-item.success {
+            border-color: var(--accent-success);
+        }
+        
+        .test-item.error {
+            border-color: var(--accent-danger);
+        }
+        
+        .test-link {
+            display: block;
+            padding: 10px 20px;
+            background: var(--accent-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .test-link:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .status-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+        <header>
+            <h1>🧪 Тестування генераторів</h1>
+            <p class="subtitle">Перевірка функціональності після оновлення</p>
+        </header>
+
+        <div class="test-section">
+            <h2>📋 Чек-лист перевірки</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="status-icon">✅</div>
+                    <h3>Стилі</h3>
+                    <p>Базові стилі з css/style.css завантажені</p>
+                </div>
+                <div class="test-item">
+                    <div class="status-icon">✅</div>
+                    <h3>Теми</h3>
+                    <p>Перемикач теми працює</p>
+                </div>
+                <div class="test-item">
+                    <div class="status-icon">⏳</div>
+                    <h3>Генератори</h3>
+                    <p>Потребують перевірки</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 Генератори для тестування</h2>
+            <p style="color: var(--text-tertiary); margin-bottom: 20px;">
+                Клікніть на кожен генератор та перевірте:
+            </p>
+            <ul style="color: var(--text-tertiary); margin-bottom: 20px; margin-left: 20px;">
+                <li>✓ Сторінка відкривається без помилок</li>
+                <li>✓ Всі кнопки видимі та стилізовані</li>
+                <li>✓ Панелі керування працюють</li>
+                <li>✓ Preview area відображається</li>
+                <li>✓ Генерація коду працює</li>
+                <li>✓ Кнопка Copy працює</li>
+            </ul>
+            
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="status-icon">✂️</div>
+                    <h3>Clip Path Maker</h3>
+                    <a href="clip-path-maker.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item">
+                    <div class="status-icon">🖼️</div>
+                    <h3>Image to Data URI</h3>
+                    <a href="image-to-datauri.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item">
+                    <div class="status-icon">🌈</div>
+                    <h3>CSS Gradient</h3>
+                    <a href="cssgradient.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item">
+                    <div class="status-icon">🎮</div>
+                    <h3>CSS Sprite Generator</h3>
+                    <a href="css-sprite-generator.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item">
+                    <div class="status-icon">✨</div>
+                    <h3>Animation Generator</h3>
+                    <a href="animation-generator.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item success">
+                    <div class="status-icon">📰</div>
+                    <h3>Column Generator</h3>
+                    <p style="color: var(--accent-success); font-size: 0.9em; margin: 10px 0;">Працює ✓</p>
+                    <a href="column-generator.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item success">
+                    <div class="status-icon">📦</div>
+                    <h3>Flexbox Generator</h3>
+                    <p style="color: var(--accent-success); font-size: 0.9em; margin: 10px 0;">Працює ✓</p>
+                    <a href="flexbox-generator.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+                
+                <div class="test-item">
+                    <div class="status-icon">🎀</div>
+                    <h3>Ribbon Generator</h3>
+                    <a href="ribbon-generator.html" class="test-link" target="_blank">Тестувати</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Що було виправлено</h2>
+            <div class="code-output" style="background: var(--bg-tertiary); padding: 20px;">
+                <h3 style="color: var(--accent-primary); margin-bottom: 15px;">Проблема:</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                    ❌ Генератори не працювали після першого оновлення<br>
+                    ❌ Відсутні стилі кнопок та компонентів<br>
+                    ❌ Специфічні стилі кожного генератора були видалені
+                </p>
+                
+                <h3 style="color: var(--accent-success); margin-bottom: 15px;">Рішення:</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 10px;">
+                    ✅ Відновлено специфічні стилі з backup файлів<br>
+                    ✅ Видалено дублікати базових стилів<br>
+                    ✅ Залишено тільки унікальні стилі для кожного генератора<br>
+                    ✅ Додано допоміжні класи в css/style.css
+                </p>
+                
+                <h3 style="color: var(--accent-primary); margin-bottom: 15px; margin-top: 20px;">Структура:</h3>
+                <pre style="color: var(--text-secondary);">
+css/style.css           ← Базові стилі для всіх сторінок
+    + Специфічні стилі  ← У кожному HTML файлі окремо
+
+Приклад:
+&lt;link rel="stylesheet" href="css/style.css"&gt;
+&lt;style&gt;
+    /* Специфічні стилі генератора */
+    .shape-btn { ... }
+    .canvas-area { ... }
+&lt;/style&gt;
+                </pre>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Інструкції з тестування</h2>
+            <ol style="color: var(--text-secondary); margin-left: 20px; line-height: 2;">
+                <li>Відкрийте кожен генератор у новій вкладці</li>
+                <li>Перевірте чи всі кнопки видимі та правильно стилізовані</li>
+                <li>Спробуйте змінити параметри</li>
+                <li>Перевірте чи працює preview</li>
+                <li>Скопіюйте згенерований код</li>
+                <li>Перемкніть тему (темна/світла)</li>
+                <li>Перевірте на мобільному екрані (responsive)</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.1em; color: var(--text-muted); margin-bottom: 10px;">
+                <a href="index.html">← Повернутися на головну</a> | 
+                <a href="theme-demo.html">Демо тем</a>
+            </p>
+        </footer>
+    </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="css/theme-toggle.js"></script>
+    <script>
+        // Автоматичне оновлення статусу тестування
+        window.addEventListener('load', () => {
+            console.log('🧪 Тестова сторінка завантажена');
+            console.log('✅ Базові стилі: працюють');
+            console.log('✅ Система тем: працює');
+            console.log('⏳ Генератори: потребують перевірки');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Flexbox Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+<div class="container">
+    <div class="main-grid">
+        <aside class="controls-panel sidebar-nav">
+            <div class="sidebar-brand">
+                <h2>Navigation</h2>
+                <p>Швидкий доступ до всіх генераторів</p>
+            </div>
+
+            <nav aria-label="Навігація по генераторам">
+                <div>
+                    <div class="sidebar-group-title">Crypto</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                        <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                        <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                        <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <div class="sidebar-group-title">Converters</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                        <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                        <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                        <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                        <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                        <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                        <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-column">
+        <h1>CSS Flexbox Generator</h1>
+        <p class="subtitle">Створюйте Flexbox макети з візуальним редактором</p>
+
+        <div class="main-grid">
+            <div class="controls-panel">
+                <div class="panel">
+                    <h2>Flex контейнер</h2>
+
+                    <div class="control-section">
+                        <h3>Основні властивості</h3>
+
+                        <div class="control-group">
+                            <label>flex-direction</label>
+                            <select id="flexDirection" onchange="updateFlex()">
+                                <option value="row">row (→)</option>
+                                <option value="row-reverse">row-reverse (←)</option>
+                                <option value="column">column (↓)</option>
+                                <option value="column-reverse">column-reverse (↑)</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>flex-wrap</label>
+                            <select id="flexWrap" onchange="updateFlex()">
+                                <option value="nowrap">nowrap</option>
+                                <option value="wrap">wrap</option>
+                                <option value="wrap-reverse">wrap-reverse</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>justify-content</label>
+                            <select id="justifyContent" onchange="updateFlex()">
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="center">center</option>
+                                <option value="space-between">space-between</option>
+                                <option value="space-around">space-around</option>
+                                <option value="space-evenly">space-evenly</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>align-items</label>
+                            <select id="alignItems" onchange="updateFlex()">
+                                <option value="stretch">stretch</option>
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="center">center</option>
+                                <option value="baseline">baseline</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>align-content</label>
+                            <select id="alignContent" onchange="updateFlex()">
+                                <option value="stretch">stretch</option>
+                                <option value="flex-start">flex-start</option>
+                                <option value="flex-end">flex-end</option>
+                                <option value="center">center</option>
+                                <option value="space-between">space-between</option>
+                                <option value="space-around">space-around</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>gap (px)</label>
+                            <input type="number" id="gap" value="10" min="0" max="50" 
+                                   oninput="updateFlex()">
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Елементи</h3>
+                        <button class="control-btn" onclick="addItem()">➕ Додати елемент</button>
+                        <button class="control-btn secondary" onclick="removeItem()">➖ Видалити обраний</button>
+                    </div>
+
+                    <div id="itemSettings" class="item-settings">
+                        <div class="control-section">
+                            <h3>Налаштування елемента <span id="selectedItemNum"></span></h3>
+
+                            <div class="control-group">
+                                <label>flex-grow</label>
+                                <input type="number" id="flexGrow" value="0" min="0" max="10" 
+                                       oninput="updateItemFlex()">
+                            </div>
+
+                            <div class="control-group">
+                                <label>flex-shrink</label>
+                                <input type="number" id="flexShrink" value="1" min="0" max="10" 
+                                       oninput="updateItemFlex()">
+                            </div>
+
+                            <div class="control-group">
+                                <label>flex-basis</label>
+                                <input type="text" id="flexBasis" value="auto" 
+                                       oninput="updateItemFlex()">
+                            </div>
+
+                            <div class="control-group">
+                                <label>align-self</label>
+                                <select id="alignSelf" onchange="updateItemFlex()">
+                                    <option value="auto">auto</option>
+                                    <option value="flex-start">flex-start</option>
+                                    <option value="flex-end">flex-end</option>
+                                    <option value="center">center</option>
+                                    <option value="baseline">baseline</option>
+                                    <option value="stretch">stretch</option>
+                                </select>
+                            </div>
+
+                            <div class="control-group">
+                                <label>order</label>
+                                <input type="number" id="order" value="0" min="-10" max="10" 
+                                       oninput="updateItemFlex()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area">
+                        <div class="flex-container" id="flexContainer">
+                            <div class="flex-item" onclick="selectItem(0)">1</div>
+                            <div class="flex-item" onclick="selectItem(1)">2</div>
+                            <div class="flex-item" onclick="selectItem(2)">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Згенерований CSS код</h2>
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCode()">📋 Копіювати</button>
+                <pre id="cssCode"></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Про CSS Flexbox Generator</h3>
+            <p><strong>CSS Flexbox Generator</strong> - візуальний редактор для створення гнучких макетів з використанням CSS Flexbox.</p>
+            
+            <h3 style="margin-top: 20px;">🎯 Властивості контейнера:</h3>
+            <ul>
+                <li><strong>flex-direction</strong> - напрямок розташування елементів (row, column)</li>
+                <li><strong>flex-wrap</strong> - перенесення елементів на новий рядок</li>
+                <li><strong>justify-content</strong> - вирівнювання по головній осі</li>
+                <li><strong>align-items</strong> - вирівнювання по перпендикулярній осі</li>
+                <li><strong>align-content</strong> - вирівнювання ліній при wrap</li>
+                <li><strong>gap</strong> - проміжок між елементами</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">🎨 Властивості елементів:</h3>
+            <ul>
+                <li><strong>flex-grow</strong> - коефіцієнт збільшення (як елемент займає вільний простір)</li>
+                <li><strong>flex-shrink</strong> - коефіцієнт зменшення (як елемент зменшується)</li>
+                <li><strong>flex-basis</strong> - базовий розмір елемента (auto, 100px, 50% тощо)</li>
+                <li><strong>align-self</strong> - індивідуальне вирівнювання елемента</li>
+                <li><strong>order</strong> - порядок відображення елемента</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">💡 Корисні поради:</h3>
+            <ul>
+                <li>Клікніть на елемент щоб налаштувати його індивідуальні властивості</li>
+                <li><strong>flex-grow: 1</strong> на всіх елементах - рівномірний розподіл простору</li>
+                <li><strong>flex-wrap: wrap</strong> - дозволяє елементам переноситись на новий рядок</li>
+                <li><strong>gap</strong> замінює margin між елементами (підтримка в сучасних браузерах)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let selectedItemIndex = -1;
+        let itemsData = [
+            { grow: 0, shrink: 1, basis: 'auto', alignSelf: 'auto', order: 0 },
+            { grow: 0, shrink: 1, basis: 'auto', alignSelf: 'auto', order: 0 },
+            { grow: 0, shrink: 1, basis: 'auto', alignSelf: 'auto', order: 0 }
+        ];
+
+        function updateFlex() {
+            const container = document.getElementById('flexContainer');
+            const direction = document.getElementById('flexDirection').value;
+            const wrap = document.getElementById('flexWrap').value;
+            const justify = document.getElementById('justifyContent').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const alignContent = document.getElementById('alignContent').value;
+            const gap = document.getElementById('gap').value;
+
+            container.style.flexDirection = direction;
+            container.style.flexWrap = wrap;
+            container.style.justifyContent = justify;
+            container.style.alignItems = alignItems;
+            container.style.alignContent = alignContent;
+            container.style.gap = gap + 'px';
+
+            generateCode();
+        }
+
+        function addItem() {
+            const container = document.getElementById('flexContainer');
+            const itemCount = container.children.length;
+            const newItem = document.createElement('div');
+            newItem.className = 'flex-item';
+            newItem.textContent = itemCount + 1;
+            newItem.onclick = () => selectItem(itemCount);
+            container.appendChild(newItem);
+
+            itemsData.push({ grow: 0, shrink: 1, basis: 'auto', alignSelf: 'auto', order: 0 });
+            generateCode();
+        }
+
+        function removeItem() {
+            if (selectedItemIndex >= 0) {
+                const container = document.getElementById('flexContainer');
+                if (container.children.length > 1) {
+                    container.children[selectedItemIndex].remove();
+                    itemsData.splice(selectedItemIndex, 1);
+                    
+                    // Update numbers
+                    Array.from(container.children).forEach((item, i) => {
+                        item.textContent = i + 1;
+                        item.onclick = () => selectItem(i);
+                    });
+                    
+                    selectedItemIndex = -1;
+                    document.getElementById('itemSettings').classList.remove('active');
+                    generateCode();
+                }
+            }
+        }
+
+        function selectItem(index) {
+            selectedItemIndex = index;
+            const container = document.getElementById('flexContainer');
+            
+            // Remove selection from all items
+            Array.from(container.children).forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current item
+            container.children[index].classList.add('selected');
+            
+            // Show settings
+            document.getElementById('itemSettings').classList.add('active');
+            document.getElementById('selectedItemNum').textContent = `#${index + 1}`;
+            
+            // Load item data
+            const data = itemsData[index];
+            document.getElementById('flexGrow').value = data.grow;
+            document.getElementById('flexShrink').value = data.shrink;
+            document.getElementById('flexBasis').value = data.basis;
+            document.getElementById('alignSelf').value = data.alignSelf;
+            document.getElementById('order').value = data.order;
+        }
+
+        function updateItemFlex() {
+            if (selectedItemIndex < 0) return;
+
+            const container = document.getElementById('flexContainer');
+            const item = container.children[selectedItemIndex];
+            
+            const grow = document.getElementById('flexGrow').value;
+            const shrink = document.getElementById('flexShrink').value;
+            const basis = document.getElementById('flexBasis').value;
+            const alignSelf = document.getElementById('alignSelf').value;
+            const order = document.getElementById('order').value;
+
+            item.style.flexGrow = grow;
+            item.style.flexShrink = shrink;
+            item.style.flexBasis = basis;
+            item.style.alignSelf = alignSelf;
+            item.style.order = order;
+
+            // Save data
+            itemsData[selectedItemIndex] = { grow, shrink, basis, alignSelf, order };
+            
+            generateCode();
+        }
+
+        function generateCode() {
+            const direction = document.getElementById('flexDirection').value;
+            const wrap = document.getElementById('flexWrap').value;
+            const justify = document.getElementById('justifyContent').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const alignContent = document.getElementById('alignContent').value;
+            const gap = document.getElementById('gap').value;
+
+            let code = `<span class="syntax-comment">/* Flex контейнер */</span>\n`;
+            code += `<span class="syntax-selector">.flex-container</span> {\n`;
+            code += `    <span class="syntax-property">display</span>: <span class="syntax-value">flex</span>;\n`;
+            code += `    <span class="syntax-property">flex-direction</span>: <span class="syntax-value">${direction}</span>;\n`;
+            code += `    <span class="syntax-property">flex-wrap</span>: <span class="syntax-value">${wrap}</span>;\n`;
+            code += `    <span class="syntax-property">justify-content</span>: <span class="syntax-value">${justify}</span>;\n`;
+            code += `    <span class="syntax-property">align-items</span>: <span class="syntax-value">${alignItems}</span>;\n`;
+            code += `    <span class="syntax-property">align-content</span>: <span class="syntax-value">${alignContent}</span>;\n`;
+            code += `    <span class="syntax-property">gap</span>: <span class="syntax-value">${gap}px</span>;\n`;
+            code += `}\n\n`;
+
+            // Add item-specific styles if any are customized
+            let hasCustomItems = false;
+            itemsData.forEach((data, i) => {
+                if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto' || 
+                    data.alignSelf != 'auto' || data.order != 0) {
+                    hasCustomItems = true;
+                }
+            });
+
+            if (hasCustomItems) {
+                code += `<span class="syntax-comment">/* Flex елементи */</span>\n`;
+                itemsData.forEach((data, i) => {
+                    if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto' || 
+                        data.alignSelf != 'auto' || data.order != 0) {
+                        code += `<span class="syntax-selector">.flex-item:nth-child(${i + 1})</span> {\n`;
+                        if (data.grow != 0) code += `    <span class="syntax-property">flex-grow</span>: <span class="syntax-value">${data.grow}</span>;\n`;
+                        if (data.shrink != 1) code += `    <span class="syntax-property">flex-shrink</span>: <span class="syntax-value">${data.shrink}</span>;\n`;
+                        if (data.basis != 'auto') code += `    <span class="syntax-property">flex-basis</span>: <span class="syntax-value">${data.basis}</span>;\n`;
+                        if (data.alignSelf != 'auto') code += `    <span class="syntax-property">align-self</span>: <span class="syntax-value">${data.alignSelf}</span>;\n`;
+                        if (data.order != 0) code += `    <span class="syntax-property">order</span>: <span class="syntax-value">${data.order}</span>;\n`;
+                        
+                        // Add shorthand if grow/shrink/basis are set
+                        if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto') {
+                            code += `    <span class="syntax-comment">/* або: flex: ${data.grow} ${data.shrink} ${data.basis}; */</span>\n`;
+                        }
+                        code += `}\n\n`;
+                    }
+                });
+            }
+
+            document.getElementById('cssCode').innerHTML = code;
+        }
+
+        function copyCode() {
+            const direction = document.getElementById('flexDirection').value;
+            const wrap = document.getElementById('flexWrap').value;
+            const justify = document.getElementById('justifyContent').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const alignContent = document.getElementById('alignContent').value;
+            const gap = document.getElementById('gap').value;
+
+            let plainCode = `/* Flex контейнер */\n`;
+            plainCode += `.flex-container {\n`;
+            plainCode += `    display: flex;\n`;
+            plainCode += `    flex-direction: ${direction};\n`;
+            plainCode += `    flex-wrap: ${wrap};\n`;
+            plainCode += `    justify-content: ${justify};\n`;
+            plainCode += `    align-items: ${alignItems};\n`;
+            plainCode += `    align-content: ${alignContent};\n`;
+            plainCode += `    gap: ${gap}px;\n`;
+            plainCode += `}\n\n`;
+
+            // Add item-specific styles
+            let hasCustomItems = false;
+            itemsData.forEach((data, i) => {
+                if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto' || 
+                    data.alignSelf != 'auto' || data.order != 0) {
+                    hasCustomItems = true;
+                }
+            });
+
+            if (hasCustomItems) {
+                plainCode += `/* Flex елементи */\n`;
+                itemsData.forEach((data, i) => {
+                    if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto' || 
+                        data.alignSelf != 'auto' || data.order != 0) {
+                        plainCode += `.flex-item:nth-child(${i + 1}) {\n`;
+                        if (data.grow != 0) plainCode += `    flex-grow: ${data.grow};\n`;
+                        if (data.shrink != 1) plainCode += `    flex-shrink: ${data.shrink};\n`;
+                        if (data.basis != 'auto') plainCode += `    flex-basis: ${data.basis};\n`;
+                        if (data.alignSelf != 'auto') plainCode += `    align-self: ${data.alignSelf};\n`;
+                        if (data.order != 0) plainCode += `    order: ${data.order};\n`;
+                        
+                        if (data.grow != 0 || data.shrink != 1 || data.basis != 'auto') {
+                            plainCode += `    /* або: flex: ${data.grow} ${data.shrink} ${data.basis}; */\n`;
+                        }
+                        plainCode += `}\n\n`;
+                    }
+                });
+            }
+
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(plainCode).then(() => {
+                    showCopyFeedback();
+                }).catch(err => {
+                    fallbackCopy(plainCode);
+                });
+            } else {
+                fallbackCopy(plainCode);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопійовано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Initialize
+        updateFlex();
+    </script>
+        </main>
+    </div>
+</div>
+
+    <script src="css/theme-toggle.js"></script>
+
+</body>
+</html>

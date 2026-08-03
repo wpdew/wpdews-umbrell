@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="uk">
+<!-- https://www.cssportal.com/css-ribbon-generator/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generators - Інструменти для веб-дизайнерів</title>
+    <link rel="stylesheet" href="css/style.css">
+<style>
+header {
+    text-align: center;
+    margin-bottom: 0px;
+    padding: 40px 0;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-brand {
+    padding: 6px 0 18px;
+    border-bottom: 1px solid var(--border-secondary);
+}
+
+.sidebar-brand h2 {
+    margin: 0 0 8px;
+    border: 0;
+    padding: 0;
+    font-size: 1.8em;
+}
+
+.sidebar-brand p {
+    color: var(--text-tertiary);
+    font-size: 0.95em;
+}
+
+.sidebar-links {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.sidebar-group-title {
+    color: var(--text-tertiary);
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: rgba(102, 126, 234, 0.14);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.sidebar-link-icon {
+    width: 22px;
+    text-align: center;
+    opacity: 0.85;
+}
+
+.sidebar-link-label {
+    font-size: 0.94em;
+}
+
+.content-column {
+    min-width: 0;
+}
+
+.section-anchor {
+    scroll-margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar-nav {
+        position: static;
+    }
+}
+</style>
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        
+
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link active" href="#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+				<header>
+					<h1>Generators</h1>
+					<p class="subtitle">Потужні інструменти для веб-дизайнерів та розробників</p>
+					<p class="description">Колекція безкоштовних онлайн-генераторів для створення CSS коду. Без реєстрації, без обмежень - просто вибирайте, налаштовуйте та копіюйте готовий код!</p>
+				</header>
+
+                <h2 id="all-tools" class="section-anchor" style="font-size: 2em; margin-bottom: 30px; text-align: center;">Доступні інструменти</h2>
+
+                <div class="generators-grid">
+            <a href="clip-path-maker.html" class="generator-card">
+                <div class="generator-icon">✂️</div>
+                <div class="generator-title">Clip Path Generator</div>
+                <div class="generator-description">
+                    Створюйте складні форми за допомогою CSS clip-path. 25+ готових пресетів: трикутники, зірки, стрілки, многокутники.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">CSS</span>
+                    <span class="tag">Shapes</span>
+                    <span class="tag">Polygon</span>
+                </div>
+            </a>
+
+            <a href="image-to-datauri.html" class="generator-card">
+                <div class="generator-icon">🖼️</div>
+                <div class="generator-title">Image to Data URI</div>
+                <div class="generator-description">
+                    Конвертуйте зображення в Base64 Data URI. Підтримка PNG, JPG, GIF, WebP. Готовий код для CSS та HTML.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Base64</span>
+                    <span class="tag">Images</span>
+                    <span class="tag">Convert</span>
+                </div>
+            </a>
+
+			<a href="css-sprite-generator.html" class="generator-card">
+                <div class="generator-icon">🎮</div>
+                <div class="generator-title">CSS Sprite Generator</div>
+                <div class="generator-description">
+                    Об'єднуйте зображення в спрайт-шит. Автоматична генерація CSS, 3 режими розташування, підтримка прозорості.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Sprites</span>
+                    <span class="tag">Optimization</span>
+                    <span class="tag">Performance</span>
+                </div>
+            </a>
+
+			<a href="array-generator.html" class="generator-card">
+                <div class="generator-icon">📊</div>
+                <div class="generator-title">Array Generator</div>
+                <div class="generator-description">
+                    Конвертуйте табличні дані в JSON та PHP масиви. Підтримка вкладених структур, готовий код для інтеграції.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">JSON</span>
+                    <span class="tag">PHP</span>
+                    <span class="tag">Data</span>
+                </div>
+            </a>
+
+            <a href="cssgradient.html" class="generator-card">
+                <div class="generator-icon">🌈</div>
+                <div class="generator-title">CSS Gradient Generator</div>
+                <div class="generator-description">
+                    Створюйте красиві градієнти. Лінійні та радіальні градієнти, необмежена кількість кольорів, 16 готових пресетів.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Gradient</span>
+                    <span class="tag">Colors</span>
+                    <span class="tag">Background</span>
+                </div>
+            </a>
+
+            
+
+            <a href="animation-generator.html" class="generator-card">
+                <div class="generator-icon">✨</div>
+                <div class="generator-title">Animation Generator</div>
+                <div class="generator-description">
+                    Генератор CSS анімацій з live preview. 16 готових ефектів: fade, slide, bounce, rotate, flip. Повний контроль над @keyframes.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Animation</span>
+                    <span class="tag">Keyframes</span>
+                    <span class="tag">Effects</span>
+                </div>
+            </a>
+
+            <a href="column-generator.html" class="generator-card">
+                <div class="generator-icon">📰</div>
+                <div class="generator-title">Column Generator</div>
+                <div class="generator-description">
+                    Багатоколонкові макети як у газетах. Налаштування кількості колонок, ширини, відступів та роздільників.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Layout</span>
+                    <span class="tag">Columns</span>
+                    <span class="tag">Text</span>
+                </div>
+            </a>
+
+            <a href="flexbox-generator.html" class="generator-card">
+                <div class="generator-icon">📦</div>
+                <div class="generator-title">Flexbox Generator</div>
+                <div class="generator-description">
+                    Інтерактивний редактор Flexbox макетів. Візуальне налаштування контейнера та елементів з live preview.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Flexbox</span>
+                    <span class="tag">Layout</span>
+                    <span class="tag">Responsive</span>
+                </div>
+            </a>
+
+            <a href="ribbon-generator.html" class="generator-card">
+                <div class="generator-icon">🎀</div>
+                <div class="generator-title">Ribbon Generator</div>
+                <div class="generator-description">
+                    Стильні CSS стрічки та відзнаки. Gradient фон, 9 типів розташування, налаштування кольорів та тіней.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">Ribbons</span>
+                    <span class="tag">Badges</span>
+                    <span class="tag">Decorations</span>
+                </div>
+            </a>
+
+            <a href="dean-edwards-packer.html" class="generator-card">
+                <div class="generator-icon">📦</div>
+                <div class="generator-title">Dean Edwards&apos; Packer</div>
+                <div class="generator-description">
+                    JavaScript Encoder/Decoder. Упаковка та розпаковка JS коду з Base62 encoding. Зменшення розміру на 40-70%.
+                </div>
+                <div class="generator-tags">
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Minify</span>
+                    <span class="tag">Compress</span>
+                </div>
+            </a>
+
+            
+                </div>
+
+                <div class="stats" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
+                    <h2 style="margin-bottom: 15px;">💡 Чому обрати наші генератори?</h2>
+                    <div style="max-width: 800px; margin: 20px auto; text-align: left; color: #ccc;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 10px 0; border-bottom: 1px solid #333;">✅ <strong>Повністю безкоштовно</strong> - без прихованих платежів та підписок</li>
+                            <li style="padding: 10px 0; border-bottom: 1px solid #333;">✅ <strong>Без реєстрації</strong> - відкривайте та користуйтесь відразу</li>
+                            <li style="padding: 10px 0; border-bottom: 1px solid #333;">✅ <strong>Live Preview</strong> - бачте результат в реальному часі</li>
+                            <li style="padding: 10px 0; border-bottom: 1px solid #333;">✅ <strong>Готовий код</strong> - копіюйте HTML та CSS одним кліком</li>
+                            <li style="padding: 10px 0; border-bottom: 1px solid #333;">✅ <strong>Темна тема</strong> - зручно для очей при тривалій роботі</li>
+                            <li style="padding: 10px 0;">✅ <strong>Адаптивний дизайн</strong> - працює на всіх пристроях</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <footer>
+                    <p style="font-size: 1.1em; color: #888; margin-bottom: 10px;">
+                        Made with 💜 by CSS Generators
+                    </p>
+                    <p style="font-size: 0.9em;">
+                        Всі інструменти працюють локально у вашому браузері. Ваші дані не збираються та не передаються.
+                    </p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="css/theme-toggle.js"></script>
+    <script>
+        // Додаємо простий tracking кліків (опціонально)
+        document.querySelectorAll('.generator-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const title = this.querySelector('.generator-title').textContent;
+                console.log('Clicked on:', title);
+            });
+        });
+
+        // Додаємо анімацію появи карток при завантаженні
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.generator-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
