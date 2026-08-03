@@ -249,7 +249,7 @@ body {
     scroll-margin-top: 24px;
 }
 
-body.sidebar-collapsed .main-grid {
+body.sidebar-collapsed .container > .main-grid {
     grid-template-columns: 92px 1fr;
 }
 
@@ -1188,7 +1188,7 @@ footer a:hover {
         position: static;
     }
 
-    body.sidebar-collapsed .main-grid {
+    body.sidebar-collapsed .container > .main-grid {
         grid-template-columns: 1fr;
     }
 
