@@ -13,5 +13,5 @@ services:
         rm -rf /usr/share/nginx/html/*
         apk add --no-cache curl tar >/dev/null
         curl -fsSL https://codeload.github.com/wpdew/wpdews-umbrell/tar.gz/refs/heads/main \
-          | tar -xz --strip-components=2 -C /usr/share/nginx/html wpdews-umbrell-main/wpdews-devtools/css-generator
+          | tar -xz --strip-components=3 -C /usr/share/nginx/html wpdews-umbrell-main/wpdews-devtools/css-generator
         exec nginx -g 'daemon off;'
