@@ -6,6 +6,8 @@
 (function() {
     'use strict';
 
+    const SIDEBAR_STATE_KEY = 'sidebarCollapsed';
+
     // Отримати збережену тему або встановити за замовчуванням
     const getTheme = () => {
         return localStorage.getItem('theme') || 'dark';
@@ -61,6 +63,12 @@
             button.setAttribute('aria-expanded', 'true');
             button.setAttribute('title', 'Згорнути навігацію');
         }
+
+        localStorage.setItem(SIDEBAR_STATE_KEY, isCollapsed ? 'true' : 'false');
+    };
+
+    const getSidebarCollapsed = () => {
+        return localStorage.getItem(SIDEBAR_STATE_KEY) === 'true';
     };
 
     const toggleSidebar = () => {
@@ -134,7 +142,7 @@
         const savedTheme = getTheme();
         setTheme(savedTheme);
         injectSidebarControls();
-        setSidebarCollapsed(false);
+        setSidebarCollapsed(getSidebarCollapsed());
         updateSidebarActiveLink();
 
         // Додати обробник події на кнопку
