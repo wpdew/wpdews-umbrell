@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-devtools
 name: CSS Generator DevTools
-version: "1.0.2"
+version: "1.0.3"
 category: developer
 
 description: >-
@@ -11,7 +11,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-devtools/css-generator/icon.svg
 releaseNotes: >-
-  Fix 403/404 by correcting static files extraction path so index.html is served from the web root.
+  Add PHP runtime support for packer.php (POST actions) by switching to php-apache service.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:

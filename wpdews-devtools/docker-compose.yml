@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-    image: nginx:1.27-alpine
+    image: php:8.2-apache
     restart: unless-stopped
     ports:
       - "38300:80"
@@ -10,8 +10,7 @@ services:
       - /bin/sh
       - -c
       - |
-        rm -rf /usr/share/nginx/html/*
-        apk add --no-cache curl tar >/dev/null
+        rm -rf /var/www/html/*
         curl -fsSL https://codeload.github.com/wpdew/wpdews-umbrell/tar.gz/refs/heads/main \
-          | tar -xz --strip-components=3 -C /usr/share/nginx/html wpdews-umbrell-main/wpdews-devtools/css-generator
-        exec nginx -g 'daemon off;'
+          | tar -xz --strip-components=3 -C /var/www/html wpdews-umbrell-main/wpdews-devtools/css-generator
+        exec apache2-foreground
