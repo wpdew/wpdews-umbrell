@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to JSX Converter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .converter-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .converter-header {
+            margin-bottom: 8px;
+        }
+
+        .converter-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .converter-column {
+            min-width: 0;
+        }
+
+        .converter-column h2 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-primary);
+        }
+
+        .converter-textarea {
+            min-height: 360px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .tool-row .control-btn {
+            width: auto;
+            min-width: 140px;
+            padding: 10px 16px;
+        }
+
+        .tool-row .control-btn.file-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 12px 16px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .wrap-type-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .wrap-type-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        .wrap-type-option input[type="radio"] {
+            accent-color: var(--accent-primary);
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-primary);
+        }
+
+        .hint-text {
+            color: var(--text-tertiary);
+            font-size: 0.92rem;
+            margin-top: 8px;
+        }
+
+        .error-box {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .info-section code {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 980px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-row .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link active" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column converter-layout">
+                <header class="converter-header">
+                    <h1>Convert HTML to JSX (React)</h1>
+                    <p class="subtitle">Вставляйте HTML зліва та отримуйте готовий JSX справа в реальному часі</p>
+                    <p class="description">Конвертація виконується локально у браузері: атрибути автоматично адаптуються під React, включно з className, htmlFor, camelCase style та boolean props.</p>
+                </header>
+
+                <section class="converter-panel">
+                    <div class="options-grid">
+                        <label class="option-item" for="wrapClass">
+                            <input id="wrapClass" type="checkbox">
+                            <span>Wrap output in React component</span>
+                        </label>
+
+                        <div id="componentNameGroup" class="control-group" style="margin-bottom: 0;">
+                            <label for="componentName">Component Name</label>
+                            <input id="componentName" type="text" value="MyComponent" placeholder="MyComponent">
+                        </div>
+
+                        <div id="wrapTypeGroup" class="control-group" style="margin-bottom: 0;">
+                            <label>Wrapper Type</label>
+                            <div class="wrap-type-group">
+                                <label class="wrap-type-option" for="wrapAsClass">
+                                    <input id="wrapAsClass" type="radio" name="wrapType" value="class" checked>
+                                    <span>Class component</span>
+                                </label>
+                                <label class="wrap-type-option" for="wrapAsFunction">
+                                    <input id="wrapAsFunction" type="radio" name="wrapType" value="function">
+                                    <span>Function component</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="hint-text">Порада: якщо у вхідному HTML кілька кореневих елементів, JSX автоматично обгорнеться у Fragment.</p>
+                </section>
+
+                <section class="converter-panel">
+                    <div class="converter-grid">
+                        <div class="converter-column">
+                            <h2>Input (HTML)</h2>
+                            <textarea id="htmlInput" class="converter-textarea" spellcheck="false" placeholder="<div class=&quot;card&quot;>\n  <h2>Hello</h2>\n  <label for=&quot;email&quot;>Email</label>\n  <input id=&quot;email&quot; type=&quot;email&quot; required />\n</div>"></textarea>
+                            <div class="tool-row">
+                                <label for="fileInput" class="control-btn file-label">📁 Upload HTML file</label>
+                                <input id="fileInput" type="file" accept=".html,.htm,.xhtml,text/html" hidden>
+                                <button id="clearBtn" class="control-btn secondary" type="button">🧹 Clear</button>
+                            </div>
+                        </div>
+
+                        <div class="converter-column">
+                            <h2>Output (JSX)</h2>
+                            <textarea id="jsxOutput" class="converter-textarea" spellcheck="false" readonly placeholder="Тут з'явиться JSX..."></textarea>
+                            <div class="tool-row">
+                                <button id="copyBtn" class="control-btn" type="button">📋 Copy JSX</button>
+                                <button id="downloadBtn" class="control-btn secondary" type="button">⬇ Download .jsx</button>
+                            </div>
+                            <div id="errorBox" class="error-box" role="alert"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-section">
+                    <h3>Що конвертується</h3>
+                    <p>Основні перетворення: <code>class</code> → <code>className</code>, <code>for</code> → <code>htmlFor</code>, <code>style</code> → <code>style={{ ... }}</code>, boolean-атрибути (<code>checked</code>, <code>disabled</code>, <code>required</code>) → <code>{true}</code>.</p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const htmlInput = document.getElementById('htmlInput');
+            const jsxOutput = document.getElementById('jsxOutput');
+            const wrapClass = document.getElementById('wrapClass');
+            const wrapTypeInputs = Array.from(document.querySelectorAll('input[name="wrapType"]'));
+            const componentNameGroup = document.getElementById('componentNameGroup');
+            const wrapTypeGroup = document.getElementById('wrapTypeGroup');
+            const componentName = document.getElementById('componentName');
+            const fileInput = document.getElementById('fileInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const errorBox = document.getElementById('errorBox');
+
+            const selfClosingTags = new Set([
+                'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+                'link', 'meta', 'param', 'source', 'track', 'wbr'
+            ]);
+
+            const booleanAttributes = new Set([
+                'allowfullscreen', 'async', 'autofocus', 'autoplay', 'checked',
+                'controls', 'default', 'defer', 'disabled', 'formnovalidate',
+                'hidden', 'inert', 'ismap', 'loop', 'multiple', 'muted',
+                'nomodule', 'novalidate', 'open', 'playsinline', 'readonly',
+                'required', 'reversed', 'selected'
+            ]);
+
+            const attributeMap = {
+                'accept-charset': 'acceptCharset',
+                'accesskey': 'accessKey',
+                'autocomplete': 'autoComplete',
+                'autofocus': 'autoFocus',
+                'class': 'className',
+                'colspan': 'colSpan',
+                'contenteditable': 'contentEditable',
+                'crossorigin': 'crossOrigin',
+                'for': 'htmlFor',
+                'formaction': 'formAction',
+                'formenctype': 'formEncType',
+                'formmethod': 'formMethod',
+                'formnovalidate': 'formNoValidate',
+                'formtarget': 'formTarget',
+                'http-equiv': 'httpEquiv',
+                'inputmode': 'inputMode',
+                'maxlength': 'maxLength',
+                'minlength': 'minLength',
+                'novalidate': 'noValidate',
+                'playsinline': 'playsInline',
+                'readonly': 'readOnly',
+                'referrerpolicy': 'referrerPolicy',
+                'rowspan': 'rowSpan',
+                'spellcheck': 'spellCheck',
+                'srcset': 'srcSet',
+                'tabindex': 'tabIndex',
+                'usemap': 'useMap'
+            };
+
+            function toCamelCase(value) {
+                return value.replace(/-([a-z])/g, function(_, c) {
+                    return c.toUpperCase();
+                });
+            }
+
+            function normalizeEventAttribute(name) {
+                if (!name.startsWith('on')) {
+                    return name;
+                }
+
+                const eventName = name.slice(2);
+                if (!eventName) {
+                    return name;
+                }
+
+                return 'on' + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+            }
+
+            function escapeAttributeValue(value) {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function escapeText(value) {
+                return value
+                    .replace(/\{/g, "{'{"}")
+                    .replace(/\}/g, "{'}'}");
+            }
+
+            function styleStringToJsxObject(styleValue) {
+                const rules = styleValue
+                    .split(';')
+                    .map(function(part) { return part.trim(); })
+                    .filter(Boolean);
+
+                if (!rules.length) {
+                    return '{}';
+                }
+
+                const props = [];
+
+                rules.forEach(function(rule) {
+                    const splitIndex = rule.indexOf(':');
+                    if (splitIndex === -1) {
+                        return;
+                    }
+
+                    const rawProp = rule.slice(0, splitIndex).trim();
+                    const rawValue = rule.slice(splitIndex + 1).trim();
+
+                    if (!rawProp || !rawValue) {
+                        return;
+                    }
+
+                    const propName = toCamelCase(rawProp);
+                    const escapedValue = rawValue.replace(/'/g, "\\'");
+                    props.push(propName + ": '" + escapedValue + "'");
+                });
+
+                return '{ ' + props.join(', ') + ' }';
+            }
+
+            function convertAttribute(attr) {
+                const originalName = attr.name;
+                const lowerName = originalName.toLowerCase();
+                let jsxName = attributeMap[lowerName] || normalizeEventAttribute(lowerName);
+
+                if (lowerName.startsWith('data-') || lowerName.startsWith('aria-')) {
+                    jsxName = lowerName;
+                }
+
+                if (jsxName === 'style') {
+                    return jsxName + '={{' + styleStringToJsxObject(attr.value).slice(1, -1) + '}}';
+                }
+
+                if (booleanAttributes.has(lowerName)) {
+                    if (attr.value === '' || attr.value.toLowerCase() === lowerName || attr.value.toLowerCase() === 'true') {
+                        return jsxName + '={true}';
+                    }
+                }
+
+                return jsxName + '="' + escapeAttributeValue(attr.value) + '"';
+            }
+
+            function indent(level) {
+                return '  '.repeat(level);
+            }
+
+            function convertNode(node, level) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const value = node.textContent || '';
+                    if (!value.trim()) {
+                        return '';
+                    }
+                    return indent(level) + escapeText(value.trim());
+                }
+
+                if (node.nodeType === Node.COMMENT_NODE) {
+                    const text = (node.textContent || '').trim();
+                    if (!text) {
+                        return '';
+                    }
+                    return indent(level) + '{/* ' + text + ' */}';
+                }
+
+                if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return '';
+                }
+
+                const tagName = node.tagName.toLowerCase();
+                const attrs = Array.from(node.attributes).map(convertAttribute);
+                const attrText = attrs.length ? ' ' + attrs.join(' ') : '';
+
+                const convertedChildren = Array.from(node.childNodes)
+                    .map(function(child) { return convertNode(child, level + 1); })
+                    .filter(Boolean);
+
+                if (selfClosingTags.has(tagName) && convertedChildren.length === 0) {
+                    return indent(level) + '<' + tagName + attrText + ' />';
+                }
+
+                if (convertedChildren.length === 0) {
+                    return indent(level) + '<' + tagName + attrText + '></' + tagName + '>';
+                }
+
+                return (
+                    indent(level) + '<' + tagName + attrText + '>' + '\n' +
+                    convertedChildren.join('\n') + '\n' +
+                    indent(level) + '</' + tagName + '>'
+                );
+            }
+
+            function sanitizeComponentName(name) {
+                const raw = String(name || '').trim() || 'MyComponent';
+                const cleaned = raw.replace(/[^a-zA-Z0-9_$]/g, '');
+                const withFallback = cleaned || 'MyComponent';
+                const startsWithLetter = /^[A-Za-z_$]/.test(withFallback);
+                const normalized = startsWithLetter ? withFallback : 'C' + withFallback;
+                return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+            }
+
+            function findXmlError(doc) {
+                const parserError = doc.querySelector('parsererror');
+                if (!parserError) {
+                    return '';
+                }
+                return parserError.textContent || 'Некоректний HTML/XML.';
+            }
+
+            function buildComponentBody(block, level) {
+                const lines = block.split('\n');
+                return lines.map(function(line) {
+                    return indent(level) + line;
+                }).join('\n');
+            }
+
+            function getWrapType() {
+                const selected = wrapTypeInputs.find(function(input) { return input.checked; });
+                return selected ? selected.value : 'class';
+            }
+
+            function updateWrapControlsVisibility() {
+                const show = wrapClass.checked;
+                componentNameGroup.style.display = show ? 'block' : 'none';
+                wrapTypeGroup.style.display = show ? 'block' : 'none';
+            }
+
+            function convertHtmlToJsx(inputHtml) {
+                const html = String(inputHtml || '');
+                if (!html.trim()) {
+                    return '';
+                }
+
+                const xmlDoc = new DOMParser().parseFromString('<root>' + html + '</root>', 'application/xml');
+                const xmlError = findXmlError(xmlDoc);
+                if (xmlError) {
+                    throw new Error('Помилка у вхідному HTML: ' + xmlError.replace(/\s+/g, ' ').trim());
+                }
+
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const blocks = Array.from(doc.body.childNodes)
+                    .map(function(node) { return convertNode(node, 0); })
+                    .filter(Boolean);
+
+                if (!blocks.length) {
+                    return '';
+                }
+
+                let jsx = blocks.join('\n');
+
+                if (blocks.length > 1) {
+                    jsx = '<>\n' + buildComponentBody(jsx, 1) + '\n</>';
+                }
+
+                if (wrapClass.checked) {
+                    const safeName = sanitizeComponentName(componentName.value);
+                    const wrapType = getWrapType();
+
+                    if (wrapType === 'function') {
+                        const wrappedFunction = [
+                            'function ' + safeName + '() {',
+                            '  return (',
+                            buildComponentBody(jsx, 2),
+                            '  );',
+                            '}',
+                            '',
+                            'export default ' + safeName + ';'
+                        ];
+                        return wrappedFunction.join('\n');
+                    }
+
+                    const wrapped = [
+                        'class ' + safeName + ' extends React.Component {',
+                        '  render() {',
+                        '    return (',
+                        buildComponentBody(jsx, 3),
+                        '    );',
+                        '  }',
+                        '}',
+                        '',
+                        'export default ' + safeName + ';'
+                    ];
+                    return wrapped.join('\n');
+                }
+
+                return jsx;
+            }
+
+            function showError(message) {
+                errorBox.style.display = 'block';
+                errorBox.textContent = message;
+            }
+
+            function hideError() {
+                errorBox.style.display = 'none';
+                errorBox.textContent = '';
+            }
+
+            function render() {
+                try {
+                    const result = convertHtmlToJsx(htmlInput.value);
+                    jsxOutput.value = result;
+                    hideError();
+                } catch (err) {
+                    jsxOutput.value = '';
+                    showError(err.message || 'Помилка конвертації.');
+                }
+            }
+
+            function fallbackCopy(text) {
+                const area = document.createElement('textarea');
+                area.value = text;
+                area.style.position = 'fixed';
+                area.style.top = '-9999px';
+                area.style.left = '-9999px';
+                document.body.appendChild(area);
+                area.focus();
+                area.select();
+
+                let copied = false;
+                try {
+                    copied = document.execCommand('copy');
+                } catch (err) {
+                    copied = false;
+                }
+
+                document.body.removeChild(area);
+                return copied;
+            }
+
+            async function copyOutput() {
+                const text = jsxOutput.value;
+                if (!text) {
+                    return;
+                }
+
+                let copied = false;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        copied = true;
+                    } catch (err) {
+                        copied = fallbackCopy(text);
+                    }
+                } else {
+                    copied = fallbackCopy(text);
+                }
+
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = copied ? '✅ Copied' : '❌ Copy failed';
+                setTimeout(function() {
+                    copyBtn.textContent = originalText;
+                }, 1500);
+            }
+
+            function clearAll() {
+                htmlInput.value = '';
+                jsxOutput.value = '';
+                hideError();
+            }
+
+            function downloadOutput() {
+                const content = jsxOutput.value;
+                if (!content.trim()) {
+                    return;
+                }
+
+                const baseName = wrapClass.checked
+                    ? sanitizeComponentName(componentName.value)
+                    : 'converted-jsx';
+                const fileName = baseName + '.jsx';
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                URL.revokeObjectURL(url);
+            }
+
+            function readFile(file) {
+                if (!file) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    htmlInput.value = String(e.target.result || '');
+                    render();
+                };
+                reader.readAsText(file, 'utf-8');
+            }
+
+            htmlInput.addEventListener('input', render);
+            wrapClass.addEventListener('change', function() {
+                updateWrapControlsVisibility();
+                render();
+            });
+            wrapTypeInputs.forEach(function(input) {
+                input.addEventListener('change', render);
+            });
+            componentName.addEventListener('input', render);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyOutput);
+            downloadBtn.addEventListener('click', downloadOutput);
+            fileInput.addEventListener('change', function() {
+                readFile(fileInput.files[0]);
+                fileInput.value = '';
+            });
+
+            htmlInput.value = '<section class="pricing-card" style="background: #111; padding: 24px; border-radius: 16px;">\n  <h2>Pro Plan</h2>\n  <p>Everything you need to launch.</p>\n  <label for="email">Email</label>\n  <input id="email" type="email" required />\n  <button class="btn" disabled>Start now</button>\n</section>';
+            updateWrapControlsVisibility();
+            render();
+        })();
+    </script>
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>
