@@ -123,6 +123,18 @@
             white-space: pre-wrap;
         }
 
+        .fix-box {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #86efac;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
         .info-section code {
             color: var(--accent-primary);
         }
@@ -242,6 +254,7 @@
                                 <button id="downloadBtn" class="control-btn secondary" type="button">⬇ Download .jsx</button>
                             </div>
                             <div id="errorBox" class="error-box" role="alert"></div>
+                            <div id="fixBox" class="fix-box" role="status"></div>
                         </div>
                     </div>
                 </section>
@@ -270,6 +283,7 @@
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const errorBox = document.getElementById('errorBox');
+            const fixBox = document.getElementById('fixBox');
 
             const selfClosingTags = new Set([
                 'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -457,19 +471,39 @@
                 return normalized.charAt(0).toUpperCase() + normalized.slice(1);
             }
 
-            function findXmlError(doc) {
-                const parserError = doc.querySelector('parsererror');
-                if (!parserError) {
-                    return '';
-                }
-                return parserError.textContent || 'Некоректний HTML/XML.';
-            }
-
             function buildComponentBody(block, level) {
                 const lines = block.split('\n');
                 return lines.map(function(line) {
                     return indent(level) + line;
                 }).join('\n');
+            }
+
+            function uniqueList(items) {
+                return Array.from(new Set(items));
+            }
+
+            function autoFixHtml(inputHtml) {
+                let html = String(inputHtml || '');
+                const fixes = [];
+
+                // Void elements cannot have explicit closing tags in HTML.
+                html = html.replace(/<\/(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\s*>/gi, function(match, tagName) {
+                    fixes.push('Видалено некоректний закриваючий тег </' + tagName.toLowerCase() + '>.');
+                    return '';
+                });
+
+                // Let browser parser normalize broken nesting and missing end tags.
+                const normalizedDoc = new DOMParser().parseFromString(html, 'text/html');
+                const normalizedHtml = normalizedDoc.body.innerHTML;
+
+                if (normalizedHtml.trim() !== html.trim()) {
+                    fixes.push('HTML нормалізовано перед конвертацією (виправлено структуру тегів).');
+                }
+
+                return {
+                    html: normalizedHtml,
+                    fixes: uniqueList(fixes)
+                };
             }
 
             function getWrapType() {
@@ -486,22 +520,23 @@
             function convertHtmlToJsx(inputHtml) {
                 const html = String(inputHtml || '');
                 if (!html.trim()) {
-                    return '';
+                    return {
+                        jsx: '',
+                        fixes: []
+                    };
                 }
 
-                const xmlDoc = new DOMParser().parseFromString('<root>' + html + '</root>', 'application/xml');
-                const xmlError = findXmlError(xmlDoc);
-                if (xmlError) {
-                    throw new Error('Помилка у вхідному HTML: ' + xmlError.replace(/\s+/g, ' ').trim());
-                }
-
-                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const normalized = autoFixHtml(html);
+                const doc = new DOMParser().parseFromString(normalized.html, 'text/html');
                 const blocks = Array.from(doc.body.childNodes)
                     .map(function(node) { return convertNode(node, 0); })
                     .filter(Boolean);
 
                 if (!blocks.length) {
-                    return '';
+                    return {
+                        jsx: '',
+                        fixes: normalized.fixes
+                    };
                 }
 
                 let jsx = blocks.join('\n');
@@ -524,7 +559,10 @@
                             '',
                             'export default ' + safeName + ';'
                         ];
-                        return wrappedFunction.join('\n');
+                        return {
+                            jsx: wrappedFunction.join('\n'),
+                            fixes: normalized.fixes
+                        };
                     }
 
                     const wrapped = [
@@ -538,10 +576,16 @@
                         '',
                         'export default ' + safeName + ';'
                     ];
-                    return wrapped.join('\n');
+                    return {
+                        jsx: wrapped.join('\n'),
+                        fixes: normalized.fixes
+                    };
                 }
 
-                return jsx;
+                return {
+                    jsx: jsx,
+                    fixes: normalized.fixes
+                };
             }
 
             function showError(message) {
@@ -554,13 +598,26 @@
                 errorBox.textContent = '';
             }
 
+            function showFixes(fixes) {
+                if (!fixes || !fixes.length) {
+                    fixBox.style.display = 'none';
+                    fixBox.textContent = '';
+                    return;
+                }
+
+                fixBox.style.display = 'block';
+                fixBox.textContent = 'Авто-виправлення:\n- ' + fixes.join('\n- ');
+            }
+
             function render() {
                 try {
                     const result = convertHtmlToJsx(htmlInput.value);
-                    jsxOutput.value = result;
+                    jsxOutput.value = result.jsx;
+                    showFixes(result.fixes);
                     hideError();
                 } catch (err) {
                     jsxOutput.value = '';
+                    showFixes([]);
                     showError(err.message || 'Помилка конвертації.');
                 }
             }
@@ -614,6 +671,7 @@
             function clearAll() {
                 htmlInput.value = '';
                 jsxOutput.value = '';
+                showFixes([]);
                 hideError();
             }
 
