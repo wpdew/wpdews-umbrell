@@ -1,17 +1,17 @@
 manifestVersion: 1
 id: wpdews-devtools
 name: CSS Generator DevTools
-version: "1.0.5"
+version: "1.0.6"
 category: developer
 
 description: >-
   A self-hosted collection of CSS and frontend generators: gradients, flexbox,
-  columns, clip-path, sprites, ribbons, and other dev tools.
+  columns, clip-path, sprites, ribbons, glassmorphism, and other dev tools.
 
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-devtools/css-generator/icon.svg
 releaseNotes: >-
-  Save Navigation collapsed or expanded state in localStorage and restore it on page load.
+  Added Glassmorphism Generator with live preview and CSS copy output.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:

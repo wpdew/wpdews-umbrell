@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .controls-panel {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 12px;
+            height: fit-content;
+        }
+
+        .controls-panel h2 {
+            font-size: 1.25rem;
+            margin-bottom: 18px;
+            color: var(--accent-primary);
+        }
+
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .preview-area {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .scene {
+            min-height: 460px;
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.25s ease;
+        }
+
+        .scene::before,
+        .scene::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .scene::before {
+            width: 360px;
+            height: 360px;
+            top: -100px;
+            left: -80px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+        }
+
+        .scene::after {
+            width: 320px;
+            height: 320px;
+            right: -90px;
+            bottom: -110px;
+            background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+        }
+
+        .glass-card {
+            width: min(88%, 360px);
+            min-height: 220px;
+            border-radius: 24px;
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border-style: solid;
+            backdrop-filter: blur(12px) saturate(140%);
+            -webkit-backdrop-filter: blur(12px) saturate(140%);
+            box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
+            transition: all 0.2s ease;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.05));
+            pointer-events: none;
+        }
+
+        .glass-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 10px;
+        }
+
+        .glass-title {
+            font-size: 1.7rem;
+            line-height: 1.18;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .glass-text {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            line-height: 1.55;
+        }
+
+        .chip-row {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .color-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .value-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            color: var(--text-tertiary);
+            font-size: 0.88em;
+        }
+
+        .value-line span:last-child {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .code-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .code-panel h2 {
+            color: var(--accent-primary);
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .glass-card {
+                min-height: 200px;
+                border-radius: 20px;
+                padding: 20px;
+            }
+
+            .glass-title {
+                font-size: 1.45rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column preview-panel">
+                <h1>Glassmorphism Generator</h1>
+                <p class="subtitle">Генеруйте готовий CSS для ефекту матового скла</p>
+
+                <div class="main-grid">
+                    <section class="controls-panel">
+                        <h2>Параметри</h2>
+
+                        <div class="control-section">
+                            <div class="control-group">
+                                <label for="bgStart">Фон: початковий колір</label>
+                                <input id="bgStart" type="color" value="#1f87ff">
+                            </div>
+                            <div class="control-group">
+                                <label for="bgEnd">Фон: кінцевий колір</label>
+                                <input id="bgEnd" type="color" value="#ff4f8b">
+                            </div>
+                            <div class="control-group">
+                                <label for="bgAngle">Кут градієнта</label>
+                                <input id="bgAngle" type="range" min="0" max="360" value="135">
+                                <div class="value-line"><span>Angle</span><span id="bgAngleValue">135deg</span></div>
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="control-group">
+                                <label for="blur">Blur</label>
+                                <input id="blur" type="range" min="0" max="45" value="18">
+                                <div class="value-line"><span>Backdrop blur</span><span id="blurValue">18px</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label for="saturation">Saturation</label>
+                                <input id="saturation" type="range" min="80" max="240" value="160">
+                                <div class="value-line"><span>Backdrop saturate</span><span id="saturationValue">160%</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label for="opacity">Прозорість скла</label>
+                                <input id="opacity" type="range" min="4" max="70" value="24">
+                                <div class="value-line"><span>Background alpha</span><span id="opacityValue">0.24</span></div>
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="control-group">
+                                <label for="radius">Радіус кутів</label>
+                                <input id="radius" type="range" min="6" max="48" value="24">
+                                <div class="value-line"><span>Border radius</span><span id="radiusValue">24px</span></div>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="borderWidth">Товщина рамки</label>
+                                <input id="borderWidth" type="range" min="0" max="4" value="1" step="0.1">
+                                <div class="value-line"><span>Border width</span><span id="borderWidthValue">1px</span></div>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="borderOpacity">Прозорість рамки</label>
+                                <input id="borderOpacity" type="range" min="0" max="70" value="28">
+                                <div class="value-line"><span>Border alpha</span><span id="borderOpacityValue">0.28</span></div>
+                            </div>
+                        </div>
+
+                        <div class="control-section">
+                            <div class="control-group">
+                                <label for="shadowY">Зсув тіні Y</label>
+                                <input id="shadowY" type="range" min="0" max="50" value="20">
+                                <div class="value-line"><span>Shadow Y</span><span id="shadowYValue">20px</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label for="shadowBlur">Розмиття тіні</label>
+                                <input id="shadowBlur" type="range" min="0" max="80" value="55">
+                                <div class="value-line"><span>Shadow blur</span><span id="shadowBlurValue">55px</span></div>
+                            </div>
+                            <div class="control-group">
+                                <label for="shadowOpacity">Прозорість тіні</label>
+                                <input id="shadowOpacity" type="range" min="0" max="80" value="22">
+                                <div class="value-line"><span>Shadow alpha</span><span id="shadowOpacityValue">0.22</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="preview-panel">
+                        <div class="preview-area">
+                            <div id="scene" class="scene">
+                                <article id="glassCard" class="glass-card">
+                                    <div class="glass-content">
+                                        <p class="glass-eyebrow">Glass UI</p>
+                                        <h2 class="glass-title">Modern Card</h2>
+                                        <p class="glass-text">Ефект матового скла для hero-блоків, pricing cards або модалок.</p>
+                                    </div>
+                                    <div class="chip-row glass-content">
+                                        <span class="chip">Backdrop</span>
+                                        <span class="chip">Blur</span>
+                                        <span class="chip">Frosted</span>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div class="code-panel">
+                            <h2>CSS код</h2>
+                            <div class="code-output">
+                                <pre><code id="cssOutput"></code></pre>
+                            </div>
+                            <button id="copyBtn" class="copy-btn" type="button">📋 Копіювати CSS</button>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="info-section">
+                    <h3>Підказка</h3>
+                    <p>
+                        Для коректного glassmorphism потрібен контрастний фон позаду елемента та властивість
+                        <code>backdrop-filter</code>. Для Safari залишайте також <code>-webkit-backdrop-filter</code>.
+                    </p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const els = {
+            bgStart: document.getElementById('bgStart'),
+            bgEnd: document.getElementById('bgEnd'),
+            bgAngle: document.getElementById('bgAngle'),
+            blur: document.getElementById('blur'),
+            saturation: document.getElementById('saturation'),
+            opacity: document.getElementById('opacity'),
+            radius: document.getElementById('radius'),
+            borderWidth: document.getElementById('borderWidth'),
+            borderOpacity: document.getElementById('borderOpacity'),
+            shadowY: document.getElementById('shadowY'),
+            shadowBlur: document.getElementById('shadowBlur'),
+            shadowOpacity: document.getElementById('shadowOpacity'),
+            scene: document.getElementById('scene'),
+            glassCard: document.getElementById('glassCard'),
+            cssOutput: document.getElementById('cssOutput'),
+            copyBtn: document.getElementById('copyBtn')
+        };
+
+        const valueLabels = {
+            bgAngle: document.getElementById('bgAngleValue'),
+            blur: document.getElementById('blurValue'),
+            saturation: document.getElementById('saturationValue'),
+            opacity: document.getElementById('opacityValue'),
+            radius: document.getElementById('radiusValue'),
+            borderWidth: document.getElementById('borderWidthValue'),
+            borderOpacity: document.getElementById('borderOpacityValue'),
+            shadowY: document.getElementById('shadowYValue'),
+            shadowBlur: document.getElementById('shadowBlurValue'),
+            shadowOpacity: document.getElementById('shadowOpacityValue')
+        };
+
+        function hexToRgb(hex) {
+            const normalized = hex.replace('#', '');
+            const bigint = parseInt(normalized, 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
+            };
+        }
+
+        function updateUIValues(config) {
+            valueLabels.bgAngle.textContent = `${config.bgAngle}deg`;
+            valueLabels.blur.textContent = `${config.blur}px`;
+            valueLabels.saturation.textContent = `${config.saturation}%`;
+            valueLabels.opacity.textContent = config.opacity.toFixed(2);
+            valueLabels.radius.textContent = `${config.radius}px`;
+            valueLabels.borderWidth.textContent = `${config.borderWidth}px`;
+            valueLabels.borderOpacity.textContent = config.borderOpacity.toFixed(2);
+            valueLabels.shadowY.textContent = `${config.shadowY}px`;
+            valueLabels.shadowBlur.textContent = `${config.shadowBlur}px`;
+            valueLabels.shadowOpacity.textContent = config.shadowOpacity.toFixed(2);
+        }
+
+        function getConfig() {
+            return {
+                bgStart: els.bgStart.value,
+                bgEnd: els.bgEnd.value,
+                bgAngle: Number(els.bgAngle.value),
+                blur: Number(els.blur.value),
+                saturation: Number(els.saturation.value),
+                opacity: Number(els.opacity.value) / 100,
+                radius: Number(els.radius.value),
+                borderWidth: Number(els.borderWidth.value),
+                borderOpacity: Number(els.borderOpacity.value) / 100,
+                shadowY: Number(els.shadowY.value),
+                shadowBlur: Number(els.shadowBlur.value),
+                shadowOpacity: Number(els.shadowOpacity.value) / 100
+            };
+        }
+
+        function render() {
+            const config = getConfig();
+            updateUIValues(config);
+
+            const borderRgb = hexToRgb('#ffffff');
+
+            els.scene.style.background = `linear-gradient(${config.bgAngle}deg, ${config.bgStart} 0%, ${config.bgEnd} 100%)`;
+
+            els.glassCard.style.background = `rgba(255, 255, 255, ${config.opacity.toFixed(2)})`;
+            els.glassCard.style.borderRadius = `${config.radius}px`;
+            els.glassCard.style.borderWidth = `${config.borderWidth}px`;
+            els.glassCard.style.borderColor = `rgba(${borderRgb.r}, ${borderRgb.g}, ${borderRgb.b}, ${config.borderOpacity.toFixed(2)})`;
+            els.glassCard.style.backdropFilter = `blur(${config.blur}px) saturate(${config.saturation}%)`;
+            els.glassCard.style.webkitBackdropFilter = `blur(${config.blur}px) saturate(${config.saturation}%)`;
+            els.glassCard.style.boxShadow = `0 ${config.shadowY}px ${config.shadowBlur}px rgba(0, 0, 0, ${config.shadowOpacity.toFixed(2)})`;
+
+            const css = `.glass-card {\n` +
+                `  background: rgba(255, 255, 255, ${config.opacity.toFixed(2)});\n` +
+                `  border-radius: ${config.radius}px;\n` +
+                `  border: ${config.borderWidth}px solid rgba(255, 255, 255, ${config.borderOpacity.toFixed(2)});\n` +
+                `  backdrop-filter: blur(${config.blur}px) saturate(${config.saturation}%);\n` +
+                `  -webkit-backdrop-filter: blur(${config.blur}px) saturate(${config.saturation}%);\n` +
+                `  box-shadow: 0 ${config.shadowY}px ${config.shadowBlur}px rgba(0, 0, 0, ${config.shadowOpacity.toFixed(2)});\n` +
+                `}\n\n` +
+                `.scene {\n` +
+                `  background: linear-gradient(${config.bgAngle}deg, ${config.bgStart} 0%, ${config.bgEnd} 100%);\n` +
+                `}`;
+
+            els.cssOutput.textContent = css;
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                success = false;
+            }
+            document.body.removeChild(textArea);
+            return success;
+        }
+
+        async function copyCss() {
+            const text = els.cssOutput.textContent;
+            let copied = false;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    copied = true;
+                } catch (err) {
+                    copied = fallbackCopy(text);
+                }
+            } else {
+                copied = fallbackCopy(text);
+            }
+
+            const originalText = els.copyBtn.textContent;
+            if (copied) {
+                const accentSuccess = getComputedStyle(document.documentElement).getPropertyValue('--accent-success').trim();
+                const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+                els.copyBtn.textContent = '✅ Скопійовано';
+                els.copyBtn.style.background = accentSuccess;
+                setTimeout(() => {
+                    els.copyBtn.textContent = originalText;
+                    els.copyBtn.style.background = accentPrimary;
+                }, 1800);
+            } else {
+                const accentDanger = getComputedStyle(document.documentElement).getPropertyValue('--accent-danger').trim();
+                const accentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+                els.copyBtn.textContent = '❌ Помилка копіювання';
+                els.copyBtn.style.background = accentDanger;
+                setTimeout(() => {
+                    els.copyBtn.textContent = originalText;
+                    els.copyBtn.style.background = accentPrimary;
+                }, 1800);
+            }
+        }
+
+        [
+            els.bgStart,
+            els.bgEnd,
+            els.bgAngle,
+            els.blur,
+            els.saturation,
+            els.opacity,
+            els.radius,
+            els.borderWidth,
+            els.borderOpacity,
+            els.shadowY,
+            els.shadowBlur,
+            els.shadowOpacity
+        ].forEach((input) => {
+            input.addEventListener('input', render);
+        });
+
+        els.copyBtn.addEventListener('click', copyCss);
+
+        render();
+    </script>
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>
