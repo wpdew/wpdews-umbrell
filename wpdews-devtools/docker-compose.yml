@@ -6,5 +6,38 @@ services:
     restart: unless-stopped
     ports:
       - "38300:80"
-    volumes:
-      - ./css-generator:/var/www/html:ro
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+
+        tmpdir="$$(mktemp -d)"
+        if curl -fsSL https://codeload.github.com/wpdew/wpdews-umbrell/tar.gz/refs/heads/main \
+          | tar -xz --strip-components=3 -C "$$tmpdir" wpdews-umbrell-main/wpdews-devtools/css-generator; then
+          rm -rf /var/www/html/*
+          cp -a "$$tmpdir"/. /var/www/html/
+        fi
+        rm -rf "$$tmpdir"
+
+        if [ ! -f /var/www/html/index.html ]; then
+          cat > /var/www/html/index.html <<'HTML'
+        <!doctype html>
+        <html>
+        <head><meta charset="utf-8"><title>wpdews-devtools</title></head>
+        <body><h1>wpdews-devtools is starting</h1><p>Please reload in a few seconds.</p></body>
+        </html>
+        HTML
+        fi
+
+        cat > /etc/apache2/conf-available/wpdews-devtools.conf <<'CONF'
+        <Directory /var/www/html>
+            Options FollowSymLinks
+            AllowOverride All
+            Require all granted
+            DirectoryIndex index.html index.php
+        </Directory>
+        CONF
+
+        a2enconf wpdews-devtools >/dev/null
+        exec apache2-foreground

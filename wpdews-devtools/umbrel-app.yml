@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-devtools
 name: CSS Generator DevTools
-version: "1.0.10"
+version: "1.0.11"
 category: developer
 
 description: >-
@@ -11,7 +11,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-devtools/css-generator/icon.svg
 releaseNotes: >-
-  Added Glassmorphism Generator with live preview and CSS copy output.
+  Fixed 403 Forbidden after restart by hardening Apache startup and webroot initialization.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:
