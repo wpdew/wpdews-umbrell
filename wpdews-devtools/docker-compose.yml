@@ -6,11 +6,5 @@ services:
     restart: unless-stopped
     ports:
       - "38300:80"
-    command:
-      - /bin/sh
-      - -c
-      - |
-        rm -rf /var/www/html/*
-        curl -fsSL https://codeload.github.com/wpdew/wpdews-umbrell/tar.gz/refs/heads/main \
-          | tar -xz --strip-components=3 -C /var/www/html wpdews-umbrell-main/wpdews-devtools/css-generator
-        exec apache2-foreground
+    volumes:
+      - ./css-generator:/var/www/html:ro
