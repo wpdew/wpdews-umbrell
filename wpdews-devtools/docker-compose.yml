@@ -15,10 +15,14 @@ services:
         tmpdir="$$(mktemp -d)"
         if curl -fsSL https://codeload.github.com/wpdew/wpdews-umbrell/tar.gz/refs/heads/main \
           | tar -xz --strip-components=3 -C "$$tmpdir" wpdews-umbrell-main/wpdews-devtools/css-generator; then
-          rm -rf /var/www/html/*
+          find /var/www/html -mindepth 1 -delete
           cp -a "$$tmpdir"/. /var/www/html/
         fi
         rm -rf "$$tmpdir"
+
+        chown -R www-data:www-data /var/www/html
+        find /var/www/html -type d -exec chmod 755 {} \;
+        find /var/www/html -type f -exec chmod 644 {} \;
 
         if [ ! -f /var/www/html/index.html ]; then
           cat > /var/www/html/index.html <<'HTML'
@@ -33,7 +37,7 @@ services:
         cat > /etc/apache2/conf-available/wpdews-devtools.conf <<'CONF'
         <Directory /var/www/html>
             Options FollowSymLinks
-            AllowOverride All
+            AllowOverride None
             Require all granted
             DirectoryIndex index.html index.php
         </Directory>
