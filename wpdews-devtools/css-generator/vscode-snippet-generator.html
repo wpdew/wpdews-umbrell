@@ -68,6 +68,17 @@
             padding: 10px 16px;
         }
 
+        .snippet-list-actions {
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+
+        .snippet-list-actions .control-btn {
+            width: auto;
+            min-width: 150px;
+            padding: 8px 12px;
+        }
+
         .chip-grid {
             display: flex;
             flex-wrap: wrap;
@@ -108,6 +119,11 @@
             gap: 10px;
         }
 
+        .snippet-item.active {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3);
+        }
+
         .snippet-item-title {
             color: var(--text-primary);
             font-weight: 600;
@@ -131,6 +147,29 @@
 
         .snippet-item-remove:hover {
             background: rgba(239, 68, 68, 0.22);
+        }
+
+        .snippet-item-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .snippet-item-edit {
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .snippet-item-edit:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
         }
 
         .status-line {
@@ -234,7 +273,7 @@
 
                         <div class="control-group">
                             <label for="snippetScope">Scope (через кому)</label>
-                            <input id="snippetScope" type="text" value="javascript,typescript" placeholder="javascript,typescript,vue">
+                            <input id="snippetScope" type="text" value="javascript,typescript,php,html" placeholder="javascript,typescript,php,html,vue">
                         </div>
 
                         <div class="control-group full-width">
@@ -255,6 +294,9 @@
 
                     <div class="tool-row">
                         <button id="addSnippetBtn" class="control-btn" type="button">➕ Add Snippet to File</button>
+                        <button id="newSnippetBtn" class="control-btn secondary" type="button">➕ Add Snippet</button>
+                        <label for="importFileInput" class="control-btn secondary" style="display:inline-flex;align-items:center;justify-content:center;">📥 Load .code-snippets</label>
+                        <input id="importFileInput" type="file" accept=".code-snippets" hidden>
                         <button id="resetFormBtn" class="control-btn secondary" type="button">🧹 Reset Form</button>
                     </div>
                     <p id="statusLine" class="status-line" role="status"></p>
@@ -265,14 +307,17 @@
                         <div>
                             <h2 style="margin-bottom: 8px;">Snippets in current file</h2>
                             <p class="hint-text">Зберіть кілька сниппетів та експортуйте одним .code-snippets файлом.</p>
+                            <div class="snippet-list-actions">
+                                <button id="clearAllSnippetsBtn" class="control-btn secondary" type="button">🗑 Очистить все</button>
+                            </div>
                             <div id="snippetList" class="snippet-list"></div>
                         </div>
 
                         <div>
-                            <h2 style="margin-bottom: 8px;">Output JSON</h2>
+                            <h2 style="margin-bottom: 8px;">Output .code-snippets</h2>
                             <textarea id="jsonOutput" class="output-textarea" spellcheck="false" readonly></textarea>
                             <div class="tool-row">
-                                <button id="copyBtn" class="control-btn" type="button">📋 Copy JSON</button>
+                                <button id="copyBtn" class="control-btn" type="button">📋 Copy .code-snippets</button>
                                 <button id="downloadBtn" class="control-btn secondary" type="button">⬇ Download .code-snippets</button>
                             </div>
                         </div>
@@ -306,11 +351,15 @@
             const statusLine = document.getElementById('statusLine');
 
             const addSnippetBtn = document.getElementById('addSnippetBtn');
+            const newSnippetBtn = document.getElementById('newSnippetBtn');
+            const importFileInput = document.getElementById('importFileInput');
             const resetFormBtn = document.getElementById('resetFormBtn');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
+            const clearAllSnippetsBtn = document.getElementById('clearAllSnippetsBtn');
 
             const snippets = [];
+            let editingSnippetName = null;
 
             function setStatus(message, type) {
                 statusLine.textContent = message || '';
@@ -325,6 +374,99 @@
                     .replace(/\r\n/g, '\n')
                     .replace(/\r/g, '\n')
                     .split('\n');
+            }
+
+            function escapeLiteralDollars(line) {
+                const vscodeVariables = new Set([
+                    'TM_SELECTED_TEXT', 'TM_CURRENT_LINE', 'TM_CURRENT_WORD', 'TM_LINE_INDEX', 'TM_LINE_NUMBER',
+                    'TM_FILENAME', 'TM_FILENAME_BASE', 'TM_DIRECTORY', 'TM_FILEPATH', 'RELATIVE_FILEPATH',
+                    'CLIPBOARD', 'WORKSPACE_NAME', 'WORKSPACE_FOLDER',
+                    'CURRENT_YEAR', 'CURRENT_YEAR_SHORT', 'CURRENT_MONTH', 'CURRENT_MONTH_NAME',
+                    'CURRENT_MONTH_NAME_SHORT', 'CURRENT_DATE', 'CURRENT_DAY_NAME', 'CURRENT_DAY_NAME_SHORT',
+                    'CURRENT_HOUR', 'CURRENT_MINUTE', 'CURRENT_SECOND', 'CURRENT_SECONDS_UNIX',
+                    'CURRENT_TIMEZONE_OFFSET',
+                    'RANDOM', 'RANDOM_HEX', 'UUID',
+                    'BLOCK_COMMENT_START', 'BLOCK_COMMENT_END', 'LINE_COMMENT',
+                    'CURSOR_INDEX', 'CURSOR_NUMBER'
+                ]);
+
+                let output = '';
+                let i = 0;
+
+                while (i < line.length) {
+                    const ch = line[i];
+
+                    if (ch !== '$') {
+                        output += ch;
+                        i += 1;
+                        continue;
+                    }
+
+                    if (i > 0 && line[i - 1] === '\\') {
+                        output += '$';
+                        i += 1;
+                        continue;
+                    }
+
+                    const rest = line.slice(i);
+                    const placeholderMatch = rest.match(/^\$\{[^}]+\}/);
+                    if (placeholderMatch) {
+                        output += placeholderMatch[0];
+                        i += placeholderMatch[0].length;
+                        continue;
+                    }
+
+                    const tabstopMatch = rest.match(/^\$\d+/);
+                    if (tabstopMatch) {
+                        output += tabstopMatch[0];
+                        i += tabstopMatch[0].length;
+                        continue;
+                    }
+
+                    const variableMatch = rest.match(/^\$[A-Za-z_][A-Za-z0-9_]*/);
+                    if (variableMatch) {
+                        const variableName = variableMatch[0].slice(1);
+                        if (vscodeVariables.has(variableName)) {
+                            output += variableMatch[0];
+                        } else {
+                            output += '\\' + variableMatch[0];
+                        }
+                        i += variableMatch[0].length;
+                        continue;
+                    }
+
+                    output += '\\$';
+                    i += 1;
+                }
+
+                return output;
+            }
+
+            function getEscapedBodyLines(lines) {
+                return lines.map((line) => escapeLiteralDollars(line));
+            }
+
+            function getOrderedSnippets() {
+                if (!editingSnippetName) {
+                    return snippets.slice();
+                }
+
+                const activeIndex = snippets.findIndex((item) => item.name === editingSnippetName);
+                if (activeIndex < 0) {
+                    return snippets.slice();
+                }
+
+                return [snippets[activeIndex]].concat(
+                    snippets.filter((_, index) => index !== activeIndex)
+                );
+            }
+
+            function syncEditorStateUI() {
+                if (editingSnippetName) {
+                    addSnippetBtn.textContent = '💾 Save Snippet';
+                } else {
+                    addSnippetBtn.textContent = '➕ Add Snippet to File';
+                }
             }
 
             function buildSnippetObject() {
@@ -361,8 +503,13 @@
 
             function updateOutput() {
                 const fileObject = {};
-                snippets.forEach((item) => {
-                    fileObject[item.name] = item.data;
+                getOrderedSnippets().forEach((item) => {
+                    fileObject[item.name] = {
+                        prefix: item.data.prefix,
+                        scope: item.data.scope,
+                        body: getEscapedBodyLines(item.data.body),
+                        description: item.data.description
+                    };
                 });
                 jsonOutput.value = JSON.stringify(fileObject, null, 2);
             }
@@ -373,17 +520,42 @@
                     return;
                 }
 
-                snippetList.innerHTML = snippets.map((item, index) => {
+                const ordered = getOrderedSnippets();
+
+                snippetList.innerHTML = ordered.map((item) => {
+                    const rawIndex = snippets.findIndex((source) => source.name === item.name);
                     const bodyLines = item.data.body.length;
                     const scope = item.data.scope || 'global';
-                    return '<div class="snippet-item">'
+                    const isActive = item.name === editingSnippetName;
+                    return '<div class="snippet-item' + (isActive ? ' active' : '') + '">'
                         + '<div>'
                         + '<div class="snippet-item-title">' + escapeHtml(item.name) + '</div>'
                         + '<div class="snippet-item-meta">prefix: ' + escapeHtml(item.data.prefix) + ' | scope: ' + escapeHtml(scope) + ' | lines: ' + bodyLines + '</div>'
                         + '</div>'
-                        + '<button type="button" class="snippet-item-remove" data-remove-index="' + index + '">Remove</button>'
+                        + '<div class="snippet-item-actions">'
+                        + '<button type="button" class="snippet-item-edit" data-edit-index="' + rawIndex + '" title="Edit snippet" aria-label="Edit snippet">✏️</button>'
+                        + '<button type="button" class="snippet-item-remove" data-remove-index="' + rawIndex + '">Remove</button>'
+                        + '</div>'
                         + '</div>';
                 }).join('');
+            }
+
+            function startEditing(index) {
+                if (!Number.isInteger(index) || index < 0 || index >= snippets.length) return;
+
+                const item = snippets[index];
+                editingSnippetName = item.name;
+                snippetName.value = item.name;
+                snippetPrefix.value = item.data.prefix || '';
+                snippetDescription.value = item.data.description || '';
+                snippetScope.value = item.data.scope || '';
+                snippetBody.value = (item.data.body || []).join('\n');
+
+                syncEditorStateUI();
+                renderSnippetList();
+                updateOutput();
+                setStatus('Editing: ' + item.name, 'success');
+                snippetName.focus();
             }
 
             function escapeHtml(value) {
@@ -398,16 +570,29 @@
             function addSnippet() {
                 try {
                     const snippet = buildSnippetObject();
-                    const existingIndex = snippets.findIndex((item) => item.name === snippet.name);
+                    const editingIndex = editingSnippetName
+                        ? snippets.findIndex((item) => item.name === editingSnippetName)
+                        : -1;
+                    const duplicateIndex = snippets.findIndex((item) => item.name === snippet.name);
 
-                    if (existingIndex >= 0) {
-                        snippets[existingIndex] = snippet;
+                    if (editingIndex >= 0) {
+                        if (duplicateIndex >= 0 && duplicateIndex !== editingIndex) {
+                            throw new Error('Snippet with this name already exists. Rename it before saving.');
+                        }
+                        snippets[editingIndex] = snippet;
+                        editingSnippetName = snippet.name;
+                        setStatus('Snippet updated: ' + snippet.name, 'success');
+                    } else if (duplicateIndex >= 0) {
+                        snippets[duplicateIndex] = snippet;
+                        editingSnippetName = snippet.name;
                         setStatus('Snippet updated: ' + snippet.name, 'success');
                     } else {
                         snippets.push(snippet);
+                        editingSnippetName = snippet.name;
                         setStatus('Snippet added: ' + snippet.name, 'success');
                     }
 
+                    syncEditorStateUI();
                     renderSnippetList();
                     updateOutput();
                 } catch (error) {
@@ -416,12 +601,248 @@
             }
 
             function resetForm() {
+                editingSnippetName = null;
                 snippetName.value = '';
                 snippetPrefix.value = '';
                 snippetDescription.value = '';
-                snippetScope.value = '';
+                snippetScope.value = 'javascript,typescript,php,html';
                 snippetBody.value = '';
+                syncEditorStateUI();
+                renderSnippetList();
+                updateOutput();
                 setStatus('Form reset. Fill fields to add a new snippet.', 'success');
+            }
+
+            function prepareNewSnippet() {
+                editingSnippetName = null;
+                snippetName.value = '';
+                snippetPrefix.value = '';
+                snippetDescription.value = '';
+                snippetScope.value = 'javascript,typescript,php,html';
+                snippetBody.value = '';
+                syncEditorStateUI();
+                renderSnippetList();
+                updateOutput();
+                setStatus('Ready to add a new snippet.', 'success');
+                snippetName.focus();
+            }
+
+            function clearAllSnippets() {
+                if (!snippets.length) {
+                    setStatus('There are no snippets to clear.', 'error');
+                    return;
+                }
+
+                snippets.length = 0;
+                prepareNewSnippet();
+                setStatus('All snippets were cleared.', 'success');
+            }
+
+            function normalizeImportedPrefix(prefix) {
+                if (Array.isArray(prefix)) {
+                    return prefix.length ? String(prefix[0]) : '';
+                }
+                return prefix == null ? '' : String(prefix);
+            }
+
+            function normalizeImportedBody(body) {
+                function decodeSnippetEscapes(line) {
+                    // In .code-snippets files, literal $ is usually stored as \$.
+                    // Decode for editor UX and re-escape only when generating output.
+                    return String(line).replace(/\\\$/g, '$');
+                }
+
+                if (Array.isArray(body)) {
+                    return body.map((line) => decodeSnippetEscapes(line));
+                }
+                if (typeof body === 'string') {
+                    return normalizeBodyLines(body).map((line) => decodeSnippetEscapes(line));
+                }
+                throw new Error('Each snippet body must be a string or array of strings.');
+            }
+
+            function importSnippetsFromObject(source) {
+                if (!source || typeof source !== 'object' || Array.isArray(source)) {
+                    throw new Error('Invalid file format: root must be a JSON object.');
+                }
+
+                const entries = Object.entries(source);
+                if (!entries.length) {
+                    throw new Error('File does not contain snippets.');
+                }
+
+                const imported = entries.map(([name, config]) => {
+                    if (!config || typeof config !== 'object' || Array.isArray(config)) {
+                        throw new Error('Invalid snippet config for: ' + name);
+                    }
+
+                    return {
+                        name: String(name),
+                        data: {
+                            prefix: normalizeImportedPrefix(config.prefix),
+                            scope: config.scope == null ? '' : String(config.scope),
+                            body: normalizeImportedBody(config.body),
+                            description: config.description == null ? '' : String(config.description)
+                        }
+                    };
+                });
+
+                snippets.length = 0;
+                imported.forEach((item) => snippets.push(item));
+
+                editingSnippetName = snippets[0].name;
+                syncEditorStateUI();
+                renderSnippetList();
+                updateOutput();
+                startEditing(0);
+                setStatus('Loaded ' + snippets.length + ' snippet(s) from file.', 'success');
+            }
+
+            function importSnippetsFromText(text) {
+                function stripJsonLikeComments(input) {
+                    let out = '';
+                    let inString = false;
+                    let escaping = false;
+                    let inLineComment = false;
+                    let inBlockComment = false;
+
+                    for (let i = 0; i < input.length; i += 1) {
+                        const ch = input[i];
+                        const next = i + 1 < input.length ? input[i + 1] : '';
+
+                        if (inLineComment) {
+                            if (ch === '\n') {
+                                inLineComment = false;
+                                out += ch;
+                            }
+                            continue;
+                        }
+
+                        if (inBlockComment) {
+                            if (ch === '*' && next === '/') {
+                                inBlockComment = false;
+                                i += 1;
+                            }
+                            continue;
+                        }
+
+                        if (inString) {
+                            out += ch;
+                            if (escaping) {
+                                escaping = false;
+                                continue;
+                            }
+                            if (ch === '\\') {
+                                escaping = true;
+                                continue;
+                            }
+                            if (ch === '"') {
+                                inString = false;
+                            }
+                            continue;
+                        }
+
+                        if (ch === '"') {
+                            inString = true;
+                            out += ch;
+                            continue;
+                        }
+
+                        if (ch === '/' && next === '/') {
+                            inLineComment = true;
+                            i += 1;
+                            continue;
+                        }
+
+                        if (ch === '/' && next === '*') {
+                            inBlockComment = true;
+                            i += 1;
+                            continue;
+                        }
+
+                        out += ch;
+                    }
+
+                    return out;
+                }
+
+                function removeTrailingCommas(input) {
+                    let out = '';
+                    let inString = false;
+                    let escaping = false;
+
+                    for (let i = 0; i < input.length; i += 1) {
+                        const ch = input[i];
+
+                        if (inString) {
+                            out += ch;
+                            if (escaping) {
+                                escaping = false;
+                                continue;
+                            }
+                            if (ch === '\\') {
+                                escaping = true;
+                                continue;
+                            }
+                            if (ch === '"') {
+                                inString = false;
+                            }
+                            continue;
+                        }
+
+                        if (ch === '"') {
+                            inString = true;
+                            out += ch;
+                            continue;
+                        }
+
+                        if (ch === ',') {
+                            let j = i + 1;
+                            while (j < input.length && /\s/.test(input[j])) {
+                                j += 1;
+                            }
+                            if (j < input.length && (input[j] === '}' || input[j] === ']')) {
+                                continue;
+                            }
+                        }
+
+                        out += ch;
+                    }
+
+                    return out;
+                }
+
+                const cleaned = removeTrailingCommas(
+                    stripJsonLikeComments(String(text || '').replace(/^\uFEFF/, ''))
+                );
+
+                let parsed;
+                try {
+                    parsed = JSON.parse(cleaned);
+                } catch (error) {
+                    throw new Error('Invalid .code-snippets format: ' + error.message);
+                }
+
+                importSnippetsFromObject(parsed);
+            }
+
+            function handleImportFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+
+                reader.onload = function() {
+                    try {
+                        importSnippetsFromText(String(reader.result || ''));
+                    } catch (error) {
+                        setStatus(error.message, 'error');
+                    }
+                };
+
+                reader.onerror = function() {
+                    setStatus('Failed to read selected file.', 'error');
+                };
+
+                reader.readAsText(file, 'utf-8');
             }
 
             function copyOutput() {
@@ -431,7 +852,7 @@
                 }
 
                 navigator.clipboard.writeText(jsonOutput.value)
-                    .then(() => setStatus('JSON copied to clipboard.', 'success'))
+                    .then(() => setStatus('.code-snippets content copied to clipboard.', 'success'))
                     .catch(() => setStatus('Copy failed. Please copy manually.', 'error'));
             }
 
@@ -464,16 +885,35 @@
             }
 
             addSnippetBtn.addEventListener('click', addSnippet);
+            newSnippetBtn.addEventListener('click', prepareNewSnippet);
             resetFormBtn.addEventListener('click', resetForm);
             copyBtn.addEventListener('click', copyOutput);
             downloadBtn.addEventListener('click', downloadOutput);
+            clearAllSnippetsBtn.addEventListener('click', clearAllSnippets);
+
+            importFileInput.addEventListener('change', function(event) {
+                const file = event.target.files && event.target.files[0];
+                handleImportFile(file);
+                importFileInput.value = '';
+            });
 
             snippetList.addEventListener('click', function(event) {
+                const editButton = event.target.closest('[data-edit-index]');
+                if (editButton) {
+                    const editIndex = Number(editButton.getAttribute('data-edit-index'));
+                    startEditing(editIndex);
+                    return;
+                }
+
                 const button = event.target.closest('[data-remove-index]');
                 if (!button) return;
                 const index = Number(button.getAttribute('data-remove-index'));
                 if (!Number.isInteger(index) || index < 0 || index >= snippets.length) return;
                 const removed = snippets.splice(index, 1);
+                if (editingSnippetName === removed[0].name) {
+                    editingSnippetName = null;
+                }
+                syncEditorStateUI();
                 renderSnippetList();
                 updateOutput();
                 setStatus('Removed: ' + removed[0].name, 'success');
@@ -492,7 +932,7 @@
                 });
             });
 
-            addSnippet();
+            syncEditorStateUI();
             renderSnippetList();
             updateOutput();
         })();
