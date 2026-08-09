@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSCode Snippet Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .snippet-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .snippet-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .snippet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .hint-text {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .snippet-textarea {
+            min-height: 260px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .output-textarea {
+            min-height: 390px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .tool-row .control-btn {
+            width: auto;
+            min-width: 150px;
+            padding: 10px 16px;
+        }
+
+        .chip-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip-btn {
+            border: 1px solid var(--border-primary);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .snippet-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .snippet-item {
+            border: 1px solid var(--border-primary);
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .snippet-item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+
+        .snippet-item-meta {
+            color: var(--text-tertiary);
+            font-size: 0.82rem;
+        }
+
+        .snippet-item-remove {
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.12);
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+
+        .snippet-item-remove:hover {
+            background: rgba(239, 68, 68, 0.22);
+        }
+
+        .status-line {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            min-height: 22px;
+            margin-top: 8px;
+        }
+
+        .status-line.success {
+            color: #86efac;
+        }
+
+        .status-line.error {
+            color: #fca5a5;
+        }
+
+        @media (max-width: 1024px) {
+            .snippet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-row .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link active" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column snippet-layout">
+                <header>
+                    <h1>VSCode Snippet Generator</h1>
+                    <p class="subtitle">Генеруйте snippets JSON для Visual Studio Code в реальному часі</p>
+                    <p class="description">Працює повністю локально: підтримка префіксу, опису, scope мов, tabstops, placeholders, а також декількох snippet-блоків в одному файлі .code-snippets.</p>
+                </header>
+
+                <section class="snippet-panel">
+                    <div class="field-grid">
+                        <div class="control-group">
+                            <label for="snippetName">Snippet Name</label>
+                            <input id="snippetName" type="text" value="My Console Log" placeholder="Назва сниппета">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="snippetPrefix">Prefix</label>
+                            <input id="snippetPrefix" type="text" value="clg" placeholder="Префікс для autocomplete">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="snippetDescription">Description</label>
+                            <input id="snippetDescription" type="text" value="Console log helper" placeholder="Опис сниппета">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="snippetScope">Scope (через кому)</label>
+                            <input id="snippetScope" type="text" value="javascript,typescript" placeholder="javascript,typescript,vue">
+                        </div>
+
+                        <div class="control-group full-width">
+                            <label for="snippetBody">Snippet Body</label>
+                            <textarea id="snippetBody" class="snippet-textarea" spellcheck="false" placeholder="console.log('${1:value}', $0);">console.log('${1:value}', $0);</textarea>
+                            <p class="hint-text">Використовуйте placeholders: ${1:name}, ${2:value}, фінальна позиція курсора: $0.</p>
+                        </div>
+                    </div>
+
+                    <div class="chip-grid" aria-label="Швидка вставка змінних VS Code">
+                        <button type="button" class="chip-btn" data-token="${1:placeholder}">${1:placeholder}</button>
+                        <button type="button" class="chip-btn" data-token="$0">$0 cursor</button>
+                        <button type="button" class="chip-btn" data-token="$TM_FILENAME">$TM_FILENAME</button>
+                        <button type="button" class="chip-btn" data-token="$TM_SELECTED_TEXT">$TM_SELECTED_TEXT</button>
+                        <button type="button" class="chip-btn" data-token="$CURRENT_YEAR">$CURRENT_YEAR</button>
+                        <button type="button" class="chip-btn" data-token="$CLIPBOARD">$CLIPBOARD</button>
+                    </div>
+
+                    <div class="tool-row">
+                        <button id="addSnippetBtn" class="control-btn" type="button">➕ Add Snippet to File</button>
+                        <button id="resetFormBtn" class="control-btn secondary" type="button">🧹 Reset Form</button>
+                    </div>
+                    <p id="statusLine" class="status-line" role="status"></p>
+                </section>
+
+                <section class="snippet-panel">
+                    <div class="snippet-grid">
+                        <div>
+                            <h2 style="margin-bottom: 8px;">Snippets in current file</h2>
+                            <p class="hint-text">Зберіть кілька сниппетів та експортуйте одним .code-snippets файлом.</p>
+                            <div id="snippetList" class="snippet-list"></div>
+                        </div>
+
+                        <div>
+                            <h2 style="margin-bottom: 8px;">Output JSON</h2>
+                            <textarea id="jsonOutput" class="output-textarea" spellcheck="false" readonly></textarea>
+                            <div class="tool-row">
+                                <button id="copyBtn" class="control-btn" type="button">📋 Copy JSON</button>
+                                <button id="downloadBtn" class="control-btn secondary" type="button">⬇ Download .code-snippets</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-section">
+                    <h3>Формат VS Code snippets</h3>
+                    <p>Кожен елемент має структуру: <strong>name</strong> → { <strong>prefix</strong>, <strong>scope</strong>, <strong>body</strong>, <strong>description</strong> }.</p>
+                    <ul>
+                        <li><code>prefix</code>: що вводити в редакторі для автодоповнення.</li>
+                        <li><code>scope</code>: мови через кому, наприклад <code>javascript,typescript</code>.</li>
+                        <li><code>body</code>: масив рядків; переноси рядків у вашому input автоматично перетворюються у масив.</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const snippetName = document.getElementById('snippetName');
+            const snippetPrefix = document.getElementById('snippetPrefix');
+            const snippetDescription = document.getElementById('snippetDescription');
+            const snippetScope = document.getElementById('snippetScope');
+            const snippetBody = document.getElementById('snippetBody');
+            const snippetList = document.getElementById('snippetList');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const statusLine = document.getElementById('statusLine');
+
+            const addSnippetBtn = document.getElementById('addSnippetBtn');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            const snippets = [];
+
+            function setStatus(message, type) {
+                statusLine.textContent = message || '';
+                statusLine.classList.remove('success', 'error');
+                if (type) {
+                    statusLine.classList.add(type);
+                }
+            }
+
+            function normalizeBodyLines(value) {
+                return value
+                    .replace(/\r\n/g, '\n')
+                    .replace(/\r/g, '\n')
+                    .split('\n');
+            }
+
+            function buildSnippetObject() {
+                const name = snippetName.value.trim();
+                const prefix = snippetPrefix.value.trim();
+                const description = snippetDescription.value.trim();
+                const scope = snippetScope.value.trim();
+                const bodyRaw = snippetBody.value;
+
+                if (!name) {
+                    throw new Error('Snippet Name is required.');
+                }
+
+                if (!prefix) {
+                    throw new Error('Prefix is required.');
+                }
+
+                if (!bodyRaw.trim()) {
+                    throw new Error('Snippet Body cannot be empty.');
+                }
+
+                const body = normalizeBodyLines(bodyRaw);
+
+                return {
+                    name,
+                    data: {
+                        prefix,
+                        scope,
+                        body,
+                        description
+                    }
+                };
+            }
+
+            function updateOutput() {
+                const fileObject = {};
+                snippets.forEach((item) => {
+                    fileObject[item.name] = item.data;
+                });
+                jsonOutput.value = JSON.stringify(fileObject, null, 2);
+            }
+
+            function renderSnippetList() {
+                if (!snippets.length) {
+                    snippetList.innerHTML = '<div class="snippet-item"><div><div class="snippet-item-title">No snippets yet</div><div class="snippet-item-meta">Заповніть форму та натисніть Add Snippet to File</div></div></div>';
+                    return;
+                }
+
+                snippetList.innerHTML = snippets.map((item, index) => {
+                    const bodyLines = item.data.body.length;
+                    const scope = item.data.scope || 'global';
+                    return '<div class="snippet-item">'
+                        + '<div>'
+                        + '<div class="snippet-item-title">' + escapeHtml(item.name) + '</div>'
+                        + '<div class="snippet-item-meta">prefix: ' + escapeHtml(item.data.prefix) + ' | scope: ' + escapeHtml(scope) + ' | lines: ' + bodyLines + '</div>'
+                        + '</div>'
+                        + '<button type="button" class="snippet-item-remove" data-remove-index="' + index + '">Remove</button>'
+                        + '</div>';
+                }).join('');
+            }
+
+            function escapeHtml(value) {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function addSnippet() {
+                try {
+                    const snippet = buildSnippetObject();
+                    const existingIndex = snippets.findIndex((item) => item.name === snippet.name);
+
+                    if (existingIndex >= 0) {
+                        snippets[existingIndex] = snippet;
+                        setStatus('Snippet updated: ' + snippet.name, 'success');
+                    } else {
+                        snippets.push(snippet);
+                        setStatus('Snippet added: ' + snippet.name, 'success');
+                    }
+
+                    renderSnippetList();
+                    updateOutput();
+                } catch (error) {
+                    setStatus(error.message, 'error');
+                }
+            }
+
+            function resetForm() {
+                snippetName.value = '';
+                snippetPrefix.value = '';
+                snippetDescription.value = '';
+                snippetScope.value = '';
+                snippetBody.value = '';
+                setStatus('Form reset. Fill fields to add a new snippet.', 'success');
+            }
+
+            function copyOutput() {
+                if (!jsonOutput.value.trim()) {
+                    setStatus('Nothing to copy yet. Add at least one snippet.', 'error');
+                    return;
+                }
+
+                navigator.clipboard.writeText(jsonOutput.value)
+                    .then(() => setStatus('JSON copied to clipboard.', 'success'))
+                    .catch(() => setStatus('Copy failed. Please copy manually.', 'error'));
+            }
+
+            function downloadOutput() {
+                if (!jsonOutput.value.trim()) {
+                    setStatus('Nothing to download yet. Add at least one snippet.', 'error');
+                    return;
+                }
+
+                const blob = new Blob([jsonOutput.value], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'vscode-snippets.code-snippets';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+                setStatus('File downloaded.', 'success');
+            }
+
+            function insertTokenAtCursor(token) {
+                const start = snippetBody.selectionStart;
+                const end = snippetBody.selectionEnd;
+                const source = snippetBody.value;
+                snippetBody.value = source.slice(0, start) + token + source.slice(end);
+                const next = start + token.length;
+                snippetBody.focus();
+                snippetBody.setSelectionRange(next, next);
+            }
+
+            addSnippetBtn.addEventListener('click', addSnippet);
+            resetFormBtn.addEventListener('click', resetForm);
+            copyBtn.addEventListener('click', copyOutput);
+            downloadBtn.addEventListener('click', downloadOutput);
+
+            snippetList.addEventListener('click', function(event) {
+                const button = event.target.closest('[data-remove-index]');
+                if (!button) return;
+                const index = Number(button.getAttribute('data-remove-index'));
+                if (!Number.isInteger(index) || index < 0 || index >= snippets.length) return;
+                const removed = snippets.splice(index, 1);
+                renderSnippetList();
+                updateOutput();
+                setStatus('Removed: ' + removed[0].name, 'success');
+            });
+
+            document.querySelectorAll('.chip-btn').forEach((button) => {
+                button.addEventListener('click', function() {
+                    const token = this.getAttribute('data-token') || '';
+                    insertTokenAtCursor(token);
+                });
+            });
+
+            [snippetName, snippetPrefix, snippetDescription, snippetScope, snippetBody].forEach((input) => {
+                input.addEventListener('input', function() {
+                    setStatus('', '');
+                });
+            });
+
+            addSnippet();
+            renderSnippetList();
+            updateOutput();
+        })();
+    </script>
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>

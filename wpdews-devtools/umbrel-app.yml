@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-devtools
 name: CSS Generator DevTools
-version: "1.0.12"
+version: "1.0.13"
 category: developer
 
 description: >-
@@ -11,7 +11,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-devtools/css-generator/icon.svg
 releaseNotes: >-
-  Fixed 403 from unreadable .htaccess by cleaning hidden files and normalizing Apache webroot permissions.
+  Added VSCode Snippet Generator with live JSON output, placeholders, copy, and .code-snippets download.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:
