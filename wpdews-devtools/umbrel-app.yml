@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-devtools
 name: CSS Generator DevTools
-version: "1.0.14"
+version: "1.0.15"
 category: developer
 
 description: >-
@@ -11,7 +11,7 @@ description: >-
 repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-devtools/css-generator/icon.svg
 releaseNotes: >-
-  Added VSCode Snippet Generator with live JSON output, placeholders, copy, and .code-snippets download.
+  Added Wpdew Snippet Generator (snippets.json format) with examples, escaping, copy, and download.
 developer: "WpDews"
 website: "https://wpdew.com"
 gallery:

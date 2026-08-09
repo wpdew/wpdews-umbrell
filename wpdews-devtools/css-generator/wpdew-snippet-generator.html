@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wpdew Snippet Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .wpdew-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .wpdew-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .wpdew-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .wpdew-textarea {
+            min-height: 320px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .output-textarea {
+            min-height: 440px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .tool-row .control-btn {
+            width: auto;
+            min-width: 160px;
+            padding: 10px 16px;
+        }
+
+        .mode-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .mode-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        .mode-option input[type="radio"] {
+            accent-color: var(--accent-primary);
+        }
+
+        .chip-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chip-btn {
+            border: 1px solid var(--border-primary);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .status-line {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            min-height: 22px;
+            margin-top: 8px;
+        }
+
+        .status-line.success {
+            color: #86efac;
+        }
+
+        .status-line.error {
+            color: #fca5a5;
+        }
+
+        .example-hint {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .wpdew-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-row .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                            <li><a class="sidebar-link active" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column wpdew-layout">
+                <header>
+                    <h1>Wpdew Snippet Generator</h1>
+                    <p class="subtitle">Генератор для формату snippets.json (Code Snippets Inserter)</p>
+                    <p class="description">Створює snippet у форматі <strong>name -> code + description</strong>. Код автоматично екранується: \n, \t, \" і \$ для PHP-змінних.</p>
+                </header>
+
+                <section class="wpdew-panel">
+                    <div class="control-group">
+                        <label for="snippetName">Snippet Name</label>
+                        <input id="snippetName" type="text" value="PHP Class" placeholder="Наприклад: HTML5 Template">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="snippetDescription">Description</label>
+                        <input id="snippetDescription" type="text" value="PHP class template" placeholder="Короткий опис snippet">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="snippetCode">Snippet Code</label>
+                        <textarea id="snippetCode" class="wpdew-textarea" spellcheck="false" placeholder="Введіть код тут...\nВикористовуйте ${1:name} для placeholder"><?php
+
+namespace App\\${1:Models};
+
+class ${2:ClassName}
+{
+    public function __construct()
+    {
+        ${0:// constructor}
+    }
+}</textarea>
+                        <p class="example-hint">Підтримка placeholder: ${1:text}, ${2:value}, $0. Для PHP змінних у результаті автоматично буде \$.</p>
+                    </div>
+
+                    <div class="mode-row">
+                        <label class="mode-option" for="modeSingle">
+                            <input id="modeSingle" type="radio" name="outputMode" value="single" checked>
+                            <span>Single snippet entry</span>
+                        </label>
+                        <label class="mode-option" for="modeFull">
+                            <input id="modeFull" type="radio" name="outputMode" value="full">
+                            <span>Full snippets.json object</span>
+                        </label>
+                    </div>
+
+                    <div class="chip-grid">
+                        <button type="button" class="chip-btn" data-example="html">HTML Template</button>
+                        <button type="button" class="chip-btn" data-example="php">PHP Class</button>
+                        <button type="button" class="chip-btn" data-example="react">React Component</button>
+                        <button type="button" class="chip-btn" data-example="vue">Vue Component</button>
+                    </div>
+
+                    <div class="tool-row">
+                        <button id="generateBtn" class="control-btn" type="button">🚀 Generate Snippet</button>
+                        <button id="clearBtn" class="control-btn secondary" type="button">🧹 Clear Form</button>
+                    </div>
+                    <p id="statusLine" class="status-line" role="status"></p>
+                </section>
+
+                <section class="wpdew-panel">
+                    <h2 style="margin-bottom: 8px;">Output</h2>
+                    <textarea id="outputCode" class="output-textarea" spellcheck="false" readonly placeholder="Тут з'явиться результат..."></textarea>
+                    <div class="tool-row">
+                        <button id="copyBtn" class="control-btn" type="button">📋 Copy</button>
+                        <button id="downloadBtn" class="control-btn secondary" type="button">⬇ Download snippets.json</button>
+                    </div>
+                </section>
+
+                <section class="info-section">
+                    <h3>Формат для code-snippets-inserter</h3>
+                    <p>Цей генератор створює формат:</p>
+                    <pre class="code-output" style="padding: 12px;">"Snippet Name": {
+  "code": "line1\\nline2\\nline3",
+  "description": "Some description"
+}</pre>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/wpdew-snippet-generator.js?v=20260809"></script>
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>
