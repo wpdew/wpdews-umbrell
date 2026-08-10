@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  web:
+    image: php:8.2-apache
+    restart: unless-stopped
+    ports:
+      - "38310:80"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+
+        tmpdir="$$(mktemp -d)"
+        if curl -fsSL https://codeload.github.com/TonySwity/JSONparser/tar.gz/refs/heads/main \
+          | tar -xz --strip-components=1 -C "$$tmpdir" JSONparser-main; then
+          find /var/www/html -mindepth 1 -delete
+          cp -a "$$tmpdir"/. /var/www/html/
+        fi
+        rm -rf "$$tmpdir"
+
+        chown -R www-data:www-data /var/www/html
+        find /var/www/html -type d -exec chmod 755 {} \;
+        find /var/www/html -type f -exec chmod 644 {} \;
+
+        if [ ! -f /var/www/html/index.html ]; then
+          cat > /var/www/html/index.html <<'HTML'
+        <!doctype html>
+        <html>
+        <head><meta charset="utf-8"><title>wpdews-crafthub</title></head>
+        <body><h1>wpdews-crafthub is starting</h1><p>Please reload in a few seconds.</p></body>
+        </html>
+        HTML
+        fi
+
+        cat > /etc/apache2/conf-available/wpdews-crafthub.conf <<'CONF'
+        <Directory /var/www/html>
+            Options FollowSymLinks
+            AllowOverride None
+            Require all granted
+            DirectoryIndex index.html index.php
+        </Directory>
+        CONF
+
+        a2enconf wpdews-crafthub >/dev/null
+        exec apache2-foreground

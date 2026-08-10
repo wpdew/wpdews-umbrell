@@ -1,0 +1,23 @@
+manifestVersion: 1
+id: wpdews-crafthub
+name: CraftHub Web JSON Parser
+version: "1.0.0"
+category: developer
+
+description: >-
+  CraftHub Web is a visual JSON parser and class builder.
+  Build class schemas, generate JSON payloads, and parse JSON in a tree editor.
+
+repository: "https://github.com/c3n9/CraftHub"
+icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/icon.png
+releaseNotes: >-
+  Initial Umbrel package for CraftHub Web (TonySwity JSONparser build).
+developer: "c3n9 / TonySwity"
+website: "https://tonyswity.github.io/JSONparser/"
+port: 38310
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: WpDews
+submission: https://github.com/wpdew/wpdews-umbrell
