@@ -1,9 +1,8 @@
 manifestVersion: 1
 id: wpdews-crafthub
 name: CraftHub Web JSON Parser
-version: "1.0.1"
+version: "1.0.2"
 category: developer
-
 description: >-
   CraftHub Web is a visual JSON parser and class builder.
   Build class schemas, generate JSON payloads, and parse JSON in a tree editor.
