@@ -1,7 +1,7 @@
 manifestVersion: 1
 id: wpdews-crafthub
 name: CraftHub Web JSON Parser
-version: "1.0.0"
+version: "1.0.1"
 category: developer
 
 description: >-
@@ -12,12 +12,16 @@ repository: "https://github.com/c3n9/CraftHub"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/icon.png
 releaseNotes: >-
   Initial Umbrel package for CraftHub Web (TonySwity JSONparser build).
-developer: "c3n9 / TonySwity"
-website: "https://tonyswity.github.io/JSONparser/"
+developer: "WpDews"
+website: "https://wpdew.com"
+gallery:
+  - https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/1.png
+  - https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/2.png
+  - https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/3.png
+  - https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/4.png
+  - https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/5.png
 port: 38310
 dependencies: []
 path: ""
 defaultUsername: ""
 defaultPassword: ""
-submitter: WpDews
-submission: https://github.com/wpdew/wpdews-umbrell
