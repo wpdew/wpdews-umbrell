@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to JSON Converter</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .converter-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .converter-header {
+            margin-bottom: 8px;
+        }
+
+        .converter-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .converter-column {
+            min-width: 0;
+        }
+
+        .converter-column h2 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-primary);
+        }
+
+        .converter-textarea {
+            min-height: 360px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .tool-row .control-btn {
+            width: auto;
+            min-width: 150px;
+            padding: 10px 16px;
+        }
+
+        .options-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .option-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.92rem;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-primary);
+        }
+
+        .status-line {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            min-height: 22px;
+            margin-top: 10px;
+        }
+
+        .status-line.success {
+            color: #86efac;
+        }
+
+        .hint-text {
+            color: var(--text-tertiary);
+            font-size: 0.92rem;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 980px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-row .control-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">⌂</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link active" href="html-to-json.html"><span class="sidebar-link-icon">🧾</span><span class="sidebar-link-label">HTML to JSON</span></a></li>
+                            <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                            <li><a class="sidebar-link" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column converter-layout">
+                <header class="converter-header">
+                    <h1>HTML to JSON</h1>
+                    <p class="subtitle">Конвертація HTML-фрагмента у JSON-рядок для поля content</p>
+                    <p class="description">Вставляйте HTML ліворуч, отримуйте готовий escaped-рядок праворуч. Зручно для конфігів, API payload та snippets.</p>
+                </header>
+
+                <section class="converter-panel">
+                    <div class="converter-grid">
+                        <div class="converter-column">
+                            <h2>Input (HTML)</h2>
+                            <textarea id="htmlInput" class="converter-textarea" spellcheck="false" placeholder="<article class=&quot;tile reveal in-view&quot;>
+    <h3>2. Дзвінок</h3>
+    <p>Менеджер уточнює деталі та підтверджує замовлення.</p>
+</article>"></textarea>
+                            <div class="options-row">
+                                <label class="option-item" for="preserveLineBreaks">
+                                    <input id="preserveLineBreaks" type="checkbox">
+                                    <span>Зберегти переноси рядків</span>
+                                </label>
+                            </div>
+                            <p class="hint-text">Якщо опція вимкнена, HTML буде зведено в один рядок перед екрануванням.</p>
+                            <div class="tool-row">
+                                <button id="convertBtn" class="control-btn" type="button">⚡ Конвертувати</button>
+                                <button id="clearBtn" class="control-btn secondary" type="button">🧹 Очистити</button>
+                            </div>
+                            <p id="statusLine" class="status-line" role="status"></p>
+                        </div>
+
+                        <div class="converter-column">
+                            <h2>Output (JSON)</h2>
+                            <textarea id="jsonOutput" class="converter-textarea" spellcheck="false" readonly placeholder="\"content\": \"...\","></textarea>
+                            <div class="tool-row">
+                                <button id="copyBtn" class="control-btn" type="button">📋 Копіювати</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-section">
+                    <h3>Приклад результату</h3>
+                    <pre class="code-output" style="padding: 12px;">"content": "&lt;article class=\"tile reveal in-view\"&gt;&lt;h3&gt;2. Дзвінок&lt;/h3&gt;&lt;p&gt;Менеджер уточнює деталі та підтверджує замовлення.&lt;/p&gt;&lt;/article&gt;",</pre>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const htmlInput = document.getElementById('htmlInput');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const preserveLineBreaks = document.getElementById('preserveLineBreaks');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const statusLine = document.getElementById('statusLine');
+
+            function setStatus(message, type) {
+                statusLine.textContent = message;
+                statusLine.classList.remove('success');
+                if (type === 'success') {
+                    statusLine.classList.add('success');
+                }
+            }
+
+            function normalizeHtml(source) {
+                const trimmed = source.trim();
+                if (!trimmed) {
+                    return '';
+                }
+
+                if (preserveLineBreaks.checked) {
+                    return trimmed
+                        .replace(/[ \t]+\n/g, '\n')
+                        .replace(/\n[ \t]+/g, '\n')
+                        .replace(/[ \t]{2,}/g, ' ');
+                }
+
+                return trimmed
+                    .replace(/\s*\n\s*/g, '')
+                    .replace(/\s{2,}/g, ' ');
+            }
+
+            function escapeForJson(value) {
+                return value
+                    .replace(/\\/g, '\\\\')
+                    .replace(/"/g, '\\"')
+                    .replace(/\n/g, '\\n')
+                    .replace(/\r/g, '\\r')
+                    .replace(/\t/g, '\\t');
+            }
+
+            function convert() {
+                const normalized = normalizeHtml(htmlInput.value);
+                if (!normalized) {
+                    jsonOutput.value = '';
+                    setStatus('Вставте HTML для конвертації.', 'default');
+                    return;
+                }
+
+                const escaped = escapeForJson(normalized);
+                jsonOutput.value = '"content": "' + escaped + '",';
+                setStatus('Готово. Результат оновлено.', 'success');
+            }
+
+            function clearAll() {
+                htmlInput.value = '';
+                jsonOutput.value = '';
+                setStatus('Поля очищено.', 'default');
+                htmlInput.focus();
+            }
+
+            async function copyOutput() {
+                if (!jsonOutput.value) {
+                    setStatus('Спочатку виконайте конвертацію.', 'default');
+                    return;
+                }
+
+                try {
+                    await navigator.clipboard.writeText(jsonOutput.value);
+                    const oldLabel = copyBtn.textContent;
+                    copyBtn.textContent = '✅ Скопійовано';
+                    setStatus('Результат скопійовано в буфер обміну.', 'success');
+
+                    setTimeout(function() {
+                        copyBtn.textContent = oldLabel;
+                    }, 1500);
+                } catch (error) {
+                    setStatus('Не вдалося скопіювати. Скопіюйте вручну з правого поля.', 'default');
+                }
+            }
+
+            convertBtn.addEventListener('click', convert);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyOutput);
+            preserveLineBreaks.addEventListener('change', convert);
+            htmlInput.addEventListener('input', convert);
+
+            htmlInput.value = `<article class="tile reveal in-view">
+    <h3>2. Дзвінок</h3>
+    <p>Менеджер уточнює деталі та підтверджує замовлення.</p>
+</article>`;
+            convert();
+        })();
+    </script>
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>
