@@ -8,7 +8,7 @@ description: >-
   CraftHub Web is a visual JSON parser and class builder.
   Build class schemas, generate JSON payloads, and parse JSON in a tree editor.
 
-repository: "https://github.com/c3n9/CraftHub"
+repository: "https://github.com/wpdew/wpdews-umbrell"
 icon: https://raw.githubusercontent.com/wpdew/wpdews-umbrell/main/wpdews-crafthub/icon.png
 releaseNotes: >-
   Initial Umbrel package for CraftHub Web (TonySwity JSONparser build).
