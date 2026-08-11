@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .track-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .track-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .track-label {
+            color: var(--text-muted);
+            font-size: 0.85em;
+            min-width: 28px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            accent-color: var(--accent-primary);
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.92em;
+        }
+
+        .grid-preview {
+            border: 2px dashed var(--accent-primary);
+            min-height: 420px;
+            padding: 16px;
+            border-radius: 8px;
+            display: grid;
+            background: rgba(102, 126, 234, 0.06);
+        }
+
+        .grid-item {
+            background: var(--gradient-primary);
+            color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.05em;
+            min-height: 50px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .helper-note {
+            color: var(--text-muted);
+            font-size: 0.82em;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .inline-values {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+<div class="container">
+    <div class="main-grid">
+        <aside class="controls-panel sidebar-nav">
+            <div class="sidebar-brand">
+                <h2>Navigation</h2>
+                <p>Швидкий доступ до всіх генераторів</p>
+            </div>
+
+            <nav aria-label="Навігація по генераторам">
+                <div>
+                    <div class="sidebar-group-title">Crypto</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="index.html#all-tools"><span class="sidebar-link-icon">🏡</span><span class="sidebar-link-label">All tools</span></a></li>
+                        <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                        <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                        <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <div class="sidebar-group-title">Converters</div>
+                    <ul class="sidebar-links">
+                        <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                        <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                        <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                        <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                        <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                        <li><a class="sidebar-link" href="grid-generator.html"><span class="sidebar-link-icon">#</span><span class="sidebar-link-label">Grid Generator</span></a></li>
+                        <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                        <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                        <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                        <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                        <li><a class="sidebar-link" href="html-to-json.html"><span class="sidebar-link-icon">🧾</span><span class="sidebar-link-label">HTML to JSON</span></a></li>
+                        <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                        <li><a class="sidebar-link" href="qr-sequence.html"><span class="sidebar-link-icon">🔳</span><span class="sidebar-link-label">QR Sequence</span></a></li>
+                        <li><a class="sidebar-link" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content-column">
+        <h1>CSS Grid Generator</h1>
+        <p class="subtitle">Візуальний редактор для CSS Grid: колонки, рядки та shorthand</p>
+
+        <div class="main-grid">
+            <div class="controls-panel">
+                <div class="panel">
+                    <h2>Налаштування grid</h2>
+
+                    <div class="control-section">
+                        <h3>Структура сітки</h3>
+
+                        <div class="control-group">
+                            <label>Columns: <span class="inline-values" id="columnsCountValue">3</span></label>
+                            <input type="range" id="columnsCount" min="1" max="6" value="3" oninput="updateTrackControls()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Rows: <span class="inline-values" id="rowsCountValue">2</span></label>
+                            <input type="range" id="rowsCount" min="1" max="6" value="2" oninput="updateTrackControls()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Gap (px): <span class="inline-values" id="gapValue">12</span></label>
+                            <input type="range" id="gridGap" min="0" max="40" value="12" oninput="applyGrid()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Кількість елементів: <span class="inline-values" id="itemsCountValue">6</span></label>
+                            <input type="range" id="itemsCount" min="1" max="36" value="6" oninput="renderItems()">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showAutoFlow" onchange="applyGrid()">
+                            <label for="showAutoFlow">Показати grid-auto-flow у коді</label>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Tracks: columns</h3>
+                        <div id="columnsTracks" class="track-grid"></div>
+                        <p class="helper-note">Приклади значень: <strong>1fr</strong>, <strong>220px</strong>, <strong>minmax(140px, 1fr)</strong></p>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Tracks: rows</h3>
+                        <div id="rowsTracks" class="track-grid"></div>
+                        <p class="helper-note">Комбінуйте фіксовані та гнучкі рядки: <strong>100px</strong>, <strong>auto</strong>, <strong>1fr</strong></p>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Вирівнювання</h3>
+
+                        <div class="control-group">
+                            <label>justify-items</label>
+                            <select id="justifyItems" onchange="applyGrid()">
+                                <option value="stretch">stretch</option>
+                                <option value="start">start</option>
+                                <option value="center">center</option>
+                                <option value="end">end</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>align-items</label>
+                            <select id="alignItems" onchange="applyGrid()">
+                                <option value="stretch">stretch</option>
+                                <option value="start">start</option>
+                                <option value="center">center</option>
+                                <option value="end">end</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>grid-auto-flow</label>
+                            <select id="autoFlow" onchange="applyGrid()">
+                                <option value="row">row</option>
+                                <option value="column">column</option>
+                                <option value="row dense">row dense</option>
+                                <option value="column dense">column dense</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="panel">
+                    <h2>Попередній перегляд</h2>
+                    <div class="preview-area">
+                        <div class="grid-preview" id="gridPreview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Згенерований CSS код</h2>
+            <div class="code-output">
+                <button class="copy-btn" onclick="copyCode()">📋 Копіювати</button>
+                <pre id="cssCode"></pre>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>📚 Про CSS Grid Generator</h3>
+            <p><strong>CSS Grid Generator</strong> допомагає швидко скласти сітку та одразу отримати чистий CSS-код.</p>
+
+            <h3 style="margin-top: 20px;">🎯 Що генерується обов'язково:</h3>
+            <ul>
+                <li><strong>grid-template-columns</strong> - шаблон колонок</li>
+                <li><strong>grid-template-rows</strong> - шаблон рядків</li>
+                <li><strong>grid-template</strong> - shorthand формат <code>rows / columns</code></li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">💡 Поради:</h3>
+            <ul>
+                <li><strong>fr</strong> - найкраще для адаптивних пропорцій</li>
+                <li><strong>minmax()</strong> - контроль мінімуму/максимуму для responsive-макетів</li>
+                <li><strong>gap</strong> - безпечніший і чистіший за margins між grid-елементами</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_COLS = ['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'];
+        const DEFAULT_ROWS = ['140px', '140px', '140px', '140px', '140px', '140px'];
+
+        let columnTracks = DEFAULT_COLS.slice(0, 3);
+        let rowTracks = DEFAULT_ROWS.slice(0, 2);
+
+        function updateTrackControls() {
+            const columnsCount = parseInt(document.getElementById('columnsCount').value, 10);
+            const rowsCount = parseInt(document.getElementById('rowsCount').value, 10);
+
+            document.getElementById('columnsCountValue').textContent = columnsCount;
+            document.getElementById('rowsCountValue').textContent = rowsCount;
+
+            columnTracks = resizeTracks(columnTracks, columnsCount, DEFAULT_COLS, '1fr');
+            rowTracks = resizeTracks(rowTracks, rowsCount, DEFAULT_ROWS, '140px');
+
+            renderTrackInputs('columnsTracks', columnTracks, 'col');
+            renderTrackInputs('rowsTracks', rowTracks, 'row');
+
+            const suggestedItems = Math.min(columnsCount * rowsCount, 36);
+            const itemsRange = document.getElementById('itemsCount');
+            if (parseInt(itemsRange.value, 10) > suggestedItems) {
+                itemsRange.value = suggestedItems;
+                document.getElementById('itemsCountValue').textContent = suggestedItems;
+            }
+
+            renderItems();
+            applyGrid();
+        }
+
+        function resizeTracks(currentTracks, targetSize, defaults, fallback) {
+            const next = currentTracks.slice(0, targetSize);
+
+            while (next.length < targetSize) {
+                const defaultValue = defaults[next.length] || fallback;
+                next.push(defaultValue);
+            }
+
+            return next;
+        }
+
+        function renderTrackInputs(containerId, tracks, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            tracks.forEach((value, index) => {
+                const row = document.createElement('div');
+                row.className = 'track-row';
+
+                const label = document.createElement('span');
+                label.className = 'track-label';
+                label.textContent = type === 'col' ? `C${index + 1}` : `R${index + 1}`;
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = value;
+                input.placeholder = type === 'col' ? '1fr' : '140px';
+                input.addEventListener('input', () => {
+                    if (type === 'col') {
+                        columnTracks[index] = input.value.trim() || '1fr';
+                    } else {
+                        rowTracks[index] = input.value.trim() || 'auto';
+                    }
+                    applyGrid();
+                });
+
+                row.appendChild(label);
+                row.appendChild(input);
+                container.appendChild(row);
+            });
+        }
+
+        function renderItems() {
+            const grid = document.getElementById('gridPreview');
+            const count = parseInt(document.getElementById('itemsCount').value, 10);
+            document.getElementById('itemsCountValue').textContent = count;
+
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= count; i += 1) {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.textContent = i;
+                grid.appendChild(item);
+            }
+
+            applyGrid();
+        }
+
+        function getColumnsTemplate() {
+            return columnTracks.map(track => track.trim() || '1fr').join(' ');
+        }
+
+        function getRowsTemplate() {
+            return rowTracks.map(track => track.trim() || 'auto').join(' ');
+        }
+
+        function applyGrid() {
+            const grid = document.getElementById('gridPreview');
+            const gap = parseInt(document.getElementById('gridGap').value, 10);
+            const justifyItems = document.getElementById('justifyItems').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const autoFlow = document.getElementById('autoFlow').value;
+
+            const columnsTemplate = getColumnsTemplate();
+            const rowsTemplate = getRowsTemplate();
+
+            document.getElementById('gapValue').textContent = gap;
+
+            grid.style.gridTemplateColumns = columnsTemplate;
+            grid.style.gridTemplateRows = rowsTemplate;
+            grid.style.gap = `${gap}px`;
+            grid.style.justifyItems = justifyItems;
+            grid.style.alignItems = alignItems;
+            grid.style.gridAutoFlow = autoFlow;
+
+            generateCode(columnsTemplate, rowsTemplate, gap, justifyItems, alignItems, autoFlow);
+        }
+
+        function generateCode(columnsTemplate, rowsTemplate, gap, justifyItems, alignItems, autoFlow) {
+            const showAutoFlow = document.getElementById('showAutoFlow').checked;
+
+            let code = `<span class="syntax-selector">.grid-container</span> {\n`;
+            code += `    <span class="syntax-property">display</span>: <span class="syntax-value">grid</span>;\n`;
+            code += `    <span class="syntax-property">grid-template-columns</span>: <span class="syntax-value">${escapeHtml(columnsTemplate)}</span>;\n`;
+            code += `    <span class="syntax-property">grid-template-rows</span>: <span class="syntax-value">${escapeHtml(rowsTemplate)}</span>;\n`;
+            code += `    <span class="syntax-property">grid-template</span>: <span class="syntax-value">${escapeHtml(rowsTemplate)} / ${escapeHtml(columnsTemplate)}</span>;\n`;
+            code += `    <span class="syntax-property">gap</span>: <span class="syntax-value">${gap}px</span>;\n`;
+            code += `    <span class="syntax-property">justify-items</span>: <span class="syntax-value">${justifyItems}</span>;\n`;
+            code += `    <span class="syntax-property">align-items</span>: <span class="syntax-value">${alignItems}</span>;\n`;
+
+            if (showAutoFlow) {
+                code += `    <span class="syntax-property">grid-auto-flow</span>: <span class="syntax-value">${autoFlow}</span>;\n`;
+            }
+
+            code += `}`;
+
+            document.getElementById('cssCode').innerHTML = code;
+        }
+
+        function copyCode() {
+            const columnsTemplate = getColumnsTemplate();
+            const rowsTemplate = getRowsTemplate();
+            const gap = parseInt(document.getElementById('gridGap').value, 10);
+            const justifyItems = document.getElementById('justifyItems').value;
+            const alignItems = document.getElementById('alignItems').value;
+            const autoFlow = document.getElementById('autoFlow').value;
+            const showAutoFlow = document.getElementById('showAutoFlow').checked;
+
+            let plainCode = `.grid-container {\n`;
+            plainCode += `    display: grid;\n`;
+            plainCode += `    grid-template-columns: ${columnsTemplate};\n`;
+            plainCode += `    grid-template-rows: ${rowsTemplate};\n`;
+            plainCode += `    grid-template: ${rowsTemplate} / ${columnsTemplate};\n`;
+            plainCode += `    gap: ${gap}px;\n`;
+            plainCode += `    justify-items: ${justifyItems};\n`;
+            plainCode += `    align-items: ${alignItems};\n`;
+
+            if (showAutoFlow) {
+                plainCode += `    grid-auto-flow: ${autoFlow};\n`;
+            }
+
+            plainCode += `}`;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(plainCode).then(() => {
+                    showCopyFeedback();
+                }).catch(() => {
+                    fallbackCopy(plainCode);
+                });
+            } else {
+                fallbackCopy(plainCode);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showCopyFeedback();
+            } catch (err) {
+                alert('Не вдалося скопіювати код');
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function showCopyFeedback() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Скопійовано!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        updateTrackControls();
+    </script>
+        </main>
+    </div>
+</div>
+
+    <script src="css/theme-toggle.js"></script>
+</body>
+</html>
