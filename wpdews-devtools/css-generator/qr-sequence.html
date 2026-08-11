@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Sequence - Генератор та Декодер</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Crypto</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html"><span class="sidebar-link-icon">🏡</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="sidebar-group-title">Converters</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-json.html"><span class="sidebar-link-icon">🧾</span><span class="sidebar-link-label">HTML to JSON</span></a></li>
+                            <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                            <li><a class="sidebar-link active" href="qr-sequence.html"><span class="sidebar-link-icon">🔳</span><span class="sidebar-link-label">QR Sequence</span></a></li>
+                            <li><a class="sidebar-link" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+                <header>
+                    <h1>QR Sequence</h1>
+                    <p class="subtitle">Генеруйте та декодуйте QR-коди</p>
+                </header>
+
+                <div class="tabs qr-tabs">
+                    <button class="tab qr-tab active" data-tab="generate">Генерувати</button>
+                    <button class="tab qr-tab" data-tab="decode">Декодувати</button>
+                </div>
+
+                <div class="tab-content qr-tab-content active" id="generate">
+                    <div class="card panel qr-card">
+                        <form id="generateForm">
+                            <div class="input-group qr-input-group">
+                                <label>Текст для QR-коду</label>
+                                <textarea id="qrText" placeholder="Введіть текст, URL або будь-які дані..."></textarea>
+                                <div class="char-counter qr-char-counter" id="charCounter">0 символів</div>
+                            </div>
+
+                            <div class="settings-grid qr-settings-grid">
+                                <div class="input-group qr-input-group">
+                                    <label>Розмір</label>
+                                    <select id="qrSize">
+                                        <option value="150">Малий (150px)</option>
+                                        <option value="300" selected>Середній (300px)</option>
+                                        <option value="500">Великий (500px)</option>
+                                        <option value="800">Дуже великий (800px)</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-group qr-input-group">
+                                    <label>Chunk Size (символів)</label>
+                                    <input type="number" id="chunkSize" value="500" min="100" max="2000">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn qr-btn">Генерувати QR-код</button>
+                        </form>
+
+                        <div class="spinner qr-spinner" id="generateSpinner"></div>
+                        <div class="alert qr-alert" id="generateAlert"></div>
+
+                        <div class="qr-output" id="qrOutput">
+                            <h3 style="margin-bottom: 15px;">✨ Ваш QR-код готовий!</h3>
+                            <div id="qrContainer"></div>
+                            <button class="btn qr-btn qr-btn-secondary" id="downloadBtn">Завантажити все</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content qr-tab-content" id="decode">
+                    <div class="card panel qr-card">
+                        <div class="input-group qr-input-group">
+                            <label>Завантажте QR-код</label>
+                            <div class="file-upload qr-file-upload">
+                                <input type="file" id="qrFile" accept="image/*" multiple>
+                                <label for="qrFile" class="file-upload-label qr-file-upload-label">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                    <span>Натисніть або перетягніть зображення</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="spinner qr-spinner" id="decodeSpinner"></div>
+                        <div class="alert qr-alert" id="decodeAlert"></div>
+
+                        <div class="decoded-output qr-decoded-output" id="decodedOutput">
+                            <h3 style="margin-bottom: 15px;">📄 Декодований текст:</h3>
+                            <div class="decoded-text qr-decoded-text" id="decodedText"></div>
+                            <button class="btn qr-btn qr-btn-secondary" id="copyBtn" style="margin-top: 15px;">Копіювати текст</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <canvas id="canvas" class="qr-canvas"></canvas>
+
+    <script src="css/theme-toggle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        document.querySelectorAll('.qr-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+
+                document.querySelectorAll('.qr-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.qr-tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        const qrText = document.getElementById('qrText');
+        const charCounter = document.getElementById('charCounter');
+
+        qrText.addEventListener('input', () => {
+            const length = qrText.value.length;
+            charCounter.textContent = `${length} символів`;
+
+            if (length > 500) {
+                charCounter.style.color = 'var(--accent-danger)';
+            } else {
+                charCounter.style.color = 'var(--text-tertiary)';
+            }
+        });
+
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const text = qrText.value.trim();
+            const size = document.getElementById('qrSize').value;
+            const chunkSize = parseInt(document.getElementById('chunkSize').value, 10);
+
+            if (!text) {
+                showAlert('generateAlert', 'Будь ласка, введіть текст!', 'error');
+                return;
+            }
+
+            showSpinner('generateSpinner', true);
+            hideElement('qrOutput');
+            hideElement('generateAlert');
+
+            try {
+                const textLength = text.length;
+                const qrCodes = [];
+
+                if (textLength > chunkSize) {
+                    const chunks = [];
+                    for (let i = 0; i < textLength; i += chunkSize) {
+                        chunks.push(text.substring(i, i + chunkSize));
+                    }
+
+                    for (let i = 0; i < chunks.length; i++) {
+                        const chunk = chunks[i];
+                        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(chunk)}`;
+
+                        qrCodes.push({
+                            image: qrUrl,
+                            chunk: chunk.length,
+                            index: i + 1,
+                            total: chunks.length
+                        });
+                    }
+                } else {
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+
+                    qrCodes.push({
+                        image: qrUrl,
+                        chunk: textLength,
+                        index: 1,
+                        total: 1
+                    });
+                }
+
+                showSpinner('generateSpinner', false);
+                displayQRCodes(qrCodes);
+                showAlert('generateAlert', `✅ Згенеровано ${qrCodes.length} QR-код(ів)!`, 'success');
+            } catch (error) {
+                showSpinner('generateSpinner', false);
+                showAlert('generateAlert', '❌ Помилка генерації!', 'error');
+                console.error(error);
+            }
+        });
+
+        function displayQRCodes(qrCodes) {
+            const container = document.getElementById('qrContainer');
+
+            if (qrCodes.length === 1) {
+                container.innerHTML = `
+                    <img src="${qrCodes[0].image}" alt="QR Code">
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        ${qrCodes[0].chunk} символів
+                    </p>
+                `;
+            } else {
+                container.innerHTML = '<div class="qr-sequence"></div>';
+                const sequenceContainer = container.querySelector('.qr-sequence');
+
+                qrCodes.forEach((qr, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'qr-item';
+                    item.innerHTML = `
+                        <img src="${qr.image}" alt="QR ${index + 1}">
+                        <div class="qr-item-label">Частина ${index + 1}/${qrCodes.length}</div>
+                        <div class="qr-item-label">${qr.chunk} символів</div>
+                    `;
+                    sequenceContainer.appendChild(item);
+                });
+            }
+
+            showElement('qrOutput');
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const images = document.querySelectorAll('#qrContainer img');
+
+            showSpinner('generateSpinner', true);
+
+            for (let i = 0; i < images.length; i++) {
+                try {
+                    const img = images[i];
+                    const response = await fetch(img.src);
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = images.length > 1 ? `qr-code-${i + 1}.png` : 'qr-code.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+
+                    if (i < images.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+                } catch (error) {
+                    console.error('Download error:', error);
+                }
+            }
+
+            showSpinner('generateSpinner', false);
+            showAlert('generateAlert', `📥 Завантажено ${images.length} зображень!`, 'success');
+        });
+
+        document.getElementById('qrFile').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+
+            if (files.length === 0) return;
+
+            showSpinner('decodeSpinner', true);
+            hideElement('decodedOutput');
+            hideElement('decodeAlert');
+
+            try {
+                const decodedChunks = [];
+
+                for (const file of files) {
+                    const text = await decodeQRImage(file);
+                    if (text) {
+                        decodedChunks.push(text);
+                    }
+                }
+
+                showSpinner('decodeSpinner', false);
+
+                if (decodedChunks.length > 0) {
+                    const fullText = decodedChunks.join('');
+                    displayDecodedText(fullText, decodedChunks.length);
+                    showAlert('decodeAlert', `✅ Декодовано ${decodedChunks.length} QR-код(ів)!`, 'success');
+                } else {
+                    showAlert('decodeAlert', '❌ Не вдалося декодувати QR-коди!', 'error');
+                }
+            } catch (error) {
+                showSpinner('decodeSpinner', false);
+                showAlert('decodeAlert', '❌ Помилка декодування!', 'error');
+                console.error(error);
+            }
+        });
+
+        async function decodeQRImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const img = new Image();
+
+                    img.onload = () => {
+                        const canvas = document.getElementById('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                        resolve(code ? code.data : null);
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function displayDecodedText(text, chunks) {
+            const decodedText = document.getElementById('decodedText');
+            decodedText.textContent = text;
+
+            if (chunks > 1) {
+                decodedText.insertAdjacentHTML('beforebegin',
+                    `<p style="color: var(--success); margin-bottom: 10px;">
+                        🔗 З'єднано ${chunks} частин
+                    </p>`
+                );
+            }
+
+            showElement('decodedOutput');
+        }
+
+        document.getElementById('copyBtn').addEventListener('click', async () => {
+            const text = document.getElementById('decodedText').textContent;
+
+            try {
+                await navigator.clipboard.writeText(text);
+                showAlert('decodeAlert', '📋 Текст скопійовано!', 'success');
+            } catch (error) {
+                showAlert('decodeAlert', '❌ Не вдалося скопіювати!', 'error');
+            }
+        });
+
+        function showAlert(id, message, type) {
+            const alert = document.getElementById(id);
+            alert.textContent = message;
+            alert.className = `qr-alert ${type} show`;
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function showSpinner(id, show) {
+            const spinner = document.getElementById(id);
+            if (show) {
+                spinner.classList.add('show');
+            } else {
+                spinner.classList.remove('show');
+            }
+        }
+
+        function showElement(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function hideElement(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+    </script>
+</body>
+</html>
