@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftUI Formatter - Генератор для веб-дизайнерів</title>
+    <link rel="stylesheet" href="css/style.css">
+<style>
+/* ===========================================
+   SWIFTUI FORMATTER - SPECIFIC STYLES
+   ============================================ */
+
+/* EasyMDE Customizations */
+.EasyMDEContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.CodeMirror {
+    background: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-primary) !important;
+    border-radius: 0 0 8px 8px !important;
+    min-height: 350px;
+    font-family: monospace;
+    font-size: 14px;
+}
+.editor-toolbar {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+.editor-toolbar button {
+    background: transparent;
+    color: var(--text-primary) !important;
+    margin: 0;
+    padding: 4px;
+}
+.editor-toolbar button:hover, .editor-toolbar button.active {
+    background: var(--accent-primary) !important;
+}
+.editor-preview {
+    background: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+}
+
+.editor-toolbar button.header-4::after {
+    content: "4";
+    font-size: 9px;
+    vertical-align: super;
+    font-weight: bold;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 2px solid var(--accent-primary) !important;
+}
+
+.CodeMirror-activeline-background {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* General Layout and Input Styles */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 100%; /* Adjust as needed */
+    margin: 0 auto;
+}
+
+.row-header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.field-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+textarea.result-code {
+    width: 100%;
+    height: 350px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary); /* Adjusted for theme */
+    padding: 12px;
+    font-family: monospace;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 13px;
+    line-height: 1.4;
+    box-sizing: border-box;
+}
+
+.action-button {
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    height: 38px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.action-button:hover {
+    background: var(--accent-secondary);
+    transform: translateY(-1px);
+}
+
+button.btn-copy {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+button.btn-copy:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+input[type="text"] {
+    background: var(--bg-input);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    height: 38px; /* Adjusted for better alignment */
+    font-size: 14px;
+}
+label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+}
+.supported-tags {
+    font-size: 11px;
+    color: var(--accent-primary);
+    margin-bottom: 12px;
+}
+
+/* Info Box Styles */
+.info-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+.info-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--accent-primary);
+    font-size: 15px;
+}
+.info-box ol {
+    margin: 0;
+    padding-left: 20px;
+}
+.info-box li {
+    margin-bottom: 8px;
+}
+.info-box pre {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    padding: 12px;
+    border-radius: 6px;
+    color: var(--text-primary);
+    overflow-x: auto;
+    font-size: 12px;
+}
+</style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+</head>
+<body>
+    <!-- Перемикач теми -->
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Навігація</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link active" href="index.html"><span class="sidebar-link-icon">🏡</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="grid-generator.html"><span class="sidebar-link-icon">#</span><span class="sidebar-link-label">Grid Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-json.html"><span class="sidebar-link-icon">🧾</span><span class="sidebar-link-label">HTML to JSON</span></a></li>
+                            <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                            <li><a class="sidebar-link active" href="qr-sequence.html"><span class="sidebar-link-icon">🔳</span><span class="sidebar-link-label">QR Sequence</span></a></li>
+                            <li><a class="sidebar-link" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                            <li><a class="sidebar-link" href="swiftui-formatter.html"><span class="sidebar-link-icon">📱</span><span class="sidebar-link-label">SwiftUI Formatter</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column">
+                <header>
+                    <h1>SwiftUI Formatter</h1>
+                    <p class="subtitle">Конвертер HTML & Markdown в SwiftUI View</p>
+                    <p class="description">Перетворюйте ваш HTML-контент або Markdown-текст у структурований SwiftUI код. Ідеально для швидкого створення інтерфейсів додатків.</p>
+                </header>
+
+                <div class="form-container">
+                    <div class="row-header">
+                        <div class="field-group">
+                            <label for="viewName">Назва View:</label>
+                            <input type="text" id="viewName" value="FormattedTextView">
+                        </div>
+                        <button id="generateBtn" class="action-button">Згенерувати SwiftUI View</button>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="markdown-editor">Вхідний HTML / Text / Markdown:</label>
+                        <textarea id="markdown-editor" name="text" placeholder="Введіть текст або скористайтесь панеллю інструментів зверху..."></textarea>
+                    </div>
+
+                    <button id="generateBtnBottom" class="action-button">Згенерувати SwiftUI View</button>
+
+                    <div class="field-group">
+                        <div class="output-header">
+                            <label>Готовий SwiftUI Код:</label>
+                            <button type="button" class="btn-copy" id="copyBtn">Скопіювати</button>
+                        </div>
+                        <textarea id="result-code" class="result-code" readonly placeholder="Тут з'явиться Swift код..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Блок Довідки -->
+                <div class="info-box">
+                    <h3>💡 Довідка: Використання локальних зображень замість AsyncImage</h3>
+                    <p>У SwiftUI для картинок, які знаходяться всередині додатка, <code>AsyncImage</code> не потрібен. Найпростіший варіант — покласти зображення в <b>Assets.xcassets</b> і використовувати <code>Image("назва_картинки")</code>.</p>
+                    
+                    <ol>
+                        <li>
+                            <b>Додайте картинку в Assets:</b><br>
+                            В Xcode відкрийте <code>Assets.xcassets</code> → <b>+</b> → <b>Image Set</b>.<br>
+                            Наприклад, назвіть її: <code>lessonImage</code> і перетягніть туди файл зображення.
+                        </li>
+                        <li>
+                            <b>Замість AsyncImage використовуйте Image:</b><br>
+                            Приклад коду для локального зображення:
+                        </li>
+                    </ol>
+
+                    <pre>import SwiftUI
+
+struct GeneratorView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+
+                Text("Привет мир")
+                    .font(.body)
+                    .foregroundColor(.white.opacity(0.9))
+                    .lineSpacing(4)
+
+                Image("lessonImage")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(Color.devMainBg)
+    }
+}
+
+#Preview {
+    GeneratorView()
+}</pre>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script src="css/theme-toggle.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const easymde = new EasyMDE({
+                element: document.getElementById('markdown-editor'),
+                spellChecker: false,
+                autosave: { enabled: false },
+                placeholder: "Введіть текст або скористайтесь панеллю інструментів зверху...",
+                status: false,
+                toolbar: [
+                    "bold", "italic", "|",
+                    "heading-1", "heading-2", "heading-3",
+                    {
+                        name: "heading-4",
+                        action: function customToggleHeading4(editor) {
+                            EasyMDE.toggleHeading(editor, 4);
+                        },
+                        className: "fa fa-header header-4",
+                        title: "Heading 4",
+                    },
+                    "|", 
+                    "quote", "unordered-list", "ordered-list", "|", 
+                    "link", "image", "code", "|", 
+                    "preview", "side-by-side", "fullscreen"
+                ]
+            });
+
+            const viewNameInput = document.getElementById('viewName');
+            const generateBtn = document.getElementById('generateBtn');
+            const generateBtnBottom = document.getElementById('generateBtnBottom');
+            const copyBtn = document.getElementById('copyBtn');
+            const resultCodeTextarea = document.getElementById('result-code');
+
+            function escapeSwiftString(str) {
+                return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+            }
+
+            function parseHtmlAndMarkdownToSwiftUI(text) {
+                // 1. Обробка картинок Markdown: ![alt](url)
+                let imgMatch = text.match(/\!\[(.*?)\]\((https?:\/\/[^\s]+)\)/i);
+                if (imgMatch) {
+                    let imgUrl = imgMatch[2].trim();
+                    return `AsyncImage(url: URL(string: "${imgUrl}")) {
+                    $0.resizable()
+                      .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(maxWidth: .infinity)
+                .cornerRadius(12)`;
+                }
+
+                // 2. Обробка картинок HTML: <img src="url" ...>
+                imgMatch = text.match(/<img[^>]+src=["'](https?:\/\/[^\s"']+)["']/i);
+                if (imgMatch) {
+                    let imgUrl = imgMatch[1].trim();
+                    return `AsyncImage(url: URL(string: "${imgUrl}")) {
+                    $0.resizable()
+                      .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(maxWidth: .infinity)
+                .cornerRadius(12)`;
+                }
+
+                // 3. Обробка посилань [Text](URL)
+                let linkMatch = text.match(/\[(.*?)\]\((https?:\/\/[^\s]+)\)/i);
+                if (linkMatch) {
+                    let linkTitle = escapeSwiftString(linkMatch[1].trim());
+                    let linkUrl = linkMatch[2].trim();
+                    return `Link("${linkTitle}", destination: URL(string: "${linkUrl}")!)
+                .font(.body)
+                .foregroundColor(.devAccentBlue)`;
+                }
+                
+                let rawLinkMatch = text.match(/<(https?:\/\/[^\s>]+)>/i);
+                if (rawLinkMatch) {
+                    let linkUrl = rawLinkMatch[1].trim();
+                    return `Link("${linkUrl}", destination: URL(string: "${linkUrl}")!)
+                .font(.body)
+                .foregroundColor(.devAccentBlue)`;
+                }
+
+                // Remove HTML tags except for specific formatting tags
+                let cleanedText = text.replace(/<(?!b|strong|i|em|u|code|\/?span).*?>/gi, '');
+
+                const isBold = /<(b|strong)>/i.test(cleanedText);
+                const isItalic = /<(i|em)>/i.test(cleanedText);
+                const isUnderline = /<u>/i.test(cleanedText);
+                const isCode = /<code>/i.test(cleanedText);
+
+                let cleanTextContent = cleanedText.replace(/<\/?(b|strong|i|em|u|code)>/gi, '').trim();
+                cleanTextContent = cleanTextContent.replace(/^#+\s*/, '');
+                let escapedText = escapeSwiftString(cleanTextContent);
+
+                let code = `Text("${escapedText}")`;
+
+                if (isBold) code += `
+                .bold()`;
+                if (isItalic) code += `
+                .italic()`;
+                if (isUnderline) code += `
+                .underline()`;
+                if (isCode) code += `
+                .font(.system(.body, design: .monospaced))`;
+
+                return code;
+            }
+
+            function generateSwiftUI() {
+                const inputText = easymde.value();
+                const viewName = viewNameInput.value.trim() || 'FormattedTextView';
+                let swiftElements = [];
+
+                if (!inputText.trim()) {
+                    resultCodeTextarea.value = '';
+                    return;
+                }
+
+                const lines = inputText.split(/\\r?\\n/).filter(line => line.trim() !== '');
+
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if (trimmed === '') return;
+
+                    if (trimmed.startsWith('# ')) {
+                        const content = parseHtmlAndMarkdownToSwiftUI(trimmed.substring(2));
+                        swiftElements.push(`            ${content}
+                .font(.largeTitle)
+                .bold()
+                .foregroundColor(.white)
+                .padding(.bottom, 6)`);
+                    } else if (trimmed.startsWith('## ')) {
+                        const content = parseHtmlAndMarkdownToSwiftUI(trimmed.substring(3));
+                        swiftElements.push(`            ${content}
+                .font(.title2)
+                .bold()
+                .foregroundColor(.white)
+                .padding(.top, 10)`);
+                    } else if (trimmed.startsWith('### ')) {
+                        const content = parseHtmlAndMarkdownToSwiftUI(trimmed.substring(4));
+                        swiftElements.push(`            ${content}
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding(.top, 6)`);
+                    } else if (trimmed.startsWith('#### ')) {
+                        const content = parseHtmlAndMarkdownToSwiftUI(trimmed.substring(5));
+                        swiftElements.push(`            ${content}
+                .font(.subheadline)
+                .bold()
+                .foregroundColor(.white)
+                .padding(.top, 4)`);
+                    } else if (trimmed.startsWith('* ') || trimmed.startsWith('- ') || trimmed.match(/^<li>/ui)) {
+                        const listItemText = trimmed.match(/^[\*\-]\s+(.*)/u) ? trimmed.match(/^[\*\-]\s+(.*)/u)[1] : trimmed.replace(/^<li>(.*)<\/li>$/ui, '$1');
+                        const content = parseHtmlAndMarkdownToSwiftUI(listItemText);
+                        swiftElements.push(`            HStack(alignment: .top, spacing: 8) {
+                Text("•")
+                    .foregroundColor(.devPrimaryPink)
+                ${content}
+                    .foregroundColor(.white.opacity(0.85))
+            }`);
+                    } else {
+                        const content = parseHtmlAndMarkdownToSwiftUI(trimmed);
+                        if (content.includes('AsyncImage')) {
+                            swiftElements.push(`            ${content}`);
+                        } else {
+                            swiftElements.push(`            ${content}
+                .font(.body)
+                .foregroundColor(.white.opacity(0.9))
+                .lineSpacing(4)`);
+                        }
+                    }
+                });
+
+                const bodyContent = swiftElements.join('\\n\\n');
+
+                resultCodeTextarea.value = `import SwiftUI
+
+struct ${viewName}: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+${bodyContent}
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(Color.devMainBg)
+    }
+}
+
+#Preview {
+    ${viewName}()
+}`;
+            }
+
+            generateBtn.addEventListener('click', generateSwiftUI);
+            generateBtnBottom.addEventListener('click', generateSwiftUI);
+
+            copyBtn.addEventListener('click', () => {
+                const textarea = resultCodeTextarea;
+                if (!textarea || !textarea.value) return;
+
+                const copyToClipboard = (text) => {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        return navigator.clipboard.writeText(text);
+                    } else {
+                        textarea.select();
+                        textarea.setSelectionRange(0, 99999);
+                        try {
+                            document.execCommand('copy');
+                            window.getSelection().removeAllRanges();
+                            return Promise.resolve();
+                        } catch (err) {
+                            return Promise.reject(err);
+                        }
+                    }
+                };
+
+                copyToClipboard(textarea.value).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Скопійовано!';
+                    copyBtn.style.borderColor = 'var(--accent-primary)';
+                    copyBtn.style.color = 'var(--accent-primary)';
+                    
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.style.borderColor = 'var(--border-primary)';
+                        copyBtn.style.color = 'var(--text-secondary)';
+                    }, 1800);
+                }).catch(err => {
+                    console.error('Помилка копіювання:', err);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
