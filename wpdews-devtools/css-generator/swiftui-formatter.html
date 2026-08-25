@@ -12,9 +12,8 @@
 
 /* EasyMDE Customizations */
 .EasyMDEContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+    position: relative;
+    overflow: visible !important;
 }
 .CodeMirror {
     background: var(--bg-input) !important;
@@ -29,6 +28,19 @@
     background: var(--bg-secondary) !important;
     border-color: var(--border-primary) !important;
     border-radius: 8px 8px 0 0 !important;
+    position: sticky; /* Добавлено */
+    top: 0; /* Добавлено */
+    z-index: 1000; /* Добавлено */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Добавлено для видимости */
+}
+.EasyMDEContainer .editor-toolbar {
+    position: sticky !important;
+    top: 0; /* Або вкажіть offset (наприклад 10px), якщо зверху є фіксована шапка */
+    z-index: 100;
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-primary) !important;
+    border-radius: 8px 8px 0 0 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Тінь для візуального відділення при скролі */
 }
 .editor-toolbar button {
     background: transparent;
@@ -436,7 +448,7 @@ struct GeneratorView: View {
                     return;
                 }
 
-                const lines = inputText.split(/\\r?\\n/).filter(line => line.trim() !== '');
+                const lines = inputText.split(/\r?\n/).filter(line => line.trim() !== '');
 
                 lines.forEach(line => {
                     const trimmed = line.trim();
@@ -491,7 +503,7 @@ struct GeneratorView: View {
                     }
                 });
 
-                const bodyContent = swiftElements.join('\\n\\n');
+                const bodyContent = swiftElements.join('\n\n');
 
                 resultCodeTextarea.value = `import SwiftUI
 
