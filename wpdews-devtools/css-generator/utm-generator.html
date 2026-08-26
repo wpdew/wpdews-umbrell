@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTM Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .utm-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .utm-panel {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .utm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .utm-inline-note {
+            margin-top: 8px;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .preset-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .preset-chip {
+            border: 1px solid var(--border-primary);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-chip:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .tool-row .control-btn {
+            width: auto;
+            min-width: 180px;
+            padding: 10px 16px;
+        }
+
+        .status-line {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+            min-height: 22px;
+            margin-top: 8px;
+        }
+
+        .status-line.success {
+            color: #86efac;
+        }
+
+        .status-line.error {
+            color: #fca5a5;
+        }
+
+        #resultUrl {
+            min-height: 74px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        @media (max-width: 980px) {
+            .utm-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tool-row .control-btn {
+                width: 100%;
+            }
+        }
+		.control-group b{
+			color: red;
+		}
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="Перемкнути тему (Ctrl+Shift+T)">
+        <span class="theme-toggle-icon">🌙</span>
+        <span class="theme-toggle-text">Темна</span>
+    </button>
+
+    <div class="container">
+        <div class="main-grid">
+            <aside class="controls-panel sidebar-nav">
+                <div class="sidebar-brand">
+                    <h2>Navigation</h2>
+                    <p>Швидкий доступ до всіх генераторів</p>
+                </div>
+
+                <nav aria-label="Навігація по генераторам">
+                    <div>
+                        <div class="sidebar-group-title">Навігація</div>
+                        <ul class="sidebar-links">
+                            <li><a class="sidebar-link" href="index.html"><span class="sidebar-link-icon">🏡</span><span class="sidebar-link-label">All tools</span></a></li>
+                            <li><a class="sidebar-link" href="dean-edwards-packer.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Packer</span></a></li>
+                            <li><a class="sidebar-link" href="image-to-datauri.html"><span class="sidebar-link-icon">🖼️</span><span class="sidebar-link-label">Image to Data URI</span></a></li>
+                            <li><a class="sidebar-link" href="css-sprite-generator.html"><span class="sidebar-link-icon">🎮</span><span class="sidebar-link-label">CSS Sprite Generator</span></a></li>
+                            <li><a class="sidebar-link" href="array-generator.html"><span class="sidebar-link-icon">📊</span><span class="sidebar-link-label">Array Generator</span></a></li>
+                            <li><a class="sidebar-link" href="cssgradient.html"><span class="sidebar-link-icon">🌈</span><span class="sidebar-link-label">Gradient Generator</span></a></li>
+                            <li><a class="sidebar-link" href="animation-generator.html"><span class="sidebar-link-icon">✨</span><span class="sidebar-link-label">Animation Generator</span></a></li>
+                            <li><a class="sidebar-link" href="column-generator.html"><span class="sidebar-link-icon">📰</span><span class="sidebar-link-label">Column Generator</span></a></li>
+                            <li><a class="sidebar-link" href="flexbox-generator.html"><span class="sidebar-link-icon">📦</span><span class="sidebar-link-label">Flexbox Generator</span></a></li>
+                            <li><a class="sidebar-link" href="grid-generator.html"><span class="sidebar-link-icon">#</span><span class="sidebar-link-label">Grid Generator</span></a></li>
+                            <li><a class="sidebar-link" href="ribbon-generator.html"><span class="sidebar-link-icon">🎀</span><span class="sidebar-link-label">Ribbon Generator</span></a></li>
+                            <li><a class="sidebar-link" href="clip-path-maker.html"><span class="sidebar-link-icon">✂️</span><span class="sidebar-link-label">Clip Path Maker</span></a></li>
+                            <li><a class="sidebar-link" href="glassmorphism-generator.html"><span class="sidebar-link-icon">🧊</span><span class="sidebar-link-label">Glassmorphism</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-jsx.html"><span class="sidebar-link-icon">⚛️</span><span class="sidebar-link-label">HTML to JSX</span></a></li>
+                            <li><a class="sidebar-link" href="html-to-json.html"><span class="sidebar-link-icon">🧾</span><span class="sidebar-link-label">HTML to JSON</span></a></li>
+                            <li><a class="sidebar-link" href="vscode-snippet-generator.html"><span class="sidebar-link-icon">🧩</span><span class="sidebar-link-label">VSCode Snippets</span></a></li>
+                            <li><a class="sidebar-link" href="qr-sequence.html"><span class="sidebar-link-icon">🔳</span><span class="sidebar-link-label">QR Sequence</span></a></li>
+                            <li><a class="sidebar-link" href="wpdew-snippet-generator.html"><span class="sidebar-link-icon">📝</span><span class="sidebar-link-label">Wpdew Snippets</span></a></li>
+                            <li><a class="sidebar-link" href="swiftui-formatter.html"><span class="sidebar-link-icon">📱</span><span class="sidebar-link-label">SwiftUI Formatter</span></a></li>
+                            <li><a class="sidebar-link active" href="utm-generator.html"><span class="sidebar-link-icon">🔗</span><span class="sidebar-link-label">UTM Generator</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content-column utm-layout">
+                <header>
+                    <h1>UTM Generator</h1>
+                    <p class="subtitle">Генератор UTM-міток для рекламних кампаній</p>
+                    <p class="description">Вкажіть цільовий URL і параметри, щоб отримати готове посилання для аналітики в Google Analytics, Meta Ads та інших каналах.</p>
+                </header>
+
+                <section class="utm-panel">
+                    <div class="control-group">
+                        <label for="targetUrl">Цільовий URL *</label>
+                        <input type="text" id="targetUrl" placeholder="https://example.com/page">
+                        <p class="utm-inline-note">Якщо протокол не вказано, буде автоматично додано https://</p>
+                    </div>
+
+                    <div class="utm-grid">
+                        <div class="control-group">
+                            <label for="utmSource">utm_source <b>*</b></label>
+                            <input type="text" id="utmSource" placeholder="google, facebook, telegram">
+                            <div class="preset-row">
+                                <button type="button" class="preset-chip" data-field="utmSource" data-value="google">google</button>
+                                <button type="button" class="preset-chip" data-field="utmSource" data-value="facebook">facebook</button>
+                                <button type="button" class="preset-chip" data-field="utmSource" data-value="instagram">instagram</button>
+                                <button type="button" class="preset-chip" data-field="utmSource" data-value="telegram">telegram</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="utmMedium">utm_medium <b>*</b></label>
+                            <input type="text" id="utmMedium" placeholder="cpc, banner, email, social">
+                            <div class="preset-row">
+                                <button type="button" class="preset-chip" data-field="utmMedium" data-value="cpc">cpc</button>
+                                <button type="button" class="preset-chip" data-field="utmMedium" data-value="cpm">cpm</button>
+                                <button type="button" class="preset-chip" data-field="utmMedium" data-value="social">social</button>
+                                <button type="button" class="preset-chip" data-field="utmMedium" data-value="messenger">messenger</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="utmCampaign">utm_campaign <b>*</b></label>
+                        <input type="text" id="utmCampaign" placeholder="summer_sale, promo_2026">
+                    </div>
+
+                    <div class="utm-grid">
+                        <div class="control-group">
+                            <label for="utmContent">utm_content</label>
+                            <input type="text" id="utmContent" placeholder="link_button, banner_blue">
+                        </div>
+                        <div class="control-group">
+                            <label for="utmTerm">utm_term</label>
+                            <input type="text" id="utmTerm" placeholder="buy_shoes, php_developer">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="resultUrl">Згенероване посилання</label>
+                        <div id="resultUrl" class="code-output" aria-live="polite">Введіть URL та обов'язкові параметри...</div>
+                    </div>
+
+                    <div class="tool-row">
+                        <button type="button" class="control-btn" id="copyBtn">Копіювати посилання</button>
+                        <button type="button" class="control-btn secondary" id="clearBtn">Очистити поля</button>
+                    </div>
+
+                    <p class="status-line" id="statusLine" role="status"></p>
+                </section>
+
+                <section class="info-section">
+                    <h3>Швидка підказка по UTM</h3>
+                    <ul>
+                        <li><strong>utm_source</strong> - джерело трафіку: google, telegram, facebook.</li>
+                        <li><strong>utm_medium</strong> - тип трафіку: cpc, social, email.</li>
+                        <li><strong>utm_campaign</strong> - назва кампанії: spring_sale, retargeting.</li>
+                        <li><strong>utm_content</strong> - варіант креативу або кнопки.</li>
+                        <li><strong>utm_term</strong> - ключове слово (частіше для пошуку).</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="css/theme-toggle.js"></script>
+    <script>
+        (function() {
+            'use strict';
+
+            const fieldIds = [
+                'targetUrl',
+                'utmSource',
+                'utmMedium',
+                'utmCampaign',
+                'utmContent',
+                'utmTerm'
+            ];
+
+            const resultUrl = document.getElementById('resultUrl');
+            const statusLine = document.getElementById('statusLine');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            function setStatus(message, type) {
+                statusLine.textContent = message;
+                statusLine.classList.remove('success', 'error');
+                if (type) {
+                    statusLine.classList.add(type);
+                }
+            }
+
+            function readField(id) {
+                return document.getElementById(id).value.trim();
+            }
+
+            function generateUTM() {
+                let rawUrl = readField('targetUrl');
+                const source = readField('utmSource');
+                const medium = readField('utmMedium');
+                const campaign = readField('utmCampaign');
+                const content = readField('utmContent');
+                const term = readField('utmTerm');
+
+                if (!rawUrl || !source || !medium || !campaign) {
+                    resultUrl.textContent = "Введіть URL та обов'язкові параметри...";
+                    setStatus("Заповніть обов'язкові поля: URL, utm_source, utm_medium, utm_campaign.", null);
+                    return '';
+                }
+
+                if (!/^https?:\/\//i.test(rawUrl)) {
+                    rawUrl = 'https://' + rawUrl;
+                }
+
+                try {
+                    const url = new URL(rawUrl);
+                    url.searchParams.set('utm_source', source);
+                    url.searchParams.set('utm_medium', medium);
+                    url.searchParams.set('utm_campaign', campaign);
+
+                    if (content) {
+                        url.searchParams.set('utm_content', content);
+                    }
+                    if (term) {
+                        url.searchParams.set('utm_term', term);
+                    }
+
+                    const generated = url.toString();
+                    resultUrl.textContent = generated;
+                    setStatus('Посилання успішно згенеровано.', 'success');
+                    return generated;
+                } catch (error) {
+                    resultUrl.textContent = 'Введіть коректний формат URL.';
+                    setStatus('Помилка: некоректний URL.', 'error');
+                    return '';
+                }
+            }
+
+            fieldIds.forEach((id) => {
+                document.getElementById(id).addEventListener('input', generateUTM);
+            });
+
+            document.querySelectorAll('.preset-chip').forEach((chip) => {
+                chip.addEventListener('click', function() {
+                    const fieldId = this.getAttribute('data-field');
+                    const value = this.getAttribute('data-value');
+                    document.getElementById(fieldId).value = value;
+                    generateUTM();
+                });
+            });
+
+            copyBtn.addEventListener('click', async function() {
+                const value = generateUTM();
+                if (!value) {
+                    setStatus('Немає валідного посилання для копіювання.', 'error');
+                    return;
+                }
+
+                try {
+                    await navigator.clipboard.writeText(value);
+                    const original = copyBtn.textContent;
+                    copyBtn.textContent = 'Скопійовано!';
+                    setStatus('Посилання скопійовано в буфер обміну.', 'success');
+                    setTimeout(() => {
+                        copyBtn.textContent = original;
+                    }, 1400);
+                } catch (error) {
+                    setStatus('Не вдалося скопіювати. Скопіюйте вручну з блоку вище.', 'error');
+                }
+            });
+
+            clearBtn.addEventListener('click', function() {
+                fieldIds.forEach((id) => {
+                    document.getElementById(id).value = '';
+                });
+                resultUrl.textContent = "Введіть URL та обов'язкові параметри...";
+                setStatus('Поля очищено.', null);
+            });
+        })();
+    </script>
+</body>
+</html>
